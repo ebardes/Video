@@ -1,3 +1,4 @@
+package org.bardes.mplayer;
 /*
  * Copyright (c) 2011, Pro JavaFX Authors
  * All rights reserved.
@@ -30,15 +31,11 @@
 //package projavafx.fullscreenvideoplayer;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -46,41 +43,36 @@ import javafx.stage.Stage;
  *
  * @author dean
  */
-public class Main extends Application {
+public class Main extends Application
+{
+	private VSystem vSys;
+	
+	public static void main(String[] args)
+	{
+		launch(args);
+	}
 
-  public static void main(String[] args) 
-  {
-    launch(args);
-  }
-  
-  @Override
-  public void start(Stage primaryStage) 
-  {
-    final File f = new File("video.m4v");
-    
-    final Media m = new Media(f.toURI().toString());
-    final MediaPlayer mp = new MediaPlayer(m);
-    final MediaView mv = new MediaView(mp);
-    
-    final DoubleProperty width = mv.fitWidthProperty();
-    final DoubleProperty height = mv.fitHeightProperty();
-        
-    width.bind(Bindings.selectDouble(mv.sceneProperty(), "width"));
-    height.bind(Bindings.selectDouble(mv.sceneProperty(), "height"));
-    
-    mv.setPreserveRatio(true);
-    
-    StackPane root = new StackPane();
-    root.getChildren().add(mv);
-    
-    final Scene scene = new Scene(root);
-    scene.setFill(Color.BLACK);
-    
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Full Screen Video Player");
-    primaryStage.setFullScreen(true);
-    primaryStage.show();
-    
-    mp.play();
-  }
+	@Override
+	public void start(Stage rootStage)
+	{
+		StackPane root = new StackPane();
+		vSys = new VSystem(root);
+		
+		
+//		Cue cue = VSystem.mediaCue(new File("5b - Moving Pace 1.mp4"));
+//		cue.setCue(new BigDecimal("1.0"));
+//		vSys.addCue(cue);
+		
+		final Scene scene = new Scene(root);
+		scene.setFill(Color.BLACK);
+		
+		scene.setOnKeyPressed(vSys.getKeyHandler());
+
+		rootStage.setScene(scene);
+		rootStage.setTitle("Full Screen Video Player");
+//		primaryStage.setFullScreen(true);
+		rootStage.show();
+		
+		vSys.reset();
+	}
 }
