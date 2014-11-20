@@ -1,65 +1,55 @@
 package org.bardes.mplayer;
 
-import java.math.BigDecimal;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-import javafx.scene.Node;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-
-@XmlAccessorType(XmlAccessType.PROPERTY)
-public abstract class Cue implements Comparable<Cue>
+public class Cue
 {
-	private BigDecimal cue;
-	private double time = 1.0;
+	SimpleDoubleProperty cue = new SimpleDoubleProperty();
+	SimpleDoubleProperty time = new SimpleDoubleProperty();
+	SimpleStringProperty description = new SimpleStringProperty();
 	
-	private Node node;
+	public Cue()
+	{
+		this(0.0, "", 2.0);
+	}
 	
-	@Override
-	public int compareTo(Cue o)
+	public Cue(double cue, String description, double time)
 	{
-		return cue.compareTo(o.cue);
+		setCue(cue);
+		setDescription(description);
+		setTime(time);
 	}
-
-	public BigDecimal getCue()
-	{
-		return cue;
-	}
-
-	public void setCue(BigDecimal cue)
-	{
-		this.cue = cue;
-	}
-
-	@XmlTransient
-	public Node getNode()
-	{
-		return node;
-	}
-
-	public void setNode(Node node)
-	{
-		this.node = node;
-	}
-
-	public double getTime()
-	{
-		return time;
-	}
-
+	
 	public void setTime(double time)
 	{
-		this.time = time;
-	}
-
-	public void play()
-	{
+		this.time.set(time);
 	}
 	
-	@Override
-	public String toString()
+	public double getTime()
 	{
-		return "Cue "+cue;
+		return this.time.get();
 	}
+
+	public void setDescription(String description)
+	{
+		this.description.set(description);
+	}
+	
+	public String getDecription()
+	{
+		return this.description.get();
+	}
+
+	public double getCue()
+	{
+		return cue.get();
+	}
+	
+	public void setCue(double cue)
+	{
+		this.cue.set(cue);
+	}
+
 }
