@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<TabPane prefHeight="578.0" prefWidth="1211.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bardes.mplayer.MainController">
+  <tabs>
+    <Tab text="Content">
+         <content>
+            <SplitPane dividerPositions="0.33278282411230387" prefHeight="200.0" prefWidth="200.0">
+               <items>
+                  <TreeView fx:id="treeView" prefHeight="446.0" prefWidth="517.0" showRoot="false" GridPane.rowIndex="1" />
+                  <Group>
+                     <children>
+                        <ImageView fitHeight="179.0" fitWidth="198.0" pickOnBounds="true" preserveRatio="true" />
+                        <HTMLEditor htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" />
+                     </children>
+                  </Group>
+               </items>
+            </SplitPane>
+         </content>
+      </Tab>
+    <Tab text="Preview" />
+  </tabs>
+</TabPane>
