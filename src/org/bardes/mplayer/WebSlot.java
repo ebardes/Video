@@ -32,6 +32,7 @@ public class WebSlot extends Slot
 		webViewThumb.getEngine().loadContent(reference);
 		webViewThumb.setMaxWidth(128);
 		webViewThumb.setMaxHeight(128);
+		webViewThumb.setDisable(true);
 	}
 	
 	@Override
