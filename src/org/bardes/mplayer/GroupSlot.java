@@ -3,6 +3,8 @@ package org.bardes.mplayer;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javafx.scene.Node;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -24,7 +26,7 @@ public class GroupSlot extends Slot
 	@Override
 	public String toString()
 	{
-		return String.format("Group %03d - %s", id, description);
+		return String.format("Group %03d - %s", id, getDescription());
 	}
 
 	public void addItem(Slot item)
@@ -36,6 +38,18 @@ public class GroupSlot extends Slot
 	public Type getType()
 	{
 		return Type.GROUP;
+	}
+
+	@Override
+	public Node getNode()
+	{
+		return null;
+	}
+
+	@Override
+	public Node getThumbNail()
+	{
+		return null;
 	}
 
 }
