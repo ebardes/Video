@@ -26,7 +26,7 @@ public class GroupSlot extends Slot
 	@Override
 	public String toString()
 	{
-		return String.format("Group %03d - %s", id, getDescription());
+		return String.format("%03d - %s", id, getDescription());
 	}
 
 	public void addItem(Slot item)
