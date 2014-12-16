@@ -95,6 +95,9 @@ public class MainController implements Initializable
 	@FXML
 	Label labelStatus;
 
+	@FXML
+	TextField groupDescriptionField;
+
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -104,6 +107,7 @@ public class MainController implements Initializable
 	File configLocation = new File("config.xml");
 
 	private Slot selected;
+
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -170,6 +174,8 @@ public class MainController implements Initializable
 					item.getChildren().add(subItem);
 				}
 			}
+			
+			treeView.getSelectionModel().selectFirst();
 		}
 		catch (MalformedURLException e)
 		{
@@ -185,7 +191,11 @@ public class MainController implements Initializable
 		switch (value.getType())
 		{
 		case WEB:
-			value.setReference(htmlEditor.getHtmlText());
+			if (value.getReference() == null || !value.getReference().equals(htmlEditor.getHtmlText()))
+			{
+				value.setReference(htmlEditor.getHtmlText());
+				changed = true;
+			}
 			break;
 
 		case IMAGE:
@@ -202,6 +212,16 @@ public class MainController implements Initializable
 				changed = true;
 			}
 
+			break;
+			
+		case GROUP:
+			if (value.getDescription() != null && !value.getDescription().equals(groupDescriptionField.getText()))
+			{
+				value.setDescription(groupDescriptionField.getText());
+				value.treeitem.setValue(null);
+				value.treeitem.setValue(value);
+				changed = true;
+			}
 			break;
 
 		default:
@@ -229,16 +249,7 @@ public class MainController implements Initializable
 			break;
 
 		case IMAGE:
-			ImageView img = (ImageView) selected.getNode();
-			fileNameField.setText(selected.getReference());
-			fileDescriptionField.setText(selected.getDescription());
-			if (img != null)
-				imageView.setImage(img.getImage());
-
-			boolean disable = (selected.group == 0);
-			fileNameField.setDisable(disable);
-			fileDescriptionField.setDisable(disable);
-			fileChooseButton.setDisable(disable);
+			activeImageView(selected);
 			break;
 
 		default:
@@ -249,8 +260,29 @@ public class MainController implements Initializable
 	/**
 	 * @param selected
 	 */
+	void activeImageView(Slot selected)
+	{
+		ImageView img = (ImageView) selected.getNode();
+		fileNameField.setText(selected.getReference());
+		fileDescriptionField.setText(selected.getDescription());
+		if (img != null)
+			imageView.setImage(img.getImage());
+		else
+			imageView.setImage(null);
+
+		boolean disable = (selected.group == 0);
+		fileNameField.setDisable(disable);
+		fileDescriptionField.setDisable(disable);
+		fileChooseButton.setDisable(disable);
+	}
+
+	/**
+	 * @param selected
+	 */
 	void activateGroupView(Slot selected)
 	{
+		groupDescriptionField.setText(selected.getDescription());
+		
 		CornerRadii radii = new CornerRadii(5);
 		final BorderStroke stroke = new BorderStroke(Color.valueOf("#808080"), BorderStrokeStyle.SOLID, radii, BorderWidths.DEFAULT);
 		final BorderStroke fatStroke = new BorderStroke(Color.valueOf("#c0c000"), BorderStrokeStyle.SOLID, radii, BorderWidths.DEFAULT);

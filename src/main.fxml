@@ -34,8 +34,9 @@
                                           <RadioButton id="WEB" layoutX="57.0" layoutY="193.0" mnemonicParsing="false" prefWidth="200.0" text="HTML" toggleGroup="$newItemType" />
                                           <RadioButton id="MOVIE" layoutX="57.0" layoutY="164.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="200.0" text="Movie" toggleGroup="$newItemType" />
                                           <Label layoutX="25.0" layoutY="49.0" text="Item #" />
-                                          <Button layoutX="129.0" layoutY="266.0" mnemonicParsing="false" onAction="#addNewItem" text="Next &gt;&gt;" />
+                                          <Button defaultButton="true" layoutX="185.0" layoutY="266.0" mnemonicParsing="false" onAction="#addNewItem" text="Next &gt;&gt;" />
                                           <TextField id="newSlotId" fx:id="newSlotId" layoutX="90.0" layoutY="44.0" promptText="Number from 0 to 255" />
+                                          <Button cancelButton="true" layoutX="57.0" layoutY="266.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="67.0" text="Cancel" />
                                        </children>
                                     </AnchorPane>
                                     <BorderPane fx:id="groupPane" prefHeight="200.0" prefWidth="200.0" visible="false">
@@ -51,6 +52,8 @@
                                             <items>
                                               <Button mnemonicParsing="false" onAction="#addItem" text="Add" />
                                                 <Button fx:id="delItem" disable="true" mnemonicParsing="false" onAction="#deleteItem" text="Del" />
+                                                <Label text="Description" />
+                                                <TextField fx:id="groupDescriptionField" prefHeight="26.0" prefWidth="274.0" />
                                             </items>
                                           </ToolBar>
                                        </top>
