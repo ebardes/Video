@@ -17,6 +17,7 @@ public abstract class Slot implements Comparable<Slot>
 {
 	public enum Type
 	{
+		NEW,
 		GROUP,
 		IMAGE,
 		VIDEO,

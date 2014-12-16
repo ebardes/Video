@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  *
@@ -14,6 +15,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application
 {
+
+	public static Window window;
 
 	public static void main(String[] args)
 	{
@@ -27,6 +30,7 @@ public class Main extends Application
 		URL url = cl.getResource("main.fxml");
 		try
 		{
+			window = primaryStage;
 			Parent p = FXMLLoader.load(url);
 			Scene myScene = new Scene(p);
 			primaryStage.setScene(myScene);

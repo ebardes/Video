@@ -43,4 +43,14 @@ public class Config
 	{
 		return JAXB.unmarshal(file, Config.class);
 	}
+
+	public GroupSlot getGroup(int group)
+	{
+		for (GroupSlot g : groups)
+		{
+			if (g.id == group)
+				return g;
+		}
+		return null;
+	}
 }
