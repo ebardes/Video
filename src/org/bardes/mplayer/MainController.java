@@ -98,6 +98,9 @@ public class MainController implements Initializable
 	@FXML
 	TextField groupDescriptionField;
 
+	@FXML
+	Label fileDetails;
+	
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -107,7 +110,6 @@ public class MainController implements Initializable
 	File configLocation = new File("config.xml");
 
 	private Slot selected;
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -210,6 +212,8 @@ public class MainController implements Initializable
 				value.treeitem.setValue(null);
 				value.treeitem.setValue(value);
 				changed = true;
+				
+				activeImageView(value);
 			}
 
 			break;
@@ -266,9 +270,16 @@ public class MainController implements Initializable
 		fileNameField.setText(selected.getReference());
 		fileDescriptionField.setText(selected.getDescription());
 		if (img != null)
-			imageView.setImage(img.getImage());
+		{
+			Image image = img.getImage();
+			imageView.setImage(image);
+			
+			fileDetails.setText(String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight()));
+		}
 		else
+		{
 			imageView.setImage(null);
+		}
 
 		boolean disable = (selected.group == 0);
 		fileNameField.setDisable(disable);
