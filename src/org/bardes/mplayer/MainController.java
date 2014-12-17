@@ -1,7 +1,6 @@
 package org.bardes.mplayer;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,12 +150,7 @@ public class MainController implements Initializable
 			}
 			else
 			{
-				config = Config.load(new File("masterconfig.xml"));
-				if (config == null)
-					config = new Config();
-				for (int i = 0; i <= 32; i++)
-					config.addGroup(new GroupSlot(i, "User"));
-				
+				config = Config.reset(location);
 				config.save(configLocation);
 			}
 
@@ -179,7 +173,7 @@ public class MainController implements Initializable
 			
 			treeView.getSelectionModel().selectFirst();
 		}
-		catch (MalformedURLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -296,7 +290,7 @@ public class MainController implements Initializable
 		
 		CornerRadii radii = new CornerRadii(5);
 		final BorderStroke stroke = new BorderStroke(Color.valueOf("#808080"), BorderStrokeStyle.SOLID, radii, BorderWidths.DEFAULT);
-		final BorderStroke fatStroke = new BorderStroke(Color.valueOf("#c0c000"), BorderStrokeStyle.SOLID, radii, BorderWidths.DEFAULT);
+		final BorderStroke fatStroke = new BorderStroke(Color.valueOf("#c00000"), BorderStrokeStyle.SOLID, radii, BorderWidths.DEFAULT);
 		final Border border = new Border(stroke);
 		final Border fatBorder = new Border(fatStroke);
 

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
-@XmlSeeAlso({ ImageSlot.class, WebSlot.class })
+@XmlSeeAlso({ ImageSlot.class, WebSlot.class, VideoSlot.class })
 @XmlRootElement(name="slot")
 public abstract class Slot implements Comparable<Slot>
 {

@@ -1,6 +1,9 @@
 package org.bardes.mplayer;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -53,4 +56,34 @@ public class Config
 		}
 		return null;
 	}
+
+    public static Config reset(URL location) throws URISyntaxException
+    {
+        Config config = new Config();
+        GroupSlot system = new GroupSlot(0, "System");
+        config.addGroup(system);
+        for (int i = 1; i <= 16; i++)
+            config.addGroup(new GroupSlot(i, "User"));
+        
+        
+        File f = new File(location.toURI());
+        f = f.getParentFile();
+        f = new File(f, "images/system");
+        File[] pngFiles = f.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.isFile() && pathname.toString().toLowerCase().endsWith(".png");
+            }
+        });
+        
+        int id = 1;
+        for (File p : pngFiles)
+        {
+            ImageSlot is = new ImageSlot(id++, p.getName(), p.toURI().toString());
+            system.addItem(is);
+        }
+        
+        return config;
+    }
 }

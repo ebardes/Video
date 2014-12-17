@@ -31,6 +31,7 @@ public class GroupSlot extends Slot
 
 	public void addItem(Slot item)
 	{
+	    item.group = id;
 		slots.add(item);
 	}
 
