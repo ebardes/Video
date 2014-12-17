@@ -23,6 +23,7 @@ public class VideoSlot extends Slot
         
         Media media = new Media(reference);
         mp = new MediaPlayer(media);
+        mp.setAutoPlay(false);
     }
 
     @Override
@@ -34,13 +35,19 @@ public class VideoSlot extends Slot
     @Override
     public Node getNode()
     {
-        return new MediaView(mp);
+        MediaView mediaView = new MediaView(mp);
+        mediaView.setPreserveRatio(true);
+        return mediaView;
     }
 
     @Override
     public Node getThumbNail()
     {
-        return new MediaView(mp);
+        MediaView mediaView = new MediaView(mp);
+        mediaView.setPreserveRatio(true);
+        mediaView.setFitHeight(128);
+        mediaView.setFitWidth(128);
+        return mediaView;
     }
 
 }
