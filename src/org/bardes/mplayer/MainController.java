@@ -44,6 +44,11 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 import org.bardes.mplayer.Slot.Type;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.util.Duration;
+
 public class MainController implements Initializable
 {
 	@FXML
@@ -100,6 +105,27 @@ public class MainController implements Initializable
 	@FXML
 	Label fileDetails;
 	
+	@FXML
+	BorderPane editorPane;
+
+	@FXML
+	AnchorPane videoPane;
+
+	@FXML
+	TextField videoNameField;
+
+	@FXML
+	Button videoChooseButton;
+
+	@FXML
+	TextField videoDescriptionField;
+
+	@FXML
+	Label videoDetails;
+
+	@FXML
+	MediaView videoView;
+
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -171,7 +197,10 @@ public class MainController implements Initializable
 				}
 			}
 			
-			treeView.getSelectionModel().selectFirst();
+			GroupSlot system = config.getGroup(0);
+			MultipleSelectionModel<TreeItem<Slot>> selectionModel = treeView.getSelectionModel();
+			selectionModel.select(system.treeitem);
+			treeView.requestFocus();
 		}
 		catch (Exception e)
 		{
@@ -212,6 +241,23 @@ public class MainController implements Initializable
 
 			break;
 			
+		case VIDEO:
+			if (value.getReference() == null || !value.getReference().equals(videoNameField.getText()))
+			{
+				value.setReference(videoNameField.getText());
+				changed = true;
+			}
+			if (!value.getDescription().equals(videoDescriptionField.getText()))
+			{
+				value.setDescription(videoDescriptionField.getText());
+				value.treeitem.setValue(null);
+				value.treeitem.setValue(value);
+				changed = true;
+				
+				activeVideoView(value);
+			}
+			break;
+			
 		case GROUP:
 			if (value.getDescription() != null && !value.getDescription().equals(groupDescriptionField.getText()))
 			{
@@ -244,6 +290,10 @@ public class MainController implements Initializable
 
 		case GROUP:
 			activateGroupView(selected);
+			break;
+			
+		case VIDEO:
+			activeVideoView(selected);
 			break;
 
 		case IMAGE:
@@ -281,6 +331,37 @@ public class MainController implements Initializable
 		fileChooseButton.setDisable(disable);
 	}
 
+	/**
+	 * 
+	 * @param selected
+	 */
+	void activeVideoView(Slot selected)
+	{
+		MediaView vid = (MediaView) selected.getNode();
+		videoNameField.setText(selected.getReference());
+		videoDescriptionField.setText(selected.getDescription());
+		if (vid != null)
+		{
+			MediaPlayer mp = vid.getMediaPlayer();
+			mp.play();
+			mp.pause();
+			Duration seekTime = new Duration(5000);
+			mp.seek(seekTime);
+			videoView.setMediaPlayer(mp);
+			
+//			fileDetails.setText(String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight()));
+		}
+		else
+		{
+			videoView.setMediaPlayer(null);
+		}
+		
+		boolean disable = (selected.group == 0);
+		videoNameField.setDisable(disable);
+		videoDescriptionField.setDisable(disable);
+		videoChooseButton.setDisable(disable);
+	}
+	
 	/**
 	 * @param selected
 	 */
@@ -405,6 +486,7 @@ public class MainController implements Initializable
 	private void select(Type type)
 	{
 		filePane.setVisible(type == Type.IMAGE);
+		videoPane.setVisible(type == Type.VIDEO);
 		htmlEditor.setVisible(type == Type.WEB);
 		groupPane.setVisible(type == Type.GROUP);
 		newItemPane.setVisible(type == Type.NEW);
@@ -419,12 +501,16 @@ public class MainController implements Initializable
 		Slot slot;
 		RadioButton toggle = (RadioButton) newItemType.getSelectedToggle();
 		
-		Type t = Type.valueOf(toggle.getId());
+		Type t = Type.valueOf(Type.class, toggle.getId());
 		
 		switch (t)
 		{
 		case WEB:
 			slot = new WebSlot();
+			break;
+			
+		case VIDEO:
+			slot = new VideoSlot();
 			break;
 			
 		default:
@@ -456,10 +542,56 @@ public class MainController implements Initializable
 		delItem.setDisable(true);
 		
 		config.save(configLocation);
+		
+		treeView.getSelectionModel().select(gs.treeitem);
 	}
 	
 	private void info(String message)
 	{
 		labelStatus.setText(message);
+	}
+
+	@FXML
+	public void chooseVideo()
+	{
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Resource File");
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Video Files", "*.mp4", "*.m4v", "*.mpg", "*.mpeg", "*.mov", "*.avi"));
+		File selectedFile = fileChooser.showOpenDialog(Main.window);
+		if (selectedFile != null)
+		{
+			String path = selectedFile.toURI().toString();
+			videoNameField.setText(path);
+			Media media = new Media(path);
+			MediaPlayer mp = new MediaPlayer(media);
+			videoView.setMediaPlayer(mp);
+		}
+	}
+
+	@FXML
+	public void videoSave()
+	{
+		saveView(selected);
+	}
+
+	@FXML
+	public void videoPlay()
+	{
+		MediaPlayer mp = videoView.getMediaPlayer();
+		mp.play();
+	}
+
+	@FXML
+	public void videoPause()
+	{
+		MediaPlayer mp = videoView.getMediaPlayer();
+		mp.pause();
+	}
+
+	@FXML
+	public void videoStop()
+	{
+		MediaPlayer mp = videoView.getMediaPlayer();
+		mp.stop();
 	}
 }

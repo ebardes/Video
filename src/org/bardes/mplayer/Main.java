@@ -33,6 +33,7 @@ public class Main extends Application
 			window = primaryStage;
 			Parent p = FXMLLoader.load(url);
 			Scene myScene = new Scene(p);
+			primaryStage.setTitle("Bardes Media Player");
 			primaryStage.setScene(myScene);
 			primaryStage.show();
 		}

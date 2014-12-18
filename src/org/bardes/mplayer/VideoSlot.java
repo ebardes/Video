@@ -25,6 +25,12 @@ public class VideoSlot extends Slot
         mp = new MediaPlayer(media);
         mp.setAutoPlay(false);
     }
+    
+    @Override
+    public String toString()
+    {
+    	return String.format("Slot %03d - %s", id, getDescription());
+    }
 
     @Override
     public Type getType()

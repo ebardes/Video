@@ -57,6 +57,13 @@ public class Config
 		return null;
 	}
 
+	/**
+	 * Builds a whole new Config. Usually first-run or recovery. 
+	 * 
+	 * @param location
+	 * @return
+	 * @throws URISyntaxException
+	 */
     public static Config reset(URL location) throws URISyntaxException
     {
         Config config = new Config();
@@ -80,7 +87,9 @@ public class Config
         int id = 1;
         for (File p : pngFiles)
         {
-            ImageSlot is = new ImageSlot(id++, p.getName(), p.toURI().toString());
+            String name = p.getName();
+            name = name.replace(".png", "");
+			ImageSlot is = new ImageSlot(id++, name, p.toURI().toString());
             system.addItem(is);
         }
         
