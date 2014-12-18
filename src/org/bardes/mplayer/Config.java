@@ -18,6 +18,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Config
 {
+	private static File location;
+	
+	private int universe = 1;
+	
+	private int offset = 1;
+	
 	private Set<GroupSlot> groups = new TreeSet<>();
 
 	@XmlElementWrapper(name="groups")
@@ -37,13 +43,14 @@ public class Config
 		this.groups.add(value);
 	}
 
-	public void save(File f)
+	public void save()
 	{
-		JAXB.marshal(this, f);
+		JAXB.marshal(this, location);
 	}
 
 	public static Config load(File file)
 	{
+		location = file;
 		return JAXB.unmarshal(file, Config.class);
 	}
 
@@ -95,4 +102,24 @@ public class Config
         
         return config;
     }
+
+	public int getUniverse()
+	{
+		return universe;
+	}
+
+	public void setUniverse(int universe)
+	{
+		this.universe = universe;
+	}
+
+	public int getOffset()
+	{
+		return offset;
+	}
+
+	public void setOffset(int offset)
+	{
+		this.offset = offset;
+	}
 }

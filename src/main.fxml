@@ -15,9 +15,9 @@
    <children>
       <BorderPane fx:id="editorPane" prefHeight="933.0" prefWidth="1299.0">
          <center>
-            <TabPane prefHeight="896.0" prefWidth="1211.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <TabPane fx:id="tabBar" prefHeight="896.0" prefWidth="1211.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
               <tabs>
-                <Tab text="Content">
+                <Tab id="CONTENT" text="Content">
                      <content>
                         <SplitPane dividerPositions="0.36829066886870354" prefHeight="200.0" prefWidth="200.0">
                            <items>
@@ -97,6 +97,21 @@
                            </items>
                         </SplitPane>
                      </content>
+                  </Tab>
+                  <Tab id="CONFIG" text="Config">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="59.0" layoutY="67.0" prefHeight="16.0" prefWidth="252.0" text="sACN (E1.31) Config" />
+                              <Label layoutX="105.0" layoutY="98.0" text="Universe" />
+                              <Label layoutX="121.0" layoutY="135.0" text="Offset" />
+                              <TextField fx:id="configUniverse" layoutX="185.0" layoutY="93.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
+                              <TextField fx:id="configOffset" layoutX="185.0" layoutY="130.0" onAction="#validateNumber"  onInputMethodTextChanged="#validateNumber"/>
+                              <Button defaultButton="true" layoutX="110.0" layoutY="555.0" mnemonicParsing="false" onAction="#saveConfig" text="Save" />
+                              <Button cancelButton="true" layoutX="231.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelConfig" text="Cancel" />
+                           </children>
+                        </AnchorPane>
+                    </content>
                   </Tab>
               </tabs>
             </TabPane>
