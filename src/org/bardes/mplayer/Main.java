@@ -68,6 +68,8 @@ public class Main extends Application
 			display = new Stage();
 			display.setScene(displayScene);
 			display.setTitle("Display");
+			display.setHeight(768);
+			display.setWidth(1024);
 			display.show();
 			
 			for (int i = 0; i < 4; i++)
