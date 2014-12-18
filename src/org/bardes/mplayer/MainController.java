@@ -19,6 +19,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -37,17 +39,16 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Duration;
 
 import org.bardes.mplayer.Slot.Type;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.util.Duration;
 
 public class MainController implements Initializable
 {
@@ -126,15 +127,26 @@ public class MainController implements Initializable
 	@FXML
 	MediaView videoView;
 
+	@FXML
+	TabPane tabBar;
+
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
 
+	private Slot selected;
+
 	private Config config;
 
-	File configLocation = new File("config.xml");
+	@FXML TextField configUniverse;
 
-	private Slot selected;
+	@FXML TextField configOffset;
+	
+	private enum TabID
+	{
+		CONTENT,
+		CONFIG,
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -160,6 +172,15 @@ public class MainController implements Initializable
 						updateViews(newValue.getValue());
 				}
 			});
+			
+			tabBar.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue)
+				{
+					changeTab(newValue);
+				}
+			});
 
 			TreeItem<Slot> root = treeView.getRoot();
 			if (root == null)
@@ -170,16 +191,8 @@ public class MainController implements Initializable
 			}
 
 			ObservableList<TreeItem<Slot>> children = root.getChildren();
-			if (configLocation.exists())
-			{
-				config = Config.load(configLocation);
-			}
-			else
-			{
-				config = Config.reset(location);
-				config.save(configLocation);
-			}
-
+			config = Main.getConfig();
+			
 			for (GroupSlot s : config.getGroups())
 			{
 				info("Loading Group " + s.id);
@@ -208,6 +221,21 @@ public class MainController implements Initializable
 		}
 		
 		info("Ready");
+	}
+
+	protected void changeTab(Tab tab)
+	{
+		TabID tabId = TabID.valueOf(tab.getId());
+		switch (tabId)
+		{
+		case CONFIG:
+			cancelConfig(); // quick and dirty way to repopulate the page
+			break;
+			
+		case CONTENT:
+			// do nothing
+			break;
+		}
 	}
 
 	protected void saveView(Slot value)
@@ -274,7 +302,7 @@ public class MainController implements Initializable
 
 		if (changed)
 		{
-			config.save(configLocation);
+			config.save();
 		}
 	}
 
@@ -541,7 +569,7 @@ public class MainController implements Initializable
 		gs.treeitem.getChildren().remove(s.treeitem);
 		delItem.setDisable(true);
 		
-		config.save(configLocation);
+		config.save();
 		
 		treeView.getSelectionModel().select(gs.treeitem);
 	}
@@ -593,5 +621,29 @@ public class MainController implements Initializable
 	{
 		MediaPlayer mp = videoView.getMediaPlayer();
 		mp.stop();
+	}
+
+	@FXML
+	public void saveConfig()
+	{
+		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
+		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
+		config.save();
+		cancelConfig();
+	}
+
+	@FXML
+	public void cancelConfig()
+	{
+		configUniverse.setText(String.valueOf(config.getUniverse()));
+		configOffset.setText(String.valueOf(config.getOffset()));
+	}
+
+	@FXML
+	public void validateNumber(ActionEvent event)
+	{
+		Object source = event.getSource();
+		System.out.println("Validate Number: " + source);
+		event.consume();
 	}
 }
