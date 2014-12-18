@@ -26,6 +26,10 @@ public class Config
 	
 	private Set<GroupSlot> groups = new TreeSet<>();
 
+	private HWXY displayPosition;
+	
+	private HWXY editorPosition;
+
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
 	public Set<GroupSlot> getGroups()
@@ -122,4 +126,30 @@ public class Config
 	{
 		this.offset = offset;
 	}
+
+	public HWXY getDisplayPosition()
+	{
+		return displayPosition;
+	}
+
+	public void setDisplayPosition(HWXY displayPosition)
+	{
+		this.displayPosition = displayPosition;
+	}
+
+	public HWXY getEditorPosition()
+	{
+		return editorPosition;
+	}
+
+	public void setEditorPosition(HWXY editorPosition)
+	{
+		this.editorPosition = editorPosition;
+	}
+}
+
+@XmlAccessorType(XmlAccessType.FIELD)
+class HWXY
+{
+	double x, y, width, height;
 }
