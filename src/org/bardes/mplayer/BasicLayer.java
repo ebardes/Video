@@ -13,6 +13,7 @@ public class BasicLayer implements Layer
 	private Pane pane;
 	private Slot slot;
 	private Node node;
+	private boolean running = false;
 
 	public BasicLayer(Pane pane)
 	{
@@ -28,6 +29,16 @@ public class BasicLayer implements Layer
 	public void setDimmer(int n)
 	{
 		pane.setOpacity(d(n));
+		if (n > 0 && !running)
+		{
+			if (slot.getType() == Type.VIDEO && node != null)
+			{
+				MediaView mv = (MediaView) node;
+				MediaPlayer mp = mv.getMediaPlayer();
+				mp.play();
+				running = true;
+			}
+		}
 	}
 
 	@Override
