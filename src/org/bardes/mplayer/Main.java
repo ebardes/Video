@@ -5,6 +5,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bardes.mplayer.net.NetworkListener;
+import org.bardes.mplayer.sacn.E131Listener;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,7 +36,9 @@ public class Main extends Application
 
 	private Stage display;
 	
-	private List<Pane> layers = new ArrayList<>();
+	private List<Layer> layers = new ArrayList<>();
+	
+	private static NetworkListener listener;
 	
 	private static Config config;
 	
@@ -49,6 +54,9 @@ public class Main extends Application
 	{
 		try
 		{
+			listener = new E131Listener();
+			listener.start();
+			
 			ClassLoader cl = getClass().getClassLoader();
 			URL url = cl.getResource("main.fxml");
 			
@@ -76,7 +84,8 @@ public class Main extends Application
 			{
 				Pane e = new Pane();
 				displayPane.getChildren().add(e);
-				layers.add(e);
+				Layer l = new BasicLayer(e);
+				layers.add(l);
 			}
 			
 			window = primaryStage;

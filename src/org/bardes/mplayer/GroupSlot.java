@@ -53,4 +53,9 @@ public class GroupSlot extends Slot
 		return null;
 	}
 
+	public Slot get(int slot)
+	{
+		return null;
+	}
+
 }
