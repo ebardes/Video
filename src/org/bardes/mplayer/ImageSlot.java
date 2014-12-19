@@ -27,6 +27,8 @@ public class ImageSlot extends Slot
 	{
 		super.setReference(reference);
 		node = new ImageView(reference);
+		node.setPreserveRatio(false);
+		
 		thumbNail = new ImageView(reference);
 		thumbNail.setFitHeight(128);
 		thumbNail.setFitWidth(128);

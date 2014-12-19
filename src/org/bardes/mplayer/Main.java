@@ -11,7 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -65,8 +65,8 @@ public class Main extends Application
 			}
 			else
 			{
+			    Config.location = configLocation;
 				config = Config.reset(url);
-				config.save();
 			}
 
 			restartListener();
@@ -79,27 +79,38 @@ public class Main extends Application
 			display.setTitle("Display");
 			
 			HWXY pos = config.getDisplayPosition();
-			display.setHeight(pos.height);
-			display.setWidth(pos.width);
-			display.setX(pos.x);
-			display.setY(pos.y);
-			display.show();
+			if (pos != null)
+			{
+    			display.setHeight(pos.height);
+    			display.setWidth(pos.width);
+    			display.setX(pos.x);
+    			display.setY(pos.y);
+    			display.show();
+			}
 			
 			for (int i = 0; i < 4; i++)
 			{
-				Pane e = new Pane();
-				e.setOpacity(0.0);
-				displayPane.getChildren().add(e);
+				BorderPane e = new BorderPane();
+				displayPane.getChildren().add(0, e);
 				Layer l = new BasicLayer(e);
 				layers.add(l);
 			}
+			displayPane.layout();
 			
 			window = primaryStage;
 			pos = config.getEditorPosition();
-			primaryStage.setX(pos.x);
-			primaryStage.setY(pos.y);
-			primaryStage.setWidth(pos.width);
-			primaryStage.setHeight(pos.height);
+			if (pos != null)
+			{
+    			primaryStage.setX(pos.x);
+    			primaryStage.setY(pos.y);
+    			primaryStage.setWidth(pos.width);
+    			primaryStage.setHeight(pos.height);
+			}
+			else
+			{
+			    primaryStage.setWidth(1024);
+			    primaryStage.setHeight(768);
+			}
 			
 			Parent p = FXMLLoader.load(url);
 			Scene myScene = new Scene(p);
