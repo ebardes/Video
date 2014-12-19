@@ -13,7 +13,7 @@ public class N
 		switch (size)
 		{
 		case 1:
-			return buffer.get(offset);
+			return u(buffer.get(offset));
 			
 		case 2:
 			return buffer.getShort(offset);
@@ -26,5 +26,12 @@ public class N
 		}
 		
 	}
+
+    public static int u(int b)
+    {
+        if (b < 0)
+            b += 256;
+        return b;
+    }
 
 }

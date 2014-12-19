@@ -1,8 +1,8 @@
 package org.bardes.mplayer.sacn;
 
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 
 import org.bardes.mplayer.Config;
@@ -15,7 +15,7 @@ public class E131Listener implements Runnable, NetworkListener
 	private static final int E131_PORT = 5568;
 	private int offset;
 	private int universe;
-	private DatagramSocket sock;
+	private MulticastSocket sock;
 	private long lastPacket;
 	private boolean running;
 	private Thread thread;
@@ -43,27 +43,28 @@ public class E131Listener implements Runnable, NetworkListener
 		try
 		{
 			byte buffer[] = new byte[1024];
-			DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
 			
 			// 239.255.x.x
 			byte addr[] = { x(239), x(255), x(universe >> 8), x(universe & 0x0ff) };
 			InetAddress laddr = InetAddress.getByAddress(addr);
-			sock = new DatagramSocket(E131_PORT, laddr);
-			sock.setBroadcast(true);
+//			SocketAddress saddr = new InetSocketAddress(laddr, E131_PORT);
 			
+			sock = new MulticastSocket(E131_PORT);
+			sock.joinGroup(laddr);
 			while (running)
 			{
-				dp.setLength(buffer.length);
+			    DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
 				sock.receive(dp);
 				
 				lastPacket = System.currentTimeMillis();
-				ByteBuffer bb = ByteBuffer.wrap(buffer);
+//				ByteBuffer bb = ByteBuffer.wrap(buffer, dp.getOffset(), dp.getLength());
 				
+				int start = RootLayer.bytes + FramingLayer.bytes;
+				int z = start + DMPLayer.DMX_START_CODE.getOffset() + offset;
 				
-				System.out.println(N.getInt(bb, RootLayer.RLP_FLAGS_AND_LENGTH, 0));
 				if (personality != null)
 				{
-					ByteBuffer d = ByteBuffer.wrap(buffer, offset, personality.getFootprint());
+					ByteBuffer d = ByteBuffer.wrap(buffer, z, personality.getFootprint());
 					personality.process(d);
 				}
 			}
@@ -73,6 +74,9 @@ public class E131Listener implements Runnable, NetworkListener
 			e.printStackTrace();
 			running = false;
 		}
+		
+		if (!sock.isClosed())
+		    sock.close();
 	}
 	
 	@Override

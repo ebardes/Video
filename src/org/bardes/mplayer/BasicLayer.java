@@ -1,21 +1,21 @@
 package org.bardes.mplayer;
 
-import org.bardes.mplayer.Slot.Type;
-
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
+import org.bardes.mplayer.Slot.Type;
+
 public class BasicLayer implements Layer
 {
-	private Pane pane;
+	private BorderPane pane;
 	private Slot slot;
 	private Node node;
 	private boolean running = false;
 
-	public BasicLayer(Pane pane)
+	public BasicLayer(BorderPane pane)
 	{
 		this.pane = pane;
 	}
@@ -31,23 +31,22 @@ public class BasicLayer implements Layer
 		pane.setOpacity(d(n));
 		if (n > 0 && !running)
 		{
-			if (slot.getType() == Type.VIDEO && node != null)
-			{
-				MediaView mv = (MediaView) node;
-				MediaPlayer mp = mv.getMediaPlayer();
-				mp.play();
-				running = true;
-			}
+		    if (slot != null)
+		    {
+    			if (slot.getType() == Type.VIDEO && node != null)
+    			{
+    				MediaView mv = (MediaView) node;
+    				MediaPlayer mp = mv.getMediaPlayer();
+    				mp.play();
+    				running = true;
+    			}
+		    }
 		}
 	}
 
 	@Override
 	public void setItem(int groupId, int slotId)
 	{
-		ObservableList<Node> children = pane.getChildren();
-		children.clear();
-		node = null;
-		
 		Config config = Main.getConfig();
 		GroupSlot gs = config.getGroup(groupId);
 		if (gs != null)
@@ -55,8 +54,19 @@ public class BasicLayer implements Layer
 			slot = gs.get(slotId);
 			if (slot != null)
 			{
-				node = slot.getNode();
-				children.add(node);
+				Node x = slot.getNode();
+				if (x != null && x != node)
+				{
+				    node = x;
+				    pane.setCenter(x);
+				    if (x instanceof ImageView)
+				    {
+				        ImageView iv = (ImageView) x;
+				        iv.setFitHeight(pane.getHeight());
+				        iv.setFitWidth(pane.getWidth());
+				    }
+    				pane.layout();
+				}
 			}
 		}
 	}
@@ -64,7 +74,7 @@ public class BasicLayer implements Layer
 	@Override
 	public void setVolume(int volume)
 	{
-		if (slot.getType() == Type.VIDEO && node != null)
+		if (slot != null && slot.getType() == Type.VIDEO && node != null)
 		{
 			MediaView mv = (MediaView) node;
 			MediaPlayer mp = mv.getMediaPlayer();

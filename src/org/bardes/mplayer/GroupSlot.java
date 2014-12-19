@@ -1,7 +1,7 @@
 package org.bardes.mplayer;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.scene.Node;
 
@@ -12,7 +12,8 @@ public class GroupSlot extends Slot
 {
 	@XmlElementWrapper(name="items")
 	@XmlElement(name="item")
-	Set<Slot> slots = new TreeSet<>();
+	
+	Map<Integer, Slot> slots = new TreeMap<>();
 	
 	public GroupSlot()
 	{
@@ -32,7 +33,7 @@ public class GroupSlot extends Slot
 	public void addItem(Slot item)
 	{
 	    item.group = id;
-		slots.add(item);
+		slots.put(item.id, item);
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class GroupSlot extends Slot
 
 	public Slot get(int slot)
 	{
-		return null;
+		return slots.get(slot);
 	}
 
 }

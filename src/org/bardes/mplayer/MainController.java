@@ -201,7 +201,7 @@ public class MainController implements Initializable
 				s.treeitem = item;
 				children.add(item);
 
-				for (Slot i : s.slots)
+				for (Slot i : s.slots.values())
 				{
 					i.group = s.id;
 					TreeItem<Slot> subItem = new TreeItem<Slot>(i, new ImageView(imageMap.get(i.getType())));
@@ -406,7 +406,7 @@ public class MainController implements Initializable
 		ObservableList<Node> children = tilePane.getChildren();
 		children.clear();
 		final GroupSlot gs = (GroupSlot) selected;
-		for (final Slot s : gs.slots)
+		for (final Slot s : gs.slots.values())
 		{
 			Node e = s.getThumbNail();
 
@@ -548,7 +548,7 @@ public class MainController implements Initializable
 		slot.id = newSlotId;
 		slot.setDescription("");
 		slot.group = currentGroup.id;
-		currentGroup.slots.add(slot);
+		currentGroup.slots.put(slot.id, slot);
 
 		TreeItem<Slot> treeItem = new TreeItem<Slot>(slot, new ImageView(this.imageMap.get(slot.getType())));
 		slot.treeitem = treeItem;

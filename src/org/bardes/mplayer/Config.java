@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Config
 {
-	private static File location;
+	static File location;
 	
 	private int universe = 1;
 	
