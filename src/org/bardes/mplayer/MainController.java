@@ -591,10 +591,18 @@ public class MainController implements Initializable
 		if (selectedFile != null)
 		{
 			String path = selectedFile.toURI().toString();
-			videoNameField.setText(path);
-			Media media = new Media(path);
-			MediaPlayer mp = new MediaPlayer(media);
-			videoView.setMediaPlayer(mp);
+			try
+			{
+    			Media media = new Media(path);
+    			videoNameField.setText(path);
+    			MediaPlayer mp = new MediaPlayer(media);
+    			videoView.setMediaPlayer(mp);
+    			videoDetails.setText("");
+			}
+			catch (Exception e)
+			{
+			    videoDetails.setText(e.getLocalizedMessage());
+			}
 		}
 	}
 

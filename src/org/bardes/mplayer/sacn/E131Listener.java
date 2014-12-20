@@ -20,6 +20,7 @@ public class E131Listener implements Runnable, NetworkListener
 	private boolean running;
 	private Thread thread;
 	private Personality personality;
+    private byte[] lastFrame;
 	
 	private static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
 	
@@ -47,7 +48,6 @@ public class E131Listener implements Runnable, NetworkListener
 			// 239.255.x.x
 			byte addr[] = { x(239), x(255), x(universe >> 8), x(universe & 0x0ff) };
 			InetAddress laddr = InetAddress.getByAddress(addr);
-//			SocketAddress saddr = new InetSocketAddress(laddr, E131_PORT);
 			
 			sock = new MulticastSocket(E131_PORT);
 			sock.joinGroup(laddr);
@@ -64,8 +64,24 @@ public class E131Listener implements Runnable, NetworkListener
 				
 				if (personality != null)
 				{
-					ByteBuffer d = ByteBuffer.wrap(buffer, z, personality.getFootprint());
-					personality.process(d);
+				    int footprint = personality.getFootprint();
+                    ByteBuffer d = ByteBuffer.wrap(buffer, z, footprint);
+                    boolean changed = false;
+
+                    for (int i = 0; i < footprint; i++)
+                    {
+                        byte b = d.get();
+                        if (b != lastFrame[i])
+                        {
+                            lastFrame[i] = b;
+                            changed = true;
+                        }
+                    }
+                    if (changed)
+                    {
+                        d.rewind();
+                        personality.process(d);
+                    }
 				}
 			}
 		}
@@ -112,6 +128,7 @@ public class E131Listener implements Runnable, NetworkListener
 	public void setPersonality(Personality personality)
 	{
 		this.personality = personality;
+		lastFrame = new byte[personality.getFootprint()];
 		
 	}
 
