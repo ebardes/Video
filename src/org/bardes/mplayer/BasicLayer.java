@@ -29,17 +29,22 @@ public class BasicLayer implements Layer
 	public void setDimmer(int n)
 	{
 		pane.setOpacity(d(n));
-		if (n > 0 && !running)
+		if (slot != null)
 		{
-		    if (slot != null)
+		    if (slot.getType() == Type.VIDEO && node != null)
 		    {
-    			if (slot.getType() == Type.VIDEO && node != null)
-    			{
-    				MediaView mv = (MediaView) node;
-    				MediaPlayer mp = mv.getMediaPlayer();
-    				mp.play();
+		        MediaView mv = (MediaView) node;
+		        MediaPlayer mp = mv.getMediaPlayer();
+		        if (n > 0 && !running)
+		        {
+		            mp.play();
     				running = true;
     			}
+		        if (n == 0 && running)
+		        {
+		            mp.stop();
+		            running = false;
+		        }
 		    }
 		}
 	}

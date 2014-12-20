@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import org.bardes.mplayer.net.NetworkListener;
-import org.bardes.mplayer.personality.LitePersonality;
+import org.bardes.mplayer.personality.MasterLitePersonality;
 import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
 
@@ -87,6 +87,11 @@ public class Main extends Application
     			display.setY(pos.y);
     			display.show();
 			}
+			else
+			{
+			    display.setWidth(1024);
+			    display.setHeight(768);
+			}
 			
 			for (int i = 0; i < 4; i++)
 			{
@@ -119,7 +124,7 @@ public class Main extends Application
 			
 			primaryStage.show();
 			
-			Personality personality = new LitePersonality(layers); 
+			Personality personality = new MasterLitePersonality(new MasterLayer(display), layers); 
 			listener.setPersonality(personality);
 		}
 		catch (Exception e)

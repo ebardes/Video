@@ -5,5 +5,5 @@ import java.nio.ByteBuffer;
 public interface Personality
 {
 	int getFootprint();
-	void process(ByteBuffer d);
+	void process(ByteBuffer dmxStream);
 }
