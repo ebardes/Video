@@ -33,5 +33,12 @@ public class N
             b += 256;
         return b;
     }
+    
+    public static int us(int s)
+    {
+        if (s < 0)
+            s += 65536;
+        return s;
+    }
 
 }

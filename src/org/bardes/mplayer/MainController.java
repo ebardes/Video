@@ -371,12 +371,14 @@ public class MainController implements Initializable
 		if (vid != null)
 		{
 			MediaPlayer mp = vid.getMediaPlayer();
-			mp.play();
-			mp.pause();
-			Duration seekTime = new Duration(5000);
-			mp.seek(seekTime);
-			videoView.setMediaPlayer(mp);
-			
+			if (mp != null)
+			{
+    			mp.play();
+    			mp.pause();
+    			Duration seekTime = new Duration(5000);
+    			mp.seek(seekTime);
+    			videoView.setMediaPlayer(mp);
+			}
 //			fileDetails.setText(String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight()));
 		}
 		else
