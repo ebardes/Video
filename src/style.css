@@ -1,0 +1,8 @@
+.preview {
+	-fx-tile-alignment: center;
+	-fx-border-color: black;
+	-fx-border-radius: 5;
+	-fx-background-radius: 5;
+	-fx-alignment: center;
+	-fx-background-image: url(images/alpha.png);
+}
