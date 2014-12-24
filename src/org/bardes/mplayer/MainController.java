@@ -130,6 +130,15 @@ public class MainController implements Initializable
 	@FXML
 	TabPane tabBar;
 
+	@FXML
+	TextField configUniverse;
+
+	@FXML
+	TextField configOffset;
+
+	@FXML
+	TilePane previewPane;
+
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -138,14 +147,11 @@ public class MainController implements Initializable
 
 	private Config config;
 
-	@FXML TextField configUniverse;
-
-	@FXML TextField configOffset;
-	
 	private enum TabID
 	{
 		CONTENT,
 		CONFIG,
+		PREVIEW,
 	}
 
 	@Override
@@ -233,6 +239,10 @@ public class MainController implements Initializable
 			break;
 			
 		case CONTENT:
+			// do nothing
+			break;
+			
+		case PREVIEW:
 			// do nothing
 			break;
 		}

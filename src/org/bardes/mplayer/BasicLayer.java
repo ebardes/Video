@@ -1,7 +1,6 @@
 package org.bardes.mplayer;
 
 import javafx.scene.Node;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -62,14 +61,14 @@ public class BasicLayer implements Layer
 				Node x = slot.getNode();
 				if (x != null && x != node)
 				{
+					if (running && slot.getType() == Type.VIDEO)
+					{
+				        MediaView mv = (MediaView) node;
+				        MediaPlayer mp = mv.getMediaPlayer();
+				        mp.stop();
+					}
 				    node = x;
 				    pane.setCenter(x);
-				    if (x instanceof ImageView)
-				    {
-				        ImageView iv = (ImageView) x;
-				        iv.setFitHeight(pane.getHeight());
-				        iv.setFitWidth(pane.getWidth());
-				    }
     				pane.layout();
 				}
 			}

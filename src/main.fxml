@@ -113,6 +113,58 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                  <Tab id="PREVIEW" text="Preview">
+                     <content>
+                        <TilePane fx:id="previewPane" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
+                                 <TilePane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </TilePane.margin>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <children>
+                                    <BorderPane id="preview1" />
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
+                                 <TilePane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </TilePane.margin>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <children>
+                                    <BorderPane id="preview2"  />
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
+                                 <TilePane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </TilePane.margin>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <children>
+                                    <BorderPane id="preview3" />
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
+                                 <TilePane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </TilePane.margin>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                                 <children>
+                                    <BorderPane id="preview4" />
+                                 </children>
+                              </Pane>
+                           </children>
+                        </TilePane>
+                     </content>
+                  </Tab>
               </tabs>
             </TabPane>
          </center>
