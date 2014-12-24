@@ -36,13 +36,11 @@ public class BasicLayer implements Layer
 		        MediaPlayer mp = mv.getMediaPlayer();
 		        if (n > 0 && !running)
 		        {
-		            mp.play();
-    				running = true;
+		            start(mp);
     			}
 		        if (n == 0 && running)
 		        {
-		            mp.stop();
-		            running = false;
+		            stop(mp);
 		        }
 		    }
 		}
@@ -65,14 +63,39 @@ public class BasicLayer implements Layer
 					{
 				        MediaView mv = (MediaView) node;
 				        MediaPlayer mp = mv.getMediaPlayer();
-				        mp.stop();
+				        stop(mp);
 					}
 				    node = x;
 				    pane.setCenter(x);
     				pane.layout();
+    				
+    				if (slot.getType() == Type.VIDEO && pane.getOpacity() > 0)
+    				{
+				        MediaView mv = (MediaView) node;
+				        MediaPlayer mp = mv.getMediaPlayer();
+				        start(mp);
+    				}
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param mp
+	 */
+	protected void start(MediaPlayer mp)
+	{
+		mp.play();
+		running = true;
+	}
+
+	/**
+	 * @param mp
+	 */
+	protected void stop(MediaPlayer mp)
+	{
+		mp.stop();
+		running = false;
 	}
 
 	@Override
