@@ -68,6 +68,8 @@ public class E131Listener implements Runnable, NetworkListener
                     ByteBuffer d = ByteBuffer.wrap(buffer, z, footprint);
                     boolean changed = false;
 
+					d.mark();
+
                     for (int i = 0; i < footprint; i++)
                     {
                         byte b = d.get();
@@ -79,7 +81,7 @@ public class E131Listener implements Runnable, NetworkListener
                     }
                     if (changed)
                     {
-                        d.rewind();
+                        d.reset();
                         personality.process(d);
                     }
 				}

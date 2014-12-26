@@ -17,6 +17,7 @@
   	<copy todir="${build}">
   	  <fileset dir="${src}">
   	  	<include name="**/*.xml"/>
+  	  	<include name="**/*.css"/>
   	  	<include name="**/*.fxml"/>
   	  	<include name="**/*.png"/>
   	  </fileset>
