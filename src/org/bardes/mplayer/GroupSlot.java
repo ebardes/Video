@@ -55,6 +55,12 @@ public class GroupSlot extends Slot
 		return null;
 	}
 
+	@Override
+	public Node getPreview()
+	{
+		return null;
+	}
+	
 	public Slot get(int slot)
 	{
 		return slots.get(slot);

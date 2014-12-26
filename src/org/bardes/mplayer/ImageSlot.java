@@ -12,6 +12,7 @@ public class ImageSlot extends Slot
 {
 	private ImageView node;
 	private ImageView thumbNail;
+	private ImageView preview;
 
 	public ImageSlot()
 	{
@@ -28,11 +29,13 @@ public class ImageSlot extends Slot
 	{
 		super.setReference(reference);
 		node = new ImageView(reference);
+		preview = new ImageView(reference);
 		
 		thumbNail = new ImageView(reference);
 		thumbNail.setFitHeight(128);
 		thumbNail.setFitWidth(128);
 		thumbNail.setPreserveRatio(true);
+		thumbNail.setSmooth(true);
 	}
 
 	@Override
@@ -65,5 +68,11 @@ public class ImageSlot extends Slot
 	public Node getThumbNail()
 	{
 		return thumbNail;
+	}
+
+	@Override
+	public Node getPreview()
+	{
+		return preview;
 	}
 }

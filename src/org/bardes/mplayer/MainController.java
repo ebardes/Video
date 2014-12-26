@@ -16,6 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.RadioButton;
@@ -49,9 +51,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 
 import org.bardes.mplayer.Slot.Type;
-
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.CheckBox;
+import org.bardes.mplayer.personality.DMXPersonality;
 
 public class MainController implements Initializable
 {
@@ -143,7 +143,7 @@ public class MainController implements Initializable
 	TilePane previewPane;
 
 	@FXML
-	ChoiceBox<String> dmxPersonality;
+	ChoiceBox<DMXPersonality> dmxPersonality;
 
 	@FXML
 	CheckBox imgAspectRatio;
@@ -155,6 +155,8 @@ public class MainController implements Initializable
 	private Slot selected;
 
 	private Config config;
+
+	@FXML Button fileUpdateButton;
 
 	private enum TabID
 	{
@@ -176,19 +178,15 @@ public class MainController implements Initializable
 			imageMap.put(Slot.Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
 			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
 			
-			ObservableList<String> items = dmxPersonality.getItems();
-			items.add("Lite  (24 channels)");
-			items.add("Regular (24 channels)");
-
 			treeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Slot>>()
 			{
 				@Override
 				public void changed(ObservableValue<? extends TreeItem<Slot>> observable, TreeItem<Slot> oldValue, TreeItem<Slot> newValue)
 				{
 					if (oldValue != null)
-						saveView(oldValue.getValue());
+						deactivateView(oldValue.getValue());
 					if (newValue != null)
-						updateViews(newValue.getValue());
+						activateView(newValue.getValue());
 				}
 			});
 			
@@ -211,6 +209,17 @@ public class MainController implements Initializable
 
 			ObservableList<TreeItem<Slot>> children = root.getChildren();
 			config = Main.getConfig();
+			
+			ObservableList<DMXPersonality> items = dmxPersonality.getItems();
+			for (DMXPersonality p : DMXPersonality.values())
+			{
+				items.add(p);
+			}
+			DMXPersonality personality = config.getDmxPersonality();
+			if (personality != null)
+			{
+				dmxPersonality.getSelectionModel().select(personality);
+			}
 			
 			for (GroupSlot s : config.getGroups())
 			{
@@ -261,7 +270,7 @@ public class MainController implements Initializable
 		}
 	}
 
-	protected void saveView(Slot value)
+	protected void deactivateView(Slot value)
 	{
 		boolean changed = false;
 		switch (value.getType())
@@ -275,38 +284,11 @@ public class MainController implements Initializable
 			break;
 
 		case IMAGE:
-			if (value.getReference() == null || !value.getReference().equals(fileNameField.getText()))
-			{
-				value.setReference(fileNameField.getText());
-				changed = true;
-			}
-			if (!value.getDescription().equals(fileDescriptionField.getText()))
-			{
-				value.setDescription(fileDescriptionField.getText());
-				value.treeitem.setValue(null);
-				value.treeitem.setValue(value);
-				changed = true;
-				
-				activeImageView(value);
-			}
-
+			changed = deactivateImage(value);
 			break;
 			
 		case VIDEO:
-			if (value.getReference() == null || !value.getReference().equals(videoNameField.getText()))
-			{
-				value.setReference(videoNameField.getText());
-				changed = true;
-			}
-			if (!value.getDescription().equals(videoDescriptionField.getText()))
-			{
-				value.setDescription(videoDescriptionField.getText());
-				value.treeitem.setValue(null);
-				value.treeitem.setValue(value);
-				changed = true;
-				
-				activeVideoView(value);
-			}
+			changed = deactivateVideo(value);
 			break;
 			
 		case GROUP:
@@ -329,7 +311,63 @@ public class MainController implements Initializable
 		}
 	}
 
-	protected void updateViews(Slot selected)
+	/**
+	 * @param value
+	 * @param changed
+	 * @return
+	 */
+	protected boolean deactivateVideo(Slot value)
+	{
+		boolean changed = false;
+		if (value.getReference() == null || !value.getReference().equals(videoNameField.getText()))
+		{
+			value.setReference(videoNameField.getText());
+			changed = true;
+		}
+		if (!value.getDescription().equals(videoDescriptionField.getText()))
+		{
+			value.setDescription(videoDescriptionField.getText());
+			value.treeitem.setValue(null);
+			value.treeitem.setValue(value);
+			changed = true;
+			
+			activeVideoView(value);
+		}
+		return changed;
+	}
+
+	/**
+	 * @param value
+	 * @param changed
+	 * @return
+	 */
+	protected boolean deactivateImage(Slot value)
+	{
+		boolean changed = false;
+		if (value.getReference() == null || !value.getReference().equals(fileNameField.getText()))
+		{
+			value.setReference(fileNameField.getText());
+			changed = true;
+		}
+		if (!value.getDescription().equals(fileDescriptionField.getText()))
+		{
+			value.setDescription(fileDescriptionField.getText());
+			value.treeitem.setValue(null);
+			value.treeitem.setValue(value);
+			changed = true;
+			
+			activeImageView(value);
+		}
+		
+		if (value.isPerserveAspectRatio() != imgAspectRatio.isSelected())
+		{
+			value.setPerserveAspectRatio(imgAspectRatio.isSelected());
+			changed = true;
+		}
+		return changed;
+	}
+
+	protected void activateView(Slot selected)
 	{
 		this.selected = selected;
 		select(selected.getType());
@@ -361,15 +399,17 @@ public class MainController implements Initializable
 	 */
 	void activeImageView(Slot selected)
 	{
-		ImageView img = (ImageView) selected.getNode(null);
+		ImageView img = (ImageView) selected.getPreview();
 		fileNameField.setText(selected.getReference());
 		fileDescriptionField.setText(selected.getDescription());
+		imgAspectRatio.setSelected(selected.isPerserveAspectRatio());
 		if (img != null)
 		{
 			Image image = img.getImage();
 			imageView.setImage(image);
-			
-			fileDetails.setText(String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight()));
+			imageView.setSmooth(true);
+			String format = String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight());
+			fileDetails.setText(format);
 		}
 		else
 		{
@@ -380,6 +420,8 @@ public class MainController implements Initializable
 		fileNameField.setDisable(disable);
 		fileDescriptionField.setDisable(disable);
 		fileChooseButton.setDisable(disable);
+		fileUpdateButton.setDisable(disable);
+		imgAspectRatio.setDisable(disable);
 	}
 
 	/**
@@ -388,7 +430,7 @@ public class MainController implements Initializable
 	 */
 	void activeVideoView(Slot selected)
 	{
-		MediaView vid = (MediaView) selected.getNode(null);
+		MediaView vid = (MediaView) selected.getPreview();
 		videoNameField.setText(selected.getReference());
 		videoDescriptionField.setText(selected.getDescription());
 		if (vid != null)
@@ -530,7 +572,7 @@ public class MainController implements Initializable
 	@FXML
 	public void fileSave()
 	{
-		saveView(selected);
+		deactivateView(selected);
 	}
 
 	/**
@@ -633,7 +675,7 @@ public class MainController implements Initializable
 	@FXML
 	public void videoSave()
 	{
-		saveView(selected);
+		deactivateView(selected);
 	}
 
 	@FXML
@@ -662,6 +704,12 @@ public class MainController implements Initializable
 	{
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
 		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
+		
+		try
+		{
+			DMXPersonality selectedItem = dmxPersonality.getSelectionModel().getSelectedItem();
+			config.setDmxPersonality(selectedItem);
+		} catch (Exception ignore) {}
 		config.save();
 		cancelConfig();
 	}

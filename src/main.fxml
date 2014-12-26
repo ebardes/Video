@@ -67,11 +67,15 @@
                                                 <Label layoutX="126.0" layoutY="27.0" prefHeight="16.0" prefWidth="83.0" text="File" />
                                                 <TextField fx:id="fileNameField" layoutX="209.0" layoutY="22.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Button fx:id="fileChooseButton" layoutX="571.0" layoutY="22.0" mnemonicParsing="false" onAction="#chooseFile" text="Choose" />
-                                                <ImageView fx:id="imageView" fitHeight="509.0" fitWidth="741.0" layoutX="38.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" />
+                                                <Pane layoutX="4.0" layoutY="128.0" prefHeight="600.0" prefWidth="800.0" styleClass="preview" stylesheets="@style.css">
+                                                   <children>
+                                                      <ImageView fx:id="imageView" layoutX="1" layoutY="1" fitHeight="598" fitWidth="798" preserveRatio="true" />
+                                                   </children>
+                                                </Pane>
                                                 <TextField fx:id="fileDescriptionField" layoutX="209.0" layoutY="57.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Label layoutX="126.0" layoutY="62.0" prefHeight="16.0" prefWidth="83.0" text="Description" />
-                                                <Button layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#fileSave" text="Update" />
-                                                <Label fx:id="fileDetails" alignment="TOP_LEFT" layoutX="68.0" layoutY="635.0" prefHeight="189.0" prefWidth="687.0" />
+                                                <Button fx:id="fileUpdateButton" layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#fileSave" text="Update" />
+                                                <Label fx:id="fileDetails" alignment="TOP_LEFT" layoutX="68.0" layoutY="736.0" prefHeight="127.0" prefWidth="687.0" />
                                                 <CheckBox fx:id="imgAspectRatio" layoutX="209.0" layoutY="94.0" mnemonicParsing="false" selected="true" text="Perserve Aspect Ratio" />
                                              </children>
                                           </AnchorPane>
