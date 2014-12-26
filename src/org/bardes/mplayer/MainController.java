@@ -50,6 +50,9 @@ import javafx.util.Duration;
 
 import org.bardes.mplayer.Slot.Type;
 
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.CheckBox;
+
 public class MainController implements Initializable
 {
 	@FXML
@@ -139,6 +142,12 @@ public class MainController implements Initializable
 	@FXML
 	TilePane previewPane;
 
+	@FXML
+	ChoiceBox<String> dmxPersonality;
+
+	@FXML
+	CheckBox imgAspectRatio;
+
 	private BorderPane lastItem;
 
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -166,6 +175,10 @@ public class MainController implements Initializable
 			imageMap.put(Slot.Type.IMAGE, new Image(x + "/ic_image_black_18dp.png"));
 			imageMap.put(Slot.Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
 			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
+			
+			ObservableList<String> items = dmxPersonality.getItems();
+			items.add("Lite  (24 channels)");
+			items.add("Regular (24 channels)");
 
 			treeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Slot>>()
 			{

@@ -91,6 +91,8 @@ public class Main extends Application
 			{
 			    display.setWidth(1024);
 			    display.setHeight(768);
+			    display.setX(0);
+			    display.setY(0);
 			}
 			
 			for (int i = 0; i < 4; i++)
