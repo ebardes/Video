@@ -32,15 +32,13 @@ public class BasicLayer implements Layer
 		{
 		    if (slot.getType() == Type.VIDEO && node != null)
 		    {
-		        MediaView mv = (MediaView) node;
-		        MediaPlayer mp = mv.getMediaPlayer();
 		        if (n > 0 && !running)
 		        {
-		            start(mp);
+		            start(node);
     			}
 		        if (n == 0 && running)
 		        {
-		            stop(mp);
+		            stop(node);
 		        }
 		    }
 		}
@@ -61,19 +59,15 @@ public class BasicLayer implements Layer
 				{
 					if (running && slot.getType() == Type.VIDEO)
 					{
-				        MediaView mv = (MediaView) node;
-				        MediaPlayer mp = mv.getMediaPlayer();
-				        stop(mp);
+				        stop(node);
 					}
 				    node = x;
 				    pane.setCenter(x);
     				pane.layout();
     				
-    				if (slot.getType() == Type.VIDEO && pane.getOpacity() > 0)
+    				if (slot.getType() == Type.VIDEO && pane.getOpacity() > 0 && !running)
     				{
-				        MediaView mv = (MediaView) node;
-				        MediaPlayer mp = mv.getMediaPlayer();
-				        start(mp);
+				        start(x);
     				}
 				}
 			}
@@ -83,8 +77,11 @@ public class BasicLayer implements Layer
 	/**
 	 * @param mp
 	 */
-	protected void start(MediaPlayer mp)
+	protected void start(Node node)
 	{
+		System.out.println("Stop");
+		MediaView mv = (MediaView) node;
+		MediaPlayer mp = mv.getMediaPlayer();
 		mp.play();
 		running = true;
 	}
@@ -92,8 +89,11 @@ public class BasicLayer implements Layer
 	/**
 	 * @param mp
 	 */
-	protected void stop(MediaPlayer mp)
+	protected void stop(Node node)
 	{
+		System.out.println("Stop");
+		MediaView mv = (MediaView) node;
+		MediaPlayer mp = mv.getMediaPlayer();
 		mp.stop();
 		running = false;
 	}
