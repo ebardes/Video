@@ -67,14 +67,15 @@
                                                 <Label layoutX="126.0" layoutY="27.0" prefHeight="16.0" prefWidth="83.0" text="File" />
                                                 <TextField fx:id="fileNameField" layoutX="209.0" layoutY="22.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Button fx:id="fileChooseButton" layoutX="571.0" layoutY="22.0" mnemonicParsing="false" onAction="#chooseFile" text="Choose" />
-                                                <ImageView fx:id="imageView" fitHeight="509.0" fitWidth="741.0" layoutX="6.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" />
+                                                <ImageView fx:id="imageView" fitHeight="509.0" fitWidth="741.0" layoutX="38.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" />
                                                 <TextField fx:id="fileDescriptionField" layoutX="209.0" layoutY="57.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Label layoutX="126.0" layoutY="62.0" prefHeight="16.0" prefWidth="83.0" text="Description" />
                                                 <Button layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#fileSave" text="Update" />
                                                 <Label fx:id="fileDetails" alignment="TOP_LEFT" layoutX="68.0" layoutY="635.0" prefHeight="189.0" prefWidth="687.0" />
+                                                <CheckBox fx:id="imgAspectRatio" layoutX="209.0" layoutY="94.0" mnemonicParsing="false" selected="true" text="Perserve Aspect Ratio" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="videoPane" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="videoPane" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <children>
                                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="480.0" layoutX="89.0" layoutY="119.0" stroke="BLACK" strokeType="INSIDE" width="640.0" />
                                                 <Label layoutX="126.0" layoutY="27.0" prefHeight="16.0" prefWidth="83.0" text="File" />
@@ -106,9 +107,11 @@
                               <Label layoutX="105.0" layoutY="98.0" text="Universe" />
                               <Label layoutX="121.0" layoutY="135.0" text="Offset" />
                               <TextField fx:id="configUniverse" layoutX="185.0" layoutY="93.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
-                              <TextField fx:id="configOffset" layoutX="185.0" layoutY="130.0" onAction="#validateNumber"  onInputMethodTextChanged="#validateNumber"/>
+                              <TextField fx:id="configOffset" layoutX="185.0" layoutY="130.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
                               <Button defaultButton="true" layoutX="110.0" layoutY="555.0" mnemonicParsing="false" onAction="#saveConfig" text="Save" />
                               <Button cancelButton="true" layoutX="231.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelConfig" text="Cancel" />
+                              <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="230.0" prefWidth="150.0" />
+                              <Label layoutX="59.0" layoutY="204.0" text="DMX Personality" />
                            </children>
                         </AnchorPane>
                     </content>
@@ -136,7 +139,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
                                  <children>
-                                    <BorderPane id="preview2"  />
+                                    <BorderPane id="preview2" />
                                  </children>
                               </Pane>
                               <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">

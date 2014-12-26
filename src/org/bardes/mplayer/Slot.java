@@ -34,6 +34,8 @@ public abstract class Slot implements Comparable<Slot>
 
 	protected TreeItem<Slot> treeitem;
 	
+	protected boolean perserveAspectRatio = true;
+	
 	public Slot()
 	{
 	}
@@ -101,4 +103,14 @@ public abstract class Slot implements Comparable<Slot>
 
 	public abstract Node getNode(Stage parent);
 	public abstract Node getThumbNail();
+
+	public boolean isPerserveAspectRatio()
+	{
+		return perserveAspectRatio;
+	}
+
+	public void setPerserveAspectRatio(boolean perserveAspectRatio)
+	{
+		this.perserveAspectRatio = perserveAspectRatio;
+	}
 }

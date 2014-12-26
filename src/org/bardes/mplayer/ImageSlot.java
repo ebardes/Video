@@ -28,7 +28,6 @@ public class ImageSlot extends Slot
 	{
 		super.setReference(reference);
 		node = new ImageView(reference);
-		node.setPreserveRatio(true);
 		
 		thumbNail = new ImageView(reference);
 		thumbNail.setFitHeight(128);
@@ -58,6 +57,7 @@ public class ImageSlot extends Slot
 	        node.fitWidthProperty().bind(owner.widthProperty().divide(4));
 	        node.setManaged(true);
 	    }
+	    node.setPreserveRatio(isPerserveAspectRatio());
 		return node;
 	}
 
