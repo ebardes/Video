@@ -97,10 +97,14 @@ public class Main extends Application
 			{
 				BorderPane e = new BorderPane();
 				displayPane.getChildren().add(0, e);
-				Layer l = new BasicLayer(e);
+				Layer l = new BasicLayer(i,display,e);
 				layers.add(l);
 			}
-			displayPane.layout();
+			
+			displayPane.minWidthProperty().bind(display.widthProperty());
+			displayPane.maxWidthProperty().bind(display.widthProperty());
+			displayPane.minHeightProperty().bind(display.heightProperty());
+			displayPane.maxHeightProperty().bind(display.heightProperty());
 			
 			window = primaryStage;
 			pos = config.getEditorPosition();

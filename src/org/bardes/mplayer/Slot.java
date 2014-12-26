@@ -2,13 +2,13 @@ package org.bardes.mplayer;
 
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 @XmlSeeAlso({ ImageSlot.class, WebSlot.class, VideoSlot.class })
@@ -99,7 +99,6 @@ public abstract class Slot implements Comparable<Slot>
 		this.reference = reference;
 	}
 
-	@XmlTransient
-	public abstract Node getNode();
+	public abstract Node getNode(Stage parent);
 	public abstract Node getThumbNail();
 }
