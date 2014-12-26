@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 
 @XmlType(name="video")
 public class VideoSlot extends Slot
@@ -39,10 +40,12 @@ public class VideoSlot extends Slot
     }
 
     @Override
-    public Node getNode()
+    public Node getNode(Stage stage)
     {
         MediaView mediaView = new MediaView(mp);
         mediaView.setPreserveRatio(true);
+        mediaView.fitWidthProperty().bind(stage.widthProperty().divide(4));
+        mediaView.fitHeightProperty().bind(stage.heightProperty().divide(4));
         return mediaView;
     }
 

@@ -348,7 +348,7 @@ public class MainController implements Initializable
 	 */
 	void activeImageView(Slot selected)
 	{
-		ImageView img = (ImageView) selected.getNode();
+		ImageView img = (ImageView) selected.getNode(null);
 		fileNameField.setText(selected.getReference());
 		fileDescriptionField.setText(selected.getDescription());
 		if (img != null)
@@ -375,7 +375,7 @@ public class MainController implements Initializable
 	 */
 	void activeVideoView(Slot selected)
 	{
-		MediaView vid = (MediaView) selected.getNode();
+		MediaView vid = (MediaView) selected.getNode(null);
 		videoNameField.setText(selected.getReference());
 		videoDescriptionField.setText(selected.getDescription());
 		if (vid != null)
@@ -596,7 +596,8 @@ public class MainController implements Initializable
 	{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Resource File");
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Video Files", "*.mp4", "*.m4v", "*.mpg", "*.mpeg", "*.mov", "*.avi"));
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Video Files", "*.mp4", "*.m4v"));
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Sound Files", "*.mp4", "*.wav"));
 		File selectedFile = fileChooser.showOpenDialog(Main.window);
 		if (selectedFile != null)
 		{

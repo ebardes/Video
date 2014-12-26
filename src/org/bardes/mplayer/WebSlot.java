@@ -2,6 +2,7 @@ package org.bardes.mplayer;
 
 import javafx.scene.Node;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -48,7 +49,7 @@ public class WebSlot extends Slot
 	}
 
 	@Override
-	public Node getNode()
+	public Node getNode(Stage owner)
 	{
 		return webView;
 	}

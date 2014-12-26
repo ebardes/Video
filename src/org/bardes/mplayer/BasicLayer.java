@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 
 import org.bardes.mplayer.Slot.Type;
 
@@ -13,10 +14,19 @@ public class BasicLayer implements Layer
 	private Slot slot;
 	private Node node;
 	private boolean running = false;
+    private int layerId;
+    private int dimmer = -1;
+    private int lastGroup = -1;
+    private int lastSlot = -1;
+    private MediaPlayer mp;
+    private Stage stage;
+    private boolean debugging;
 
-	public BasicLayer(BorderPane pane)
+	public BasicLayer(int layerId, Stage stage, BorderPane pane)
 	{
-		this.pane = pane;
+		this.layerId = layerId;
+        this.stage = stage;
+        this.pane = pane;
 	}
 	
 	private static double d(int n)
@@ -27,6 +37,12 @@ public class BasicLayer implements Layer
 	@Override
 	public void setDimmer(int n)
 	{
+	    if (dimmer == n)
+	        return;
+	    
+	    if (debugging)
+	        System.out.println("Dimmer="+n+" " + layerId);
+	    this.dimmer = n;
 		pane.setOpacity(d(n));
 		if (slot != null)
 		{
@@ -34,11 +50,11 @@ public class BasicLayer implements Layer
 		    {
 		        if (n > 0 && !running)
 		        {
-		            start(node);
+		            start(node, "A");
     			}
 		        if (n == 0 && running)
 		        {
-		            stop(node);
+		            stop("A");
 		        }
 		    }
 		}
@@ -47,6 +63,20 @@ public class BasicLayer implements Layer
 	@Override
 	public void setItem(int groupId, int slotId)
 	{
+	    if (groupId == lastGroup && slotId == lastSlot)
+	        return;
+	    
+	    lastGroup = groupId;
+	    lastSlot = slotId;
+	    
+	    if (debugging)
+	        System.out.format("setItem(%d, %d) %d%n", groupId, slotId, layerId);
+	        
+        if (running && dimmer > 0 && node instanceof MediaView)
+        {
+            stop("B");
+        }
+        
 		Config config = Main.getConfig();
 		GroupSlot gs = config.getGroup(groupId);
 		if (gs != null)
@@ -54,20 +84,15 @@ public class BasicLayer implements Layer
 			slot = gs.get(slotId);
 			if (slot != null)
 			{
-				Node x = slot.getNode();
-				if (x != null && x != node)
+				Node x = slot.getNode(stage);
+				if (x != null)
 				{
-					if (running && slot.getType() == Type.VIDEO)
-					{
-				        stop(node);
-					}
 				    node = x;
 				    pane.setCenter(x);
-    				pane.layout();
     				
-    				if (slot.getType() == Type.VIDEO && pane.getOpacity() > 0 && !running)
+    				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
     				{
-				        start(x);
+				        start(x, "B");
     				}
 				}
 			}
@@ -77,34 +102,37 @@ public class BasicLayer implements Layer
 	/**
 	 * @param mp
 	 */
-	protected void start(Node node)
+	protected void start(Node node, String debug)
 	{
-		System.out.println("Stop");
+	    if (debugging)
+	        System.out.println("Start "+layerId+" " + debug);
 		MediaView mv = (MediaView) node;
 		MediaPlayer mp = mv.getMediaPlayer();
 		mp.play();
+        this.mp = mp;
 		running = true;
 	}
 
 	/**
 	 * @param mp
 	 */
-	protected void stop(Node node)
+	protected void stop(String debug)
 	{
-		System.out.println("Stop");
-		MediaView mv = (MediaView) node;
-		MediaPlayer mp = mv.getMediaPlayer();
-		mp.stop();
+	    if (debugging)
+	        System.out.println("Stop "+layerId+" " + debug);
+		if (mp != null)
+		{
+		    mp.stop();
+		    mp = null;
+		}
 		running = false;
 	}
 
 	@Override
 	public void setVolume(int volume)
 	{
-		if (slot != null && slot.getType() == Type.VIDEO && node != null)
+		if (mp != null)
 		{
-			MediaView mv = (MediaView) node;
-			MediaPlayer mp = mv.getMediaPlayer();
 			mp.setVolume(d(volume));
 		}
 	}

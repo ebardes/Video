@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.scene.Node;
+import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -43,7 +44,7 @@ public class GroupSlot extends Slot
 	}
 
 	@Override
-	public Node getNode()
+	public Node getNode(Stage owner)
 	{
 		return null;
 	}
