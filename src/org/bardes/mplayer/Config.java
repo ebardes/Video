@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.bardes.mplayer.personality.DMXPersonality;
+
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 @XmlRootElement
 public class Config
@@ -29,6 +31,8 @@ public class Config
 	private HWXY displayPosition;
 	
 	private HWXY editorPosition;
+	
+	private DMXPersonality dmxPersonality;
 
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
@@ -66,6 +70,17 @@ public class Config
 				return g;
 		}
 		return null;
+	}
+
+	@XmlElement(name="personality")
+	public DMXPersonality getDmxPersonality()
+	{
+		return dmxPersonality;
+	}
+
+	public void setDmxPersonality(DMXPersonality personality)
+	{
+		this.dmxPersonality = personality;
 	}
 
 	/**

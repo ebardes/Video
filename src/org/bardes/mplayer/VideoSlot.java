@@ -48,6 +48,13 @@ public class VideoSlot extends Slot
         mediaView.fitHeightProperty().bind(stage.heightProperty().divide(4));
         return mediaView;
     }
+    
+    @Override
+    public Node getPreview()
+    {
+    	MediaView mediaView = new MediaView(mp);
+    	return mediaView;
+    }
 
     @Override
     public Node getThumbNail()

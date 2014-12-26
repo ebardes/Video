@@ -11,6 +11,7 @@ public class WebSlot extends Slot
 {
 	private WebView webView;
 	private WebView webViewThumb;
+	private WebView preview;
 
 	public WebSlot()
 	{
@@ -28,6 +29,8 @@ public class WebSlot extends Slot
 		
 		webView = new WebView();
 		webView.getEngine().loadContent(reference);
+		
+		preview = new WebView();
 		
 		webViewThumb = new WebView();
 		webViewThumb.getEngine().loadContent(reference);
@@ -58,5 +61,11 @@ public class WebSlot extends Slot
 	public Node getThumbNail()
 	{
 		return webViewThumb;
+	}
+	
+	@Override
+	public Node getPreview()
+	{
+		return preview;
 	}
 }

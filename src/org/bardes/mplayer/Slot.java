@@ -102,6 +102,7 @@ public abstract class Slot implements Comparable<Slot>
 	}
 
 	public abstract Node getNode(Stage parent);
+	public abstract Node getPreview();
 	public abstract Node getThumbNail();
 
 	public boolean isPerserveAspectRatio()
