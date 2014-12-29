@@ -48,7 +48,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Duration;
 
 import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.personality.DMXPersonality;
@@ -128,7 +127,7 @@ public class MainController implements Initializable
 	Label videoDetails;
 
 	@FXML
-	MediaView videoView;
+	Pane videoContainer;
 
 	@FXML
 	TabPane tabBar;
@@ -149,7 +148,7 @@ public class MainController implements Initializable
 	CheckBox imgAspectRatio;
 
 	private BorderPane lastItem;
-
+	
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
 
 	private Slot selected;
@@ -183,9 +182,9 @@ public class MainController implements Initializable
 				@Override
 				public void changed(ObservableValue<? extends TreeItem<Slot>> observable, TreeItem<Slot> oldValue, TreeItem<Slot> newValue)
 				{
-					if (oldValue != null)
-						deactivateView(oldValue.getValue());
-					if (newValue != null)
+//					if (oldValue != null)
+//						deactivateView(oldValue.getValue());
+					if (newValue != null && newValue.equals(observable.getValue()))
 						activateView(newValue.getValue());
 				}
 			});
@@ -333,6 +332,7 @@ public class MainController implements Initializable
 			
 			activeVideoView(value);
 		}
+		
 		return changed;
 	}
 
@@ -433,22 +433,15 @@ public class MainController implements Initializable
 		MediaView vid = (MediaView) selected.getPreview();
 		videoNameField.setText(selected.getReference());
 		videoDescriptionField.setText(selected.getDescription());
+		ObservableList<Node> children = videoContainer.getChildren();
+		children.clear();
 		if (vid != null)
 		{
-			MediaPlayer mp = vid.getMediaPlayer();
-			if (mp != null)
-			{
-    			mp.play();
-    			mp.pause();
-    			Duration seekTime = new Duration(5000);
-    			mp.seek(seekTime);
-    			videoView.setMediaPlayer(mp);
-			}
+		    children.add(vid);
+		    vid.setFitHeight(600);
+		    vid.setFitWidth(800);
+		    
 //			fileDetails.setText(String.format("Dimensions: %dx%d" , (int) image.getWidth(), (int) image.getHeight()));
-		}
-		else
-		{
-			videoView.setMediaPlayer(null);
 		}
 		
 		boolean disable = (selected.group == 0);
@@ -662,7 +655,11 @@ public class MainController implements Initializable
     			Media media = new Media(path);
     			videoNameField.setText(path);
     			MediaPlayer mp = new MediaPlayer(media);
-    			videoView.setMediaPlayer(mp);
+    			MediaView img = new MediaView(mp);
+    			
+    			ObservableList<Node> children = videoContainer.getChildren();
+    			children.clear();
+    			children.add(img);
     			videoDetails.setText("");
 			}
 			catch (Exception e)
@@ -681,22 +678,37 @@ public class MainController implements Initializable
 	@FXML
 	public void videoPlay()
 	{
-		MediaPlayer mp = videoView.getMediaPlayer();
-		mp.play();
+	    if (this.selected.getType() == Type.VIDEO)
+	    {
+	        VideoSlot vs = (VideoSlot) selected;
+	        MediaView mv = (MediaView) vs.getPreview();
+	        MediaPlayer mp = mv.getMediaPlayer();
+	        mp.play();
+	    }
 	}
 
 	@FXML
 	public void videoPause()
 	{
-		MediaPlayer mp = videoView.getMediaPlayer();
-		mp.pause();
+        if (this.selected.getType() == Type.VIDEO)
+        {
+            VideoSlot vs = (VideoSlot) selected;
+            MediaView mv = (MediaView) vs.getPreview();
+            MediaPlayer mp = mv.getMediaPlayer();
+            mp.pause();
+        }
 	}
 
 	@FXML
 	public void videoStop()
 	{
-		MediaPlayer mp = videoView.getMediaPlayer();
-		mp.stop();
+        if (this.selected.getType() == Type.VIDEO)
+        {
+            VideoSlot vs = (VideoSlot) selected;
+            MediaView mv = (MediaView) vs.getPreview();
+            MediaPlayer mp = mv.getMediaPlayer();
+            mp.stop();
+        }
 	}
 
 	@FXML

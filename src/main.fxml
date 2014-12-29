@@ -81,7 +81,6 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="videoPane" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <children>
-                                                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="480.0" layoutX="89.0" layoutY="119.0" stroke="BLACK" strokeType="INSIDE" width="640.0" />
                                                 <Label layoutX="126.0" layoutY="27.0" prefHeight="16.0" prefWidth="83.0" text="File" />
                                                 <TextField fx:id="videoNameField" layoutX="209.0" layoutY="22.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Button fx:id="videoChooseButton" layoutX="571.0" layoutY="22.0" mnemonicParsing="false" onAction="#chooseVideo" text="Choose" />
@@ -89,7 +88,7 @@
                                                 <Label layoutX="126.0" layoutY="62.0" prefHeight="16.0" prefWidth="83.0" text="Description" />
                                                 <Button layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#videoSave" text="Update" />
                                                 <Label fx:id="videoDetails" alignment="TOP_LEFT" layoutX="65.0" layoutY="635.0" prefHeight="189.0" prefWidth="687.0" />
-                                                <MediaView fx:id="videoView" fitHeight="480.0" fitWidth="640.0" layoutX="89.0" layoutY="119.0" />
+                                                <Pane fx:id="videoContainer" maxHeight="600.0" maxWidth="800.0" minHeight="600" minWidth="800" layoutX="4.0" layoutY="128.0" styleClass="preview" stylesheets="@style.css"/>
                                                 <Button layoutX="277.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoPlay" text="Play" />
                                                 <Button layoutX="344.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoPause" text="Pause" />
                                                 <Button layoutX="414.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoStop" text="Stop" />
