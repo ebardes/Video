@@ -17,9 +17,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.personality.DMXPersonality;
+import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.personality.MasterLitePersonality;
 import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
@@ -40,13 +42,15 @@ public class Main extends Application
 
 	private static Stage display;
 	
-	private static List<Layer> layers = new ArrayList<>();
+	public static List<Layer> layers = new ArrayList<>();
 	
 	private static NetworkListener listener;
 	
 	private static Config config;
 	
 	private static File configLocation = new File("config.xml");
+	
+	public static CueStack stack = new CueStack();
 
 	public static Config getConfig()
 	{
@@ -70,6 +74,8 @@ public class Main extends Application
 			    Config.location = configLocation;
 				config = Config.reset(url);
 			}
+			
+			stack = CueStack.load();
 
 			StackPane displayPane = new StackPane();
 			displayPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
@@ -171,6 +177,9 @@ public class Main extends Application
 		
 		switch (protocol)
 		{
+		case INTERNAL:
+			listener = new InternalListener(stack);
+			break;
 		case SACN:
 		default:
 			listener = new E131Listener();

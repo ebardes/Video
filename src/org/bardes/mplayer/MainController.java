@@ -165,11 +165,11 @@ public class MainController implements Initializable
 	ListView<Cue> cueList;
 
 	@FXML
-	ChoiceBox<Cue> cueNext;
-
-	@FXML
 	ChoiceBox<Interface> nwInterface;
 	
+	@FXML
+	TextField cueTime;
+
 	private BorderPane lastItem;
 	
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -177,8 +177,6 @@ public class MainController implements Initializable
 	private Slot selected;
 
 	private Config config;
-	
-	private CueStack stack = new CueStack();
 
 	private enum TabID
 	{
@@ -212,6 +210,10 @@ public class MainController implements Initializable
 						activateView(newValue.getValue());
 				}
 			});
+			
+			addNumberCheck(this.configOffset);
+			addNumberCheck(this.configUniverse);
+			addNumberCheck(this.cueTime);
 			
 			tabBar.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>()
 			{
@@ -309,9 +311,16 @@ public class MainController implements Initializable
 			break;
 			
 		case CUE:
-			// do nothing
+			showCueTab();
 			break;
 		}
+	}
+
+	private void showCueTab()
+	{
+		ObservableList<Cue> x = this.cueList.getItems();
+		CueStack stack = Main.stack;
+		x.setAll(stack.getCueList());
 	}
 
 	protected void deactivateView(Slot value)
@@ -786,6 +795,15 @@ public class MainController implements Initializable
 	@FXML
 	public void cancelConfig()
 	{
+		dmxSource.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DMXProtocol>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends DMXProtocol> observable, DMXProtocol oldValue, DMXProtocol newValue)
+			{
+				dmxProtocolChange();
+			}
+		});
+		
 		configUniverse.setText(String.valueOf(config.getUniverse()));
 		configOffset.setText(String.valueOf(config.getOffset()));
 		
@@ -819,13 +837,34 @@ public class MainController implements Initializable
 		{
 			e.printStackTrace();
 		}
+		
+		dmxProtocolChange();
+	}
+	
+	void dmxProtocolChange()
+	{
+		DMXProtocol dmxProtocol = dmxSource.getValue();
+		
+		boolean disableNetwork = dmxProtocol == DMXProtocol.INTERNAL;
+		
+		nwInterface.setDisable(disableNetwork);
+		configOffset.setDisable(disableNetwork);
+		configUniverse.setDisable(disableNetwork);
+		dmxPersonality.setDisable(disableNetwork);
 	}
 
-	@FXML
-	public void validateNumber(ActionEvent event)
+	public void addNumberCheck(final TextField text)
 	{
-		Object source = event.getSource();
-		System.out.println("Validate Number: " + source);
-		event.consume();
+		text.textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+			{
+				if (!newValue.matches("\\d+(\\.\\d+)?"))
+				{
+					text.setText(oldValue);
+				}
+			}
+		});
 	}
 }
