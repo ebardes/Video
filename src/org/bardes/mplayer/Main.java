@@ -17,7 +17,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
+import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.MasterLitePersonality;
 import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
@@ -36,9 +38,9 @@ public class Main extends Application
 		launch(args);
 	}
 
-	private Stage display;
+	private static Stage display;
 	
-	private List<Layer> layers = new ArrayList<>();
+	private static List<Layer> layers = new ArrayList<>();
 	
 	private static NetworkListener listener;
 	
@@ -69,8 +71,6 @@ public class Main extends Application
 				config = Config.reset(url);
 			}
 
-			restartListener();
-			
 			StackPane displayPane = new StackPane();
 			displayPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 			Scene displayScene = new Scene(displayPane);
@@ -130,15 +130,14 @@ public class Main extends Application
 			
 			primaryStage.show();
 			
-			Personality personality = new MasterLitePersonality(new MasterLayer(display), layers); 
-			listener.setPersonality(personality);
+			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void stop() throws Exception
 	{
@@ -162,14 +161,31 @@ public class Main extends Application
 	}
 
 	/**
+	 * @param selectedItem 
 	 * 
 	 */
-	public void restartListener()
+	public static void restartListener(DMXProtocol protocol, DMXPersonality personality)
 	{
 		if (listener != null)
 			listener.stop();
 		
-		listener = new E131Listener();
+		switch (protocol)
+		{
+		case SACN:
+		default:
+			listener = new E131Listener();
+			break;
+		}
+		
+		Personality p;
+		switch (personality)
+		{
+		case LITE:
+		default:
+			p = new MasterLitePersonality(new MasterLayer(display), layers); 
+			break;
+		}
+		listener.setPersonality(p);
 		listener.start();
 	}
 }

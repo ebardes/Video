@@ -1,12 +1,12 @@
 package org.bardes.mplayer;
 
-import javax.xml.bind.annotation.XmlType;
-
 import javafx.scene.Node;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+
+import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="video")
 public class VideoSlot extends Slot
@@ -50,7 +50,7 @@ public class VideoSlot extends Slot
     }
     
     @Override
-    public Node getPreview()
+    public Node getPreview(Node owner)
     {
     	MediaView mediaView = new MediaView(mp);
     	return mediaView;

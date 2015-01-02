@@ -56,7 +56,7 @@ public class GroupSlot extends Slot
 	}
 
 	@Override
-	public Node getPreview()
+	public Node getPreview(Node owner)
 	{
 		return null;
 	}
