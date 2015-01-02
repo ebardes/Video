@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.personality.DMXPersonality;
 
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
@@ -32,7 +33,9 @@ public class Config
 	
 	private HWXY editorPosition;
 	
-	private DMXPersonality dmxPersonality;
+	private DMXPersonality dmxPersonality = DMXPersonality.LITE;
+	
+	private DMXProtocol dmxProtocol = DMXProtocol.SACN;
 
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
@@ -81,6 +84,17 @@ public class Config
 	public void setDmxPersonality(DMXPersonality personality)
 	{
 		this.dmxPersonality = personality;
+	}
+
+	@XmlElement(name="protocol")
+	public DMXProtocol getDmxProtocol()
+	{
+		return dmxProtocol;
+	}
+
+	public void setDmxProtocol(DMXProtocol dmxProtocol)
+	{
+		this.dmxProtocol = dmxProtocol;
 	}
 
 	/**

@@ -69,7 +69,7 @@
                                                 <Button fx:id="fileChooseButton" layoutX="571.0" layoutY="22.0" mnemonicParsing="false" onAction="#chooseFile" text="Choose" />
                                                 <Pane layoutX="4.0" layoutY="128.0" prefHeight="600.0" prefWidth="800.0" styleClass="preview" stylesheets="@style.css">
                                                    <children>
-                                                      <ImageView fx:id="imageView" layoutX="1" layoutY="1" fitHeight="598" fitWidth="798" preserveRatio="true" />
+                                                      <ImageView fx:id="imageView" fitHeight="598" fitWidth="798" layoutX="1" layoutY="1" preserveRatio="true" />
                                                    </children>
                                                 </Pane>
                                                 <TextField fx:id="fileDescriptionField" layoutX="209.0" layoutY="57.0" prefHeight="26.0" prefWidth="319.0" />
@@ -88,7 +88,7 @@
                                                 <Label layoutX="126.0" layoutY="62.0" prefHeight="16.0" prefWidth="83.0" text="Description" />
                                                 <Button layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#videoSave" text="Update" />
                                                 <Label fx:id="videoDetails" alignment="TOP_LEFT" layoutX="65.0" layoutY="635.0" prefHeight="189.0" prefWidth="687.0" />
-                                                <Pane fx:id="videoContainer" maxHeight="600.0" maxWidth="800.0" minHeight="600" minWidth="800" layoutX="4.0" layoutY="128.0" styleClass="preview" stylesheets="@style.css"/>
+                                                <Pane fx:id="videoContainer" layoutX="4.0" layoutY="128.0" maxHeight="600.0" maxWidth="800.0" minHeight="600" minWidth="800" styleClass="preview" stylesheets="@style.css" />
                                                 <Button layoutX="277.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoPlay" text="Play" />
                                                 <Button layoutX="344.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoPause" text="Pause" />
                                                 <Button layoutX="414.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoStop" text="Stop" />
@@ -102,19 +102,54 @@
                         </SplitPane>
                      </content>
                   </Tab>
+                  <Tab id="CUE" text="Cues">
+                    <content>
+                        <SplitPane dividerPositions="0.25" layoutX="550.0" layoutY="266.0" prefHeight="160.0" prefWidth="200.0">
+                          <items>
+                              <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                 <center>
+                                    <ListView fx:id="cueList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                 </center>
+                                 <bottom>
+                                    <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                      <items>
+                                        <Button mnemonicParsing="false" text="GO" />
+                                      </items>
+                                    </ToolBar>
+                                 </bottom>
+                              </BorderPane>
+                              <BorderPane layoutX="320.0" layoutY="267.0" prefHeight="200.0" prefWidth="200.0">
+                                 <center>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                 </center>
+                                 <top>
+                                    <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                      <items>
+                                        <Button mnemonicParsing="false" text="Add" />
+                                          <Button mnemonicParsing="false" text="Del" />
+                                      </items>
+                                    </ToolBar>
+                                 </top>
+                              </BorderPane>
+                          </items>
+                        </SplitPane>
+                    </content>
+                  </Tab>
                   <Tab id="CONFIG" text="Config">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label layoutX="59.0" layoutY="67.0" prefHeight="16.0" prefWidth="252.0" text="sACN (E1.31) Config" />
-                              <Label layoutX="105.0" layoutY="98.0" text="Universe" />
-                              <Label layoutX="121.0" layoutY="135.0" text="Offset" />
-                              <TextField fx:id="configUniverse" layoutX="185.0" layoutY="93.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
-                              <TextField fx:id="configOffset" layoutX="185.0" layoutY="130.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
+                              <Label layoutX="59.0" layoutY="150.0" prefHeight="16.0" prefWidth="252.0" text="sACN (E1.31) Config" />
+                              <Label layoutX="105.0" layoutY="181.0" text="Universe" />
+                              <Label layoutX="121.0" layoutY="218.0" text="Offset" />
+                              <TextField fx:id="configUniverse" layoutX="185.0" layoutY="176.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
+                              <TextField fx:id="configOffset" layoutX="185.0" layoutY="213.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
                               <Button defaultButton="true" layoutX="110.0" layoutY="555.0" mnemonicParsing="false" onAction="#saveConfig" text="Save" />
                               <Button cancelButton="true" layoutX="231.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelConfig" text="Cancel" />
-                              <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="230.0" prefWidth="150.0" />
-                              <Label layoutX="59.0" layoutY="204.0" text="DMX Personality" />
+                              <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="313.0" prefHeight="26.0" prefWidth="300.0" />
+                              <Label layoutX="59.0" layoutY="287.0" text="DMX Personality" />
+                              <Label layoutX="59.0" layoutY="55.0" text="DMX Source" />
+                              <ChoiceBox fx:id="dmxSource" layoutX="186.0" layoutY="84.0" prefHeight="26.0" prefWidth="300.0" />
                            </children>
                         </AnchorPane>
                     </content>

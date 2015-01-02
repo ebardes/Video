@@ -50,7 +50,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 import org.bardes.mplayer.Slot.Type;
+import org.bardes.mplayer.cue.Cue;
+import org.bardes.mplayer.cue.CueStack;
+import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.personality.DMXPersonality;
+
+import javafx.scene.control.ListView;
 
 public class MainController implements Initializable
 {
@@ -147,6 +152,15 @@ public class MainController implements Initializable
 	@FXML
 	CheckBox imgAspectRatio;
 
+	@FXML
+	Button fileUpdateButton;
+
+	@FXML
+	ChoiceBox<DMXProtocol> dmxSource;
+
+	@FXML
+	ListView<Cue> cueList;
+
 	private BorderPane lastItem;
 	
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -154,14 +168,15 @@ public class MainController implements Initializable
 	private Slot selected;
 
 	private Config config;
-
-	@FXML Button fileUpdateButton;
+	
+	private CueStack stack = new CueStack();
 
 	private enum TabID
 	{
 		CONTENT,
 		CONFIG,
 		PREVIEW,
+		CUE,
 	}
 
 	@Override
@@ -209,10 +224,27 @@ public class MainController implements Initializable
 			ObservableList<TreeItem<Slot>> children = root.getChildren();
 			config = Main.getConfig();
 			
-			ObservableList<DMXPersonality> items = dmxPersonality.getItems();
+			/*
+			 * Populate and select the DMX Source box
+			 */
+			ObservableList<DMXProtocol> dmxProtocolItems = dmxSource.getItems();
+			for (DMXProtocol p : DMXProtocol.values())
+			{
+				dmxProtocolItems.add(p);
+			}
+			DMXProtocol dmxProtocol = config.getDmxProtocol();
+			if (dmxProtocol != null)
+			{
+				dmxSource.getSelectionModel().select(dmxProtocol);
+			}
+			
+			/*
+			 * Populate and select the DMX Personality box
+			 */
+			ObservableList<DMXPersonality> dmxPersonalityItems = dmxPersonality.getItems();
 			for (DMXPersonality p : DMXPersonality.values())
 			{
-				items.add(p);
+				dmxPersonalityItems.add(p);
 			}
 			DMXPersonality personality = config.getDmxPersonality();
 			if (personality != null)
@@ -264,6 +296,10 @@ public class MainController implements Initializable
 			break;
 			
 		case PREVIEW:
+			// do nothing
+			break;
+			
+		case CUE:
 			// do nothing
 			break;
 		}
@@ -399,7 +435,7 @@ public class MainController implements Initializable
 	 */
 	void activeImageView(Slot selected)
 	{
-		ImageView img = (ImageView) selected.getPreview();
+		ImageView img = (ImageView) selected.getPreview(imageView.getParent());
 		fileNameField.setText(selected.getReference());
 		fileDescriptionField.setText(selected.getDescription());
 		imgAspectRatio.setSelected(selected.isPerserveAspectRatio());
@@ -430,7 +466,7 @@ public class MainController implements Initializable
 	 */
 	void activeVideoView(Slot selected)
 	{
-		MediaView vid = (MediaView) selected.getPreview();
+		MediaView vid = (MediaView) selected.getPreview(videoContainer);
 		videoNameField.setText(selected.getReference());
 		videoDescriptionField.setText(selected.getDescription());
 		ObservableList<Node> children = videoContainer.getChildren();
@@ -681,7 +717,7 @@ public class MainController implements Initializable
 	    if (this.selected.getType() == Type.VIDEO)
 	    {
 	        VideoSlot vs = (VideoSlot) selected;
-	        MediaView mv = (MediaView) vs.getPreview();
+	        MediaView mv = (MediaView) vs.getPreview(null);
 	        MediaPlayer mp = mv.getMediaPlayer();
 	        mp.play();
 	    }
@@ -693,7 +729,7 @@ public class MainController implements Initializable
         if (this.selected.getType() == Type.VIDEO)
         {
             VideoSlot vs = (VideoSlot) selected;
-            MediaView mv = (MediaView) vs.getPreview();
+            MediaView mv = (MediaView) vs.getPreview(null);
             MediaPlayer mp = mv.getMediaPlayer();
             mp.pause();
         }
@@ -705,7 +741,7 @@ public class MainController implements Initializable
         if (this.selected.getType() == Type.VIDEO)
         {
             VideoSlot vs = (VideoSlot) selected;
-            MediaView mv = (MediaView) vs.getPreview();
+            MediaView mv = (MediaView) vs.getPreview(null);
             MediaPlayer mp = mv.getMediaPlayer();
             mp.stop();
         }
@@ -717,13 +753,23 @@ public class MainController implements Initializable
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
 		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
 		
+		DMXPersonality selectedPersonality = DMXPersonality.LITE;
+		DMXProtocol selectedProtocol = DMXProtocol.SACN;
 		try
 		{
-			DMXPersonality selectedItem = dmxPersonality.getSelectionModel().getSelectedItem();
-			config.setDmxPersonality(selectedItem);
+			selectedPersonality = dmxPersonality.getSelectionModel().getSelectedItem();
+			config.setDmxPersonality(selectedPersonality);
 		} catch (Exception ignore) {}
+		
+		try
+		{
+			selectedProtocol = dmxSource.getSelectionModel().getSelectedItem();
+			config.setDmxProtocol(selectedProtocol);
+		} catch (Exception ignore) {}
+		
+		Main.restartListener(selectedProtocol, selectedPersonality);
 		config.save();
-		cancelConfig();
+		cancelConfig(); // Using the side effect of ensuring the form matches the config.
 	}
 
 	@FXML

@@ -2,6 +2,7 @@ package org.bardes.mplayer;
 
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -34,7 +35,6 @@ public class ImageSlot extends Slot
 		thumbNail = new ImageView(reference);
 		thumbNail.setFitHeight(128);
 		thumbNail.setFitWidth(128);
-		thumbNail.setPreserveRatio(true);
 		thumbNail.setSmooth(true);
 	}
 
@@ -58,21 +58,29 @@ public class ImageSlot extends Slot
 	    {
 	        node.fitHeightProperty().bind(owner.heightProperty().divide(4));
 	        node.fitWidthProperty().bind(owner.widthProperty().divide(4));
-	        node.setManaged(true);
 	    }
-	    node.setPreserveRatio(isPerserveAspectRatio());
+	    node.setPreserveRatio(perserveAspectRatio);
 		return node;
 	}
 
 	@Override
 	public Node getThumbNail()
 	{
+		thumbNail.setPreserveRatio(perserveAspectRatio);
 		return thumbNail;
 	}
 
 	@Override
-	public Node getPreview()
+	public Node getPreview(Node in)
 	{
+		preview.setPreserveRatio(perserveAspectRatio);
+	    if (in != null && in instanceof Pane)
+	    {
+	    	Pane owner = (Pane) in;
+	    	preview.fitHeightProperty().bind(owner.heightProperty());
+	    	preview.fitWidthProperty().bind(owner.widthProperty());
+	    	preview.autosize();
+	    }
 		return preview;
 	}
 }
