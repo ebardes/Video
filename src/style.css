@@ -6,3 +6,8 @@
 	-fx-alignment: center;
 	-fx-background-image: url(images/alpha.png);
 }
+
+.framed {
+	-fx-border-color: black;
+	-fx-border-radius: 10;
+}

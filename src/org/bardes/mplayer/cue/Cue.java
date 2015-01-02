@@ -23,12 +23,31 @@ public class Cue implements Comparable<Cue>
 
 	private BigDecimal outDelayTime;
 	
+	private String description;
+	
 	private List<CueLayer> layer = new ArrayList<>(4);
 	
 	@Override
 	public int compareTo(Cue o)
 	{
 		return getId().compareTo(o.getId());
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof Cue)
+		{
+			Cue c = (Cue) obj;
+			return id.equals(c.id);
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return id.toPlainString() + " " + description;
 	}
 
 	@XmlAttribute
@@ -86,6 +105,17 @@ public class Cue implements Comparable<Cue>
 		this.outDelayTime = outDelayTime;
 	}
 
+	@XmlAttribute
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
 	@XmlElementWrapper(name="layers")
 	@XmlElement(name="layer")
 	public List<CueLayer> getLayer()
@@ -102,4 +132,5 @@ public class Cue implements Comparable<Cue>
 	{
 		return this.layer(n);
 	}
+
 }
