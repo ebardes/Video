@@ -1,7 +1,10 @@
 package org.bardes.mplayer;
 
 import java.io.File;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -19,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
@@ -53,9 +57,8 @@ import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.cue.Cue;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
+import org.bardes.mplayer.net.Interface;
 import org.bardes.mplayer.personality.DMXPersonality;
-
-import javafx.scene.control.ListView;
 
 public class MainController implements Initializable
 {
@@ -161,6 +164,12 @@ public class MainController implements Initializable
 	@FXML
 	ListView<Cue> cueList;
 
+	@FXML
+	ChoiceBox<Cue> cueNext;
+
+	@FXML
+	ChoiceBox<Interface> nwInterface;
+	
 	private BorderPane lastItem;
 	
 	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
@@ -753,6 +762,8 @@ public class MainController implements Initializable
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
 		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
 		
+		config.setNetworkInterface(nwInterface.getValue().getName());
+		
 		DMXPersonality selectedPersonality = DMXPersonality.LITE;
 		DMXProtocol selectedProtocol = DMXProtocol.SACN;
 		try
@@ -777,6 +788,37 @@ public class MainController implements Initializable
 	{
 		configUniverse.setText(String.valueOf(config.getUniverse()));
 		configOffset.setText(String.valueOf(config.getOffset()));
+		
+		try
+		{
+			Interface selected = null;
+			ObservableList<Interface> items = nwInterface.getItems();
+			items.clear();
+			
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements())
+			{
+				NetworkInterface nwIf = interfaces.nextElement();
+				if (nwIf.supportsMulticast())
+				{
+					Interface i = new Interface();
+					i.network = nwIf;
+					items.add(i);
+					
+					if (i.getName().equals(config.getNetworkInterface()))
+					{
+						selected = i;
+					}
+				}
+			}
+			
+			if (selected != null)
+				nwInterface.getSelectionModel().select(selected);
+		}
+		catch (SocketException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@FXML

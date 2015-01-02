@@ -37,6 +37,8 @@ public class Config
 	
 	private DMXProtocol dmxProtocol = DMXProtocol.SACN;
 
+	private String networkInterface;
+
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
 	public Set<GroupSlot> getGroups()
@@ -174,6 +176,16 @@ public class Config
 	public void setEditorPosition(HWXY editorPosition)
 	{
 		this.editorPosition = editorPosition;
+	}
+
+	public String getNetworkInterface()
+	{
+		return networkInterface;
+	}
+
+	public void setNetworkInterface(String networkInterface)
+	{
+		this.networkInterface = networkInterface;
 	}
 }
 

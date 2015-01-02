@@ -104,7 +104,7 @@
                   </Tab>
                   <Tab id="CUE" text="Cues">
                     <content>
-                        <SplitPane dividerPositions="0.25" layoutX="550.0" layoutY="266.0" prefHeight="160.0" prefWidth="200.0">
+                        <SplitPane dividerPositions="0.25" layoutX="550.0" layoutY="266.0">
                           <items>
                               <BorderPane prefHeight="200.0" prefWidth="200.0">
                                  <center>
@@ -114,6 +114,8 @@
                                     <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                       <items>
                                         <Button mnemonicParsing="false" text="GO" />
+                                          <Label text="Next Cue" />
+                                          <ChoiceBox fx:id="cueNext" prefWidth="150.0" />
                                       </items>
                                     </ToolBar>
                                  </bottom>
@@ -146,10 +148,12 @@
                               <TextField fx:id="configOffset" layoutX="185.0" layoutY="213.0" onAction="#validateNumber" onInputMethodTextChanged="#validateNumber" />
                               <Button defaultButton="true" layoutX="110.0" layoutY="555.0" mnemonicParsing="false" onAction="#saveConfig" text="Save" />
                               <Button cancelButton="true" layoutX="231.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelConfig" text="Cancel" />
-                              <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="313.0" prefHeight="26.0" prefWidth="300.0" />
-                              <Label layoutX="59.0" layoutY="287.0" text="DMX Personality" />
+                              <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="333.0" prefHeight="26.0" prefWidth="300.0" />
+                              <Label layoutX="59.0" layoutY="307.0" text="DMX Personality" />
                               <Label layoutX="59.0" layoutY="55.0" text="DMX Source" />
                               <ChoiceBox fx:id="dmxSource" layoutX="186.0" layoutY="84.0" prefHeight="26.0" prefWidth="300.0" />
+                              <Label layoutX="104.0" layoutY="258.0" prefHeight="16.0" prefWidth="57.0" text="Interface" />
+                              <ChoiceBox fx:id="nwInterface" layoutX="186.0" layoutY="253.0" prefHeight="26.0" prefWidth="258.0" />
                            </children>
                         </AnchorPane>
                     </content>
