@@ -2,7 +2,10 @@ package org.bardes.mplayer.sacn;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 import org.bardes.mplayer.Config;
@@ -21,6 +24,7 @@ public class E131Listener implements Runnable, NetworkListener
 	private Thread thread;
 	private Personality personality;
     private byte[] lastFrame;
+	private String nwInterface;
 	
 	private static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
 	
@@ -36,6 +40,7 @@ public class E131Listener implements Runnable, NetworkListener
 		Config config = Main.getConfig();
 		offset = config.getOffset();
 		universe = config.getUniverse();
+		nwInterface = config.getNetworkInterface();
 		
 		RootLayer.init();
 		FramingLayer.init();
@@ -45,12 +50,34 @@ public class E131Listener implements Runnable, NetworkListener
 		{
 			byte buffer[] = new byte[1024];
 			
+			NetworkInterface networkInterface = null;
+			try
+			{
+				if (nwInterface != null)
+					networkInterface = NetworkInterface.getByName(nwInterface);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 			// 239.255.x.x
 			byte addr[] = { x(239), x(255), x(universe >> 8), x(universe & 0x0ff) };
 			InetAddress laddr = InetAddress.getByAddress(addr);
-			
-			sock = new MulticastSocket(E131_PORT);
-			sock.joinGroup(laddr);
+			InetSocketAddress socketAddress = new InetSocketAddress(laddr, E131_PORT);
+
+			if (networkInterface == null)
+			{
+				sock = new MulticastSocket(E131_PORT);
+				sock.joinGroup(laddr);
+				networkInterface = sock.getNetworkInterface();
+				config.setNetworkInterface(networkInterface.getName());
+			}
+			else
+			{
+				sock = new MulticastSocket();
+				sock.joinGroup(socketAddress, networkInterface);
+			}
 			while (running)
 			{
 			    DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
@@ -87,6 +114,11 @@ public class E131Listener implements Runnable, NetworkListener
 				}
 			}
 		}
+		catch (SocketException e)
+		{
+			// This is a normal exception resulting from closing the socket.
+			running = false;
+		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
@@ -101,6 +133,7 @@ public class E131Listener implements Runnable, NetworkListener
 	public void start()
 	{
 		thread = new Thread(this);
+		thread.setName("E1.31 Listener");
 		thread.setDaemon(true);
 		thread.start();
 	}
