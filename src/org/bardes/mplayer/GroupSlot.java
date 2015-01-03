@@ -13,8 +13,7 @@ public class GroupSlot extends Slot
 {
 	@XmlElementWrapper(name="items")
 	@XmlElement(name="item")
-	
-	Map<Integer, Slot> slots = new TreeMap<>();
+    public Map<Integer, Slot> slots = new TreeMap<>();
 	
 	public GroupSlot()
 	{

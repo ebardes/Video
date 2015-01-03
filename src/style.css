@@ -7,7 +7,22 @@
 	-fx-background-image: url(images/alpha.png);
 }
 
-.framed {
+.modified {
+	-fx-border-color: #8c0029;
+	-fx-border-radius: 10;
+	-fx-background-color: #ffe0f0;
+	-fx-background-radius: 10;
+}
+
+.active {
+	-fx-border-color: #003462;
+	-fx-border-radius: 10;
+	-fx-background-color: #d3e0ff;
+	-fx-background-radius: 10;
+	
+}
+
+.unchanged {
 	-fx-border-color: black;
 	-fx-border-radius: 10;
 }

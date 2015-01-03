@@ -11,7 +11,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -28,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -299,7 +302,9 @@ public class MainController implements Initializable
 	}
 
 	private ArrayList<CueLayerInfo> cueLayerInfo = new ArrayList<>();
-	void initializeCueList()
+	
+	@SuppressWarnings("unchecked")
+    void initializeCueList()
 	{
 		for (int i = 1; i <= 4; i++)
 		{
@@ -318,6 +323,28 @@ public class MainController implements Initializable
 			cli.dimmer = (Slider) node.lookup("#cueDimmer");
 			cli.volume = (Slider) node.lookup("#cueVolume");
 			
+			cli.group = (ChoiceBox<GroupSlot>) node.lookup("#cueGroup");
+			cli.slot = (ChoiceBox<Slot>) node.lookup("#cueSlot");
+			
+			cli.cueView = (Pane) node.lookup("#cueView");
+			
+			Set<GroupSlot> groups = config.getGroups();
+			cli.group.getItems().setAll(groups);
+			
+			cli.group.valueProperty().addListener(new ChangeListener<GroupSlot>() {
+                public void changed(ObservableValue<? extends GroupSlot> observable, GroupSlot oldValue, GroupSlot newValue)
+                {
+                    cli.changeGroup(newValue);
+                }
+            });
+			
+			cli.slot.valueProperty().addListener(new ChangeListener<Slot>() {
+			    public void changed(ObservableValue<? extends Slot> observable, Slot oldValue, Slot newValue)
+			    {
+			        cli.changeSlot(newValue);
+			    }
+			});
+			
 			cli.dimmer.valueProperty().addListener(new ChangeListener<Number>()	{
 				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 				{
@@ -334,9 +361,28 @@ public class MainController implements Initializable
 			cueLayerInfo.ensureCapacity(i);
 			cueLayerInfo.add(i-1, cli);
 		}
+		
+		MultipleSelectionModel<Cue> selectionModel = cueList.getSelectionModel();
+		selectionModel.setSelectionMode(SelectionMode.SINGLE);
+		
+        selectionModel.selectedItemProperty().addListener(new ChangeListener<Cue>() {
+            public void changed(ObservableValue<? extends Cue> observable, Cue oldValue, Cue newValue)
+            {
+                changeCue(newValue);
+            }
+        });
+        
+        if (selectionModel.getSelectedIndex() < 0)
+            selectionModel.selectFirst();
 	}
 
-	protected void changeTab(Tab tab)
+	protected void changeCue(Cue cue)
+    {
+	    if (cue != null)
+	        System.out.format("Cue %s go%n", cue.getId());
+    }
+
+    protected void changeTab(Tab tab)
 	{
 		TabID tabId = TabID.valueOf(tab.getId());
 		switch (tabId)
@@ -346,7 +392,10 @@ public class MainController implements Initializable
 			break;
 			
 		case CONTENT:
-			// do nothing
+			Platform.runLater(new Runnable(){
+                public void run() {
+                    treeView.requestFocus();
+                }});
 			break;
 			
 		case PREVIEW:
@@ -361,9 +410,15 @@ public class MainController implements Initializable
 
 	private void showCueTab()
 	{
-		ObservableList<Cue> x = this.cueList.getItems();
+		ObservableList<Cue> x = cueList.getItems();
 		CueStack stack = Main.stack;
 		x.setAll(stack.getCueList());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                cueList.requestFocus();
+            }
+        });
 	}
 
 	protected void deactivateView(Slot value)
