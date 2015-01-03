@@ -4,6 +4,9 @@ import java.io.File;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -55,6 +59,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.cue.Cue;
+import org.bardes.mplayer.cue.CueLayerInfo;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.Interface;
@@ -291,6 +296,44 @@ public class MainController implements Initializable
 		}
 		
 		info("Ready");
+	}
+
+	private ArrayList<CueLayerInfo> cueLayerInfo = new ArrayList<>();
+	void initializeCueList()
+	{
+		for (int i = 1; i <= 4; i++)
+		{
+			Node node = editorPane.lookup("#cueLayer" + i);
+			if (node == null)
+				continue;
+			AnchorPane ap = (AnchorPane) node;
+			
+			final CueLayerInfo cli = new CueLayerInfo();
+			cli.ap = ap;
+			Label title = (Label) node.lookup("#cueLayer");
+			title.setText(String.format("Layer %d", i));
+			
+			cli.dimmerLabel = (Label) node.lookup("#cueDimmerDisplay");
+			cli.volumeLabel = (Label) node.lookup("#cueVolumeDisplay");
+			cli.dimmer = (Slider) node.lookup("#cueDimmer");
+			cli.volume = (Slider) node.lookup("#cueVolume");
+			
+			cli.dimmer.valueProperty().addListener(new ChangeListener<Number>()	{
+				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+				{
+					cli.setDimmerLevel(newValue);
+				}
+			});
+			cli.volume.valueProperty().addListener(new ChangeListener<Number>()	{
+				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+				{
+					cli.setVolumeLevel(newValue);
+				}
+			});
+			
+			cueLayerInfo.ensureCapacity(i);
+			cueLayerInfo.add(i-1, cli);
+		}
 	}
 
 	protected void changeTab(Tab tab)
@@ -860,10 +903,29 @@ public class MainController implements Initializable
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
 			{
-				if (!newValue.matches("\\d+(\\.\\d+)?"))
+				if (newValue.equals("0"))
+				{
+					text.selectEnd();
+					return;
+				}
+				if (newValue.equals(""))
+				{
+					text.setText("0");
+					return;
+				}
+				if (!newValue.matches("\\d+(\\.\\d*)?"))
 				{
 					text.setText(oldValue);
+					return;
 				}
+				try
+				{
+					int fraction = (newValue.indexOf('.') >= 0) ? 1 : 0; 
+					NumberFormat nf = DecimalFormat.getNumberInstance();
+					nf.setMinimumFractionDigits(fraction);
+					text.setText(nf.format(Double.valueOf(newValue)));
+				}
+				catch (Exception ignore) {}
 			}
 		});
 	}

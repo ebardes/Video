@@ -56,6 +56,8 @@ public class Main extends Application
 	{
 		return config;
 	}
+
+	public static MainController controller;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -129,12 +131,17 @@ public class Main extends Application
 			    primaryStage.setHeight(768);
 			}
 			
-			Parent p = FXMLLoader.load(url);
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(url);
+			Parent p = loader.load();
 			Scene myScene = new Scene(p);
 			primaryStage.setTitle("Astraeus Media System");
 			primaryStage.setScene(myScene);
 			
 			primaryStage.show();
+			
+			controller = loader.getController();
+			controller.initializeCueList();
 			
 			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
 		}
