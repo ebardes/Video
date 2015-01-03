@@ -112,8 +112,8 @@
                                  <top>
                                     <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                       <items>
-                                        <Button mnemonicParsing="false" text="Add" />
-                                          <Button alignment="CENTER_RIGHT" disable="true" mnemonicParsing="false" text="Del" />
+                                        <Button mnemonicParsing="false" text="Store" />
+                                          <Button disable="true" mnemonicParsing="false" text="Del" />
                                       </items>
                                     </ToolBar>
                                  </top>
@@ -122,7 +122,7 @@
                                        <content>
                                           <VBox>
                                              <children>
-                                                <AnchorPane prefHeight="61.0" prefWidth="482.0" styleClass="framed" stylesheets="@style.css">
+                                                <AnchorPane prefHeight="52.0" prefWidth="474.0" styleClass="unchanged" stylesheets="@style.css">
                                                    <children>
                                                       <TextField fx:id="cueTime" layoutX="136.0" layoutY="14.0" prefHeight="26.0" prefWidth="86.0" />
                                                       <Label layoutX="39.0" layoutY="19.0" text="Fade Time" />
@@ -130,8 +130,11 @@
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                                                    </VBox.margin>
+                                                   <opaqueInsets>
+                                                      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                                                   </opaqueInsets>
                                                 </AnchorPane>
-                                                <AnchorPane id="cueLayer1" prefHeight="200.0" prefWidth="474.0" styleClass="framed" stylesheets="@style.css">
+                                                <AnchorPane id="cueLayer1" prefHeight="200.0" prefWidth="600.0" styleClass="unchanged" stylesheets="@style.css">
                                                    <children>
                                                       <Label layoutX="37.0" layoutY="26.0" text="Dimmer" />
                                                       <Label layoutX="218.0" layoutY="72.0" text="Slot" />
@@ -148,12 +151,15 @@
                                                       </Label>
                                                       <Label id="cueDimmerDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="8.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="0%" />
                                                       <Label id="cueVolumeDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="89.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="100%" />
+                                                      <Pane id="cueView" layoutX="465.0" layoutY="36.0" maxHeight="128.0" maxWidth="128.0" prefHeight="128.0" prefWidth="128.0" />
+                                                      <Button id="cueRelease" disable="true" layoutX="212.0" layoutY="164.0" mnemonicParsing="false" text="Release" />
+                                                      <Button id="cueRemove" disable="true" layoutX="288.0" layoutY="164.0" mnemonicParsing="false" text="Remove" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                                                    </VBox.margin>
                                                 </AnchorPane>
-                                                <AnchorPane id="cueLayer2" prefHeight="200.0" prefWidth="474.0" styleClass="framed" stylesheets="@style.css">
+                                                <AnchorPane id="cueLayer2" prefHeight="200.0" prefWidth="474.0" styleClass="unchanged" stylesheets="@style.css">
                                                    <children>
                                                       <Label layoutX="37.0" layoutY="26.0" text="Dimmer" />
                                                       <Label layoutX="218.0" layoutY="72.0" text="Slot" />
@@ -170,12 +176,15 @@
                                                       </Label>
                                                       <Label id="cueDimmerDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="8.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="0%" />
                                                       <Label id="cueVolumeDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="89.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="100%" />
+                                                      <Pane id="cueView" layoutX="465.0" layoutY="36.0" maxHeight="128.0" maxWidth="128.0" prefHeight="128.0" prefWidth="128.0" />
+                                                      <Button id="cueRelease" disable="true" layoutX="212.0" layoutY="164.0" mnemonicParsing="false" text="Release" />
+                                                      <Button id="cueRemove" disable="true" layoutX="288.0" layoutY="164.0" mnemonicParsing="false" text="Remove" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                                                    </VBox.margin>
                                                 </AnchorPane>
-                                                <AnchorPane id="cueLayer3" prefHeight="200.0" prefWidth="474.0" styleClass="framed" stylesheets="@style.css">
+                                                <AnchorPane id="cueLayer3" prefHeight="200.0" prefWidth="474.0" styleClass="unchanged" stylesheets="@style.css">
                                                    <children>
                                                       <Label layoutX="37.0" layoutY="26.0" text="Dimmer" />
                                                       <Label layoutX="218.0" layoutY="72.0" text="Slot" />
@@ -192,12 +201,15 @@
                                                       </Label>
                                                       <Label id="cueDimmerDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="8.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="0%" />
                                                       <Label id="cueVolumeDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="89.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="100%" />
+                                                      <Pane id="cueView" layoutX="465.0" layoutY="36.0" maxHeight="128.0" maxWidth="128.0" prefHeight="128.0" prefWidth="128.0" />
+                                                      <Button id="cueRelease" disable="true" layoutX="212.0" layoutY="164.0" mnemonicParsing="false" text="Release" />
+                                                      <Button id="cueRemove" disable="true" layoutX="288.0" layoutY="164.0" mnemonicParsing="false" text="Remove" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                                                    </VBox.margin>
                                                 </AnchorPane>
-                                                <AnchorPane id="cueLayer4" prefHeight="200.0" prefWidth="474.0" styleClass="framed" stylesheets="@style.css">
+                                                <AnchorPane id="cueLayer4" prefHeight="200.0" prefWidth="474.0" styleClass="unchanged" stylesheets="@style.css">
                                                    <children>
                                                       <Label layoutX="37.0" layoutY="26.0" text="Dimmer" />
                                                       <Label layoutX="218.0" layoutY="72.0" text="Slot" />
@@ -214,6 +226,9 @@
                                                       </Label>
                                                       <Label id="cueDimmerDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="8.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="0%" />
                                                       <Label id="cueVolumeDisplay" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="89.0" layoutY="92.0" prefHeight="16.0" prefWidth="49.0" text="100%" />
+                                                      <Pane id="cueView" layoutX="465.0" layoutY="36.0" maxHeight="128.0" maxWidth="128.0" prefHeight="128.0" prefWidth="128.0" />
+                                                      <Button id="cueRelease" disable="true" layoutX="212.0" layoutY="164.0" mnemonicParsing="false" text="Release" />
+                                                      <Button id="cueRemove" disable="true" layoutX="288.0" layoutY="164.0" mnemonicParsing="false" text="Remove" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
