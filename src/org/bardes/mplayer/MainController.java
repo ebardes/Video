@@ -722,7 +722,7 @@ public class MainController implements Initializable
 		Slot s = (Slot) lastItem.getUserData();
 		tilePane.getChildren().remove(lastItem);
 		GroupSlot gs = config.getGroup(s.group);
-		gs.slots.remove(s);
+		gs.slots.remove(s.id);
 		gs.treeitem.getChildren().remove(s.treeitem);
 		delItem.setDisable(true);
 		
