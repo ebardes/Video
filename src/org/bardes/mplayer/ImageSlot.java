@@ -54,12 +54,12 @@ public class ImageSlot extends Slot
 	@Override
 	public Node getNode(Stage owner)
 	{
-	    if (owner != null)
+	    if (owner != null && node != null)
 	    {
 	        node.fitHeightProperty().bind(owner.heightProperty().divide(4));
 	        node.fitWidthProperty().bind(owner.widthProperty().divide(4));
+	        node.setPreserveRatio(perserveAspectRatio);
 	    }
-	    node.setPreserveRatio(perserveAspectRatio);
 		return node;
 	}
 
@@ -73,9 +73,9 @@ public class ImageSlot extends Slot
 	@Override
 	public Node getPreview(Node in)
 	{
-		preview.setPreserveRatio(perserveAspectRatio);
-	    if (in != null && in instanceof Pane)
+	    if (in != null && in instanceof Pane && preview != null)
 	    {
+	    	preview.setPreserveRatio(perserveAspectRatio);
 	    	Pane owner = (Pane) in;
 	    	preview.fitHeightProperty().bind(owner.heightProperty());
 	    	preview.fitWidthProperty().bind(owner.widthProperty());

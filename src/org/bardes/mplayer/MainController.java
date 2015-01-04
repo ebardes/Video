@@ -814,8 +814,10 @@ public class MainController implements Initializable
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
 		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
 		
-		config.setNetworkInterface(nwInterface.getValue().getName());
-		
+		if (nwInterface != null && nwInterface.getValue() != null)
+		{
+			config.setNetworkInterface(nwInterface.getValue().getName());
+		}
 		DMXPersonality selectedPersonality = DMXPersonality.LITE;
 		DMXProtocol selectedProtocol = DMXProtocol.SACN;
 		try
