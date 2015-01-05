@@ -66,7 +66,7 @@ public class E131Listener implements Runnable, NetworkListener
 			InetAddress laddr = InetAddress.getByAddress(addr);
 			InetSocketAddress socketAddress = new InetSocketAddress(laddr, E131_PORT);
 
-			if (networkInterface == null)
+			if (networkInterface == null || true)
 			{
 				sock = new MulticastSocket(E131_PORT);
 				sock.joinGroup(laddr);
@@ -142,7 +142,8 @@ public class E131Listener implements Runnable, NetworkListener
 	public void stop()
 	{
 		running = false;
-		sock.close();
+		if (sock != null)
+			sock.close();
 		try
 		{
 			thread.join(1000);
