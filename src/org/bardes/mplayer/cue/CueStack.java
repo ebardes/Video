@@ -18,6 +18,7 @@ public class CueStack
 {
 	private static final String FILENAME = "cuelist.xml";
 	private TreeSet<Cue> cueList = new TreeSet<Cue>();
+	private Cue current;
 
 	public void save()
 	{
@@ -65,6 +66,12 @@ public class CueStack
 			zero.setDescription("Default Cue");
 			cueStack.cueList.add(zero);
 		}
+		
 		return cueStack;
+	}
+
+	public Cue getCurrent()
+	{
+		return current;
 	}
 }

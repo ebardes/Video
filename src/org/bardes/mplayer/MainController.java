@@ -1,6 +1,7 @@
 package org.bardes.mplayer;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
@@ -10,15 +11,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -42,7 +41,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -67,6 +65,7 @@ import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.Interface;
 import org.bardes.mplayer.personality.DMXPersonality;
+import org.bardes.mplayer.ui.Dialog;
 
 public class MainController implements Initializable
 {
@@ -207,31 +206,23 @@ public class MainController implements Initializable
 			imageMap.put(Slot.Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
 			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
 			
-			treeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Slot>>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends TreeItem<Slot>> observable, TreeItem<Slot> oldValue, TreeItem<Slot> newValue)
-				{
-//					if (oldValue != null)
-//						deactivateView(oldValue.getValue());
-					if (newValue != null && newValue.equals(observable.getValue()))
-						activateView(newValue.getValue());
-				}
+			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				if (newValue != null && newValue.equals(observable.getValue()))
+					activateView(newValue.getValue());
 			});
 			
 			addNumberCheck(this.configOffset);
 			addNumberCheck(this.configUniverse);
 			addNumberCheck(this.cueTime);
 			
-			tabBar.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue)
-				{
-					changeTab(newValue);
-				}
+			tabBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				changeTab(newValue);
 			});
-
+			
+			dmxSource.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				dmxProtocolChange();
+			});
+			
 			TreeItem<Slot> root = treeView.getRoot();
 			if (root == null)
 			{
@@ -331,31 +322,19 @@ public class MainController implements Initializable
 			Set<GroupSlot> groups = config.getGroups();
 			cli.group.getItems().setAll(groups);
 			
-			cli.group.valueProperty().addListener(new ChangeListener<GroupSlot>() {
-                public void changed(ObservableValue<? extends GroupSlot> observable, GroupSlot oldValue, GroupSlot newValue)
-                {
-                    cli.changeGroup(newValue);
-                }
+			cli.group.valueProperty().addListener((observable, oldValue, newValue) -> {
+				cli.changeGroup(newValue);
             });
 			
-			cli.slot.valueProperty().addListener(new ChangeListener<Slot>() {
-			    public void changed(ObservableValue<? extends Slot> observable, Slot oldValue, Slot newValue)
-			    {
-			        cli.changeSlot(newValue);
-			    }
+			cli.slot.valueProperty().addListener((observable, oldValue, newValue) -> {
+				cli.changeSlot(newValue);
 			});
 			
-			cli.dimmer.valueProperty().addListener(new ChangeListener<Number>()	{
-				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-				{
-					cli.setDimmerLevel(newValue);
-				}
+			cli.dimmer.valueProperty().addListener((observable, oldValue, newValue) -> {
+				cli.setDimmerLevel(newValue);
 			});
-			cli.volume.valueProperty().addListener(new ChangeListener<Number>()	{
-				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-				{
-					cli.setVolumeLevel(newValue);
-				}
+			cli.volume.valueProperty().addListener((observable, oldValue, newValue) -> {
+				cli.setVolumeLevel(newValue);
 			});
 			
 			cueLayerInfo.ensureCapacity(i);
@@ -365,11 +344,8 @@ public class MainController implements Initializable
 		MultipleSelectionModel<Cue> selectionModel = cueList.getSelectionModel();
 		selectionModel.setSelectionMode(SelectionMode.SINGLE);
 		
-        selectionModel.selectedItemProperty().addListener(new ChangeListener<Cue>() {
-            public void changed(ObservableValue<? extends Cue> observable, Cue oldValue, Cue newValue)
-            {
-                changeCue(newValue);
-            }
+        selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        	changeCue(newValue);
         });
         
         if (selectionModel.getSelectedIndex() < 0)
@@ -646,30 +622,25 @@ public class MainController implements Initializable
 			p.setBottom(label);
 			p.setUserData(s);
 
-			p.setOnMouseClicked(new EventHandler<MouseEvent>()
-			{
-				@Override
-				public void handle(MouseEvent mouseEvent)
+			p.setOnMouseClicked((mouseEvent) -> {
+				if (mouseEvent.getButton().equals(MouseButton.PRIMARY))
 				{
-					if (mouseEvent.getButton().equals(MouseButton.PRIMARY))
+					if (mouseEvent.getClickCount() == 2)
 					{
-						if (mouseEvent.getClickCount() == 2)
+						selectItem(s);
+					}
+					if (mouseEvent.getClickCount() == 1)
+					{
+						if (lastItem != null)
 						{
-							selectItem(s);
+							lastItem.setBorder(border);
 						}
-						if (mouseEvent.getClickCount() == 1)
+						p.setBorder(fatBorder);
+						lastItem = p;
+						lastItem.setUserData(s);
+						if (gs.id != 0)
 						{
-							if (lastItem != null)
-							{
-								lastItem.setBorder(border);
-							}
-							p.setBorder(fatBorder);
-							lastItem = p;
-							lastItem.setUserData(s);
-							if (gs.id != 0)
-							{
-								delItem.setDisable(false);
-							}
+							delItem.setDisable(false);
 						}
 					}
 				}
@@ -895,15 +866,6 @@ public class MainController implements Initializable
 	@FXML
 	public void cancelConfig()
 	{
-		dmxSource.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DMXProtocol>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends DMXProtocol> observable, DMXProtocol oldValue, DMXProtocol newValue)
-			{
-				dmxProtocolChange();
-			}
-		});
-		
 		configUniverse.setText(String.valueOf(config.getUniverse()));
 		configOffset.setText(String.valueOf(config.getOffset()));
 		
@@ -953,13 +915,9 @@ public class MainController implements Initializable
 		dmxPersonality.setDisable(disableNetwork);
 	}
 
-	public void addNumberCheck(final TextField text)
+	public static void addNumberCheck(final TextField text)
 	{
-		text.textProperty().addListener(new ChangeListener<String>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
+		text.textProperty().addListener((observable, oldValue, newValue) -> {
 				if (newValue.equals("0"))
 				{
 					text.selectEnd();
@@ -983,7 +941,25 @@ public class MainController implements Initializable
 					text.setText(nf.format(Double.valueOf(newValue)));
 				}
 				catch (Exception ignore) {}
-			}
 		});
+	}
+
+	@FXML
+	public void storeCue(ActionEvent event)
+	{
+		Object source = event.getSource();
+		source.hashCode();
+		
+		String cueName = "";
+		Cue cue = Main.stack.getCurrent();
+		if (cue != null)
+		{
+			cueName = cue.getId().toPlainString();
+		}
+		BigDecimal response = Dialog.create()
+		        .owner(Main.window)
+		        .title("Store Cue")
+		        .message("Please Enter Cue Number")
+		        .showNumberInput(cueName);
 	}
 }
