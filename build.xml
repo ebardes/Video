@@ -33,5 +33,9 @@
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
   </target>
+	
+  <target name="run" depends="compile,copy">
+  	<java classpath="${build}" classname="org.bardes.mplayer.Main" />
+  </target>
 
 </project>

@@ -15,7 +15,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
@@ -33,10 +32,11 @@ import org.bardes.mplayer.sacn.E131Listener;
 public class Main extends Application
 {
 
-	public static Window window;
+	public static Stage window;
 
 	public static void main(String[] args)
 	{
+		System.out.println(System.getProperty("java.version"));
 		launch(args);
 	}
 
