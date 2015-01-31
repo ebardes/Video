@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -21,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -40,6 +40,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -57,6 +59,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.cue.Cue;
@@ -176,6 +180,9 @@ public class MainController implements Initializable
 	
 	@FXML
 	TextField cueTime;
+	
+	@FXML
+	Tab cueTab;
 
 	private BorderPane lastItem;
 	
@@ -204,7 +211,7 @@ public class MainController implements Initializable
 			imageMap.put(Slot.Type.GROUP, new Image(x + "/ic_folder_black_18dp.png"));
 			imageMap.put(Slot.Type.IMAGE, new Image(x + "/ic_image_black_18dp.png"));
 			imageMap.put(Slot.Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
-			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
+//			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
 			
 			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 				if (newValue != null && newValue.equals(observable.getValue()))
@@ -214,7 +221,7 @@ public class MainController implements Initializable
 			addNumberCheck(this.configOffset);
 			addNumberCheck(this.configUniverse);
 			addNumberCheck(this.cueTime);
-			
+
 			tabBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 				changeTab(newValue);
 			});
@@ -962,4 +969,26 @@ public class MainController implements Initializable
 		        .message("Please Enter Cue Number")
 		        .showNumberInput(cueName);
 	}
+
+    @FXML
+    public void keyPressed(KeyEvent event)
+    {
+        if (event.getCode() == KeyCode.F7)
+        {
+            showmode();
+        }
+    }
+
+    public void showmode()
+    {
+        Stage d = Main.display;
+        
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        d.setWidth(primaryScreenBounds.getWidth());
+        d.setHeight(primaryScreenBounds.getHeight());
+        
+        d.setFullScreen(false);
+        d.setFullScreen(true);
+        
+    }
 }

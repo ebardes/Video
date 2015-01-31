@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
@@ -40,7 +43,7 @@ public class Main extends Application
 		launch(args);
 	}
 
-	private static Stage display;
+	public static Stage display;
 	
 	public static List<Layer> layers = new ArrayList<>();
 	
@@ -58,6 +61,8 @@ public class Main extends Application
 	}
 
 	public static MainController controller;
+
+    static Window displayWindow;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -82,8 +87,10 @@ public class Main extends Application
 			StackPane displayPane = new StackPane();
 			displayPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 			Scene displayScene = new Scene(displayPane);
+			
 			display = new Stage();
 			display.setScene(displayScene);
+			display.setResizable(true);
 			display.setTitle("Display");
 			
 			HWXY pos = config.getDisplayPosition();
@@ -93,7 +100,6 @@ public class Main extends Application
     			display.setWidth(pos.width);
     			display.setX(pos.x);
     			display.setY(pos.y);
-    			display.show();
 			}
 			else
 			{
@@ -102,6 +108,7 @@ public class Main extends Application
 			    display.setX(0);
 			    display.setY(0);
 			}
+			display.show();
 			
 			for (int i = 0; i < 4; i++)
 			{
@@ -142,7 +149,10 @@ public class Main extends Application
 			
 			controller = loader.getController();
 			controller.initializeCueList();
-			
+
+            Tab cueTab = controller.cueTab;
+            controller.tabBar.getTabs().remove(cueTab);
+            
 			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
 		}
 		catch (Exception e)
