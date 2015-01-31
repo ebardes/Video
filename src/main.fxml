@@ -12,7 +12,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bardes.mplayer.MainController">
+<StackPane onKeyPressed="#keyPressed" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bardes.mplayer.MainController">
    <children>
       <BorderPane fx:id="editorPane">
          <center>
@@ -103,7 +103,7 @@
                         </SplitPane>
                      </content>
                   </Tab>
-                  <Tab id="CUE" text="Cues">
+                  <Tab id="CUE" fx:id="cueTab" text="Cues">
                     <content>
                         <SplitPane dividerPositions="0.25" layoutX="550.0" layoutY="266.0">
                           <items>
