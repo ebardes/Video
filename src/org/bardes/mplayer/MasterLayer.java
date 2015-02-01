@@ -23,7 +23,7 @@ public class MasterLayer
         root.setScaleX(xScale / 8192.0);
         root.setScaleY(yScale / 8192.0);
         
-        root.setRotate((double)(rotate - 32768) / 128.0);
+        root.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
 
 }
