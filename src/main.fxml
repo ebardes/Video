@@ -257,13 +257,16 @@
                               <Button cancelButton="true" layoutX="231.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelConfig" text="Cancel" />
                               <ChoiceBox fx:id="dmxPersonality" layoutX="186.0" layoutY="333.0" prefHeight="26.0" prefWidth="300.0" />
                               <Label layoutX="59.0" layoutY="338.0" text="DMX Personality" />
-                              <Label layoutX="59.0" layoutY="55.0" text="DMX Source" />
+                              <Label layoutX="59.0" layoutY="89.0" text="DMX Source" />
                               <ChoiceBox fx:id="dmxSource" layoutX="186.0" layoutY="84.0" prefHeight="26.0" prefWidth="300.0" />
                               <Label layoutX="104.0" layoutY="258.0" prefHeight="16.0" prefWidth="57.0" text="Interface" />
                               <ChoiceBox fx:id="nwInterface" layoutX="186.0" layoutY="253.0" prefHeight="26.0" prefWidth="258.0" />
                               <ChoiceBox fx:id="screenSelect" layoutX="186.0" layoutY="405.0" prefHeight="26.0" prefWidth="300.0" />
                               <Label layoutX="59.0" layoutY="410.0" text="Full Screen Output" />
                               <Label layoutX="186.0" layoutY="434.0" text="F7 activates full screen mode" />
+                              <Label layoutX="59.0" layoutY="42.0" text="Work Directory" />
+                              <TextField fx:id="workDirectory" layoutX="185.0" layoutY="37.0" prefHeight="26.0" prefWidth="299.0" />
+                              <Button layoutX="501.0" layoutY="37.0" mnemonicParsing="false" onAction="#chooseWorkDir" text="Choose" />
                            </children>
                         </AnchorPane>
                     </content>

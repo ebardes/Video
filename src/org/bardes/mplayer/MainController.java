@@ -57,6 +57,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Screen;
@@ -187,6 +188,9 @@ public class MainController implements Initializable
 	@FXML
 	ChoiceBox<ScreenInfo> screenSelect;
 	
+	@FXML
+	TextField workDirectory;
+
 	private ArrayList<CueLayerInfo> cueLayerInfo = new ArrayList<>();
 
 	private BorderPane lastItem;
@@ -679,7 +683,7 @@ public class MainController implements Initializable
 		File selectedFile = fileChooser.showOpenDialog(Main.window);
 		if (selectedFile != null)
 		{
-			String path = selectedFile.toURI().toString();
+			String path = Main.normalize(selectedFile);
 			fileNameField.setText(path);
 			Image image = new Image(path);
 			imageView.setImage(image);
@@ -782,7 +786,7 @@ public class MainController implements Initializable
 		File selectedFile = fileChooser.showOpenDialog(Main.window);
 		if (selectedFile != null)
 		{
-			String path = selectedFile.toURI().toString();
+			String path = Main.normalize(selectedFile);
 			try
 			{
     			Media media = new Media(path);
@@ -883,6 +887,11 @@ public class MainController implements Initializable
 		
 		try
 		{
+			if (config.getWorkDirectory() != null)
+			{
+				workDirectory.setText(config.getWorkDirectory());
+			}
+			
 		    ObservableList<ScreenInfo> si = screenSelect.getItems();
 		    si.clear();
 		    ObservableList<Screen> screens = Screen.getScreens();
@@ -1011,4 +1020,18 @@ public class MainController implements Initializable
         d.setFullScreen(true);
         
     }
+
+	@FXML
+	public void chooseWorkDir(ActionEvent event)
+	{
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		File dir = dirChooser.showDialog(null);
+		
+		if (dir != null)
+		{
+			String absolutePath = dir.getAbsolutePath();
+			workDirectory.setText(absolutePath);
+			config.setWorkDirectory(absolutePath);
+		}
+	}
 }

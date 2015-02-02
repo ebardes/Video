@@ -1,7 +1,10 @@
 package org.bardes.mplayer;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,5 +223,29 @@ public class Main extends Application
 		}
 		listener.setPersonality(p);
 		listener.start();
+	}
+
+	public static String normalize(File selectedFile)
+	{
+		String workDirectory = config.getWorkDirectory();
+		File target = new File(workDirectory);
+		target = new File(target, selectedFile.getName());
+		
+		try
+		{
+			FileChannel from = FileChannel.open(selectedFile.toPath(), StandardOpenOption.READ);
+			FileChannel to = FileChannel.open(target.toPath(), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+			
+			to.transferFrom(from, 0, from.size());
+			
+			from.close();
+			to.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return target.toURI().toString();
 	}
 }
