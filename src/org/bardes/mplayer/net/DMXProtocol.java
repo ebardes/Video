@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlEnum;
 public enum DMXProtocol
 {
 	SACN("Streaming ACN (E1.31)"),
+	ARTNET("ArtNet (Experimental)"),
 	INTERNAL("Internal Cue Stack"),
 	;
 	
