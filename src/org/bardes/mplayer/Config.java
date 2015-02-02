@@ -40,6 +40,8 @@ public class Config
 	private String networkInterface;
 
     private ScreenInfo screenInfo;
+    
+    private String workDirectory;
 
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
@@ -199,6 +201,16 @@ public class Config
     {
         this.screenInfo = screenInfo;
     }
+
+	public String getWorkDirectory()
+	{
+		return workDirectory;
+	}
+
+	public void setWorkDirectory(String workDirectory)
+	{
+		this.workDirectory = workDirectory;
+	}
 }
 
 @XmlAccessorType(XmlAccessType.FIELD)
