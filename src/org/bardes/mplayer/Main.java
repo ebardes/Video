@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import org.bardes.mplayer.artnet.ArtNetListener;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
@@ -197,6 +198,9 @@ public class Main extends Application
 		case INTERNAL:
 			listener = new InternalListener(stack);
 			break;
+		case ARTNET:
+		    listener = new ArtNetListener();
+		    break;
 		case SACN:
 		default:
 			listener = new E131Listener();
