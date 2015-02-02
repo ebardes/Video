@@ -108,8 +108,8 @@ public class BasicLayer implements Layer
 	        System.out.println("Start "+layerId+" " + debug);
 		MediaView mv = (MediaView) node;
 		MediaPlayer mp = mv.getMediaPlayer();
-		mp.play();
         this.mp = mp;
+        this.mp.play();
 		running = true;
 	}
 
@@ -136,4 +136,37 @@ public class BasicLayer implements Layer
 			mp.setVolume(d(volume));
 		}
 	}
+
+    @Override
+    public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
+    {
+        BorderPane root = pane;
+        root.setTranslateX((double)(xShift - 32768) / 64.0);
+        root.setTranslateY((double)(yShift - 32768) / 64.0);
+        
+        root.setScaleX(xScale / 32768.0);
+        root.setScaleY(yScale / 32768.0);
+        
+        root.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
+    }
+
+    @Override
+    public void setPlayMode(int playMode)
+    {
+        if (mp == null)
+            return;
+        
+        switch (playMode)
+        {
+        case 1:
+            mp.setCycleCount(1);
+            break;
+            
+        case 2:
+            mp.setCycleCount(Integer.MAX_VALUE);
+            break;
+            
+        default:
+        }
+    }
 }

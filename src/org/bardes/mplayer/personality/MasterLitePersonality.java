@@ -22,10 +22,15 @@ public class MasterLitePersonality implements Personality
         this.master = master;
         for (Layer layer : layers)
         {
-            LayerLitePersonality p = new LayerLitePersonality(layer);
+            Personality p = getLayerPersonality(layer);
             this.layers.add(p);
             footprint += p.getFootprint();
         }
+    }
+
+    public LayerLitePersonality getLayerPersonality(Layer layer)
+    {
+        return new LayerLitePersonality(layer);
     }
 
     @Override
@@ -43,6 +48,8 @@ public class MasterLitePersonality implements Personality
         final int yScale = us(dmxStream.getShort());
         final int rotate = us(dmxStream.getShort());
         
+        extra(dmxStream);
+        
         for (Personality p : layers)
         {
             p.process(dmxStream);
@@ -55,5 +62,9 @@ public class MasterLitePersonality implements Personality
                 master.shift(xShift, yShift, xScale, yScale, rotate);
             }
         });
+    }
+
+    protected void extra(ByteBuffer dmxStream)
+    {
     }
 }

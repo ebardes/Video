@@ -183,6 +183,11 @@ public class MainController implements Initializable
 	
 	@FXML
 	Tab cueTab;
+	
+	@FXML
+	ChoiceBox<ScreenInfo> screenSelect;
+	
+	private ArrayList<CueLayerInfo> cueLayerInfo = new ArrayList<>();
 
 	private BorderPane lastItem;
 	
@@ -299,8 +304,6 @@ public class MainController implements Initializable
 		info("Ready");
 	}
 
-	private ArrayList<CueLayerInfo> cueLayerInfo = new ArrayList<>();
-	
 	@SuppressWarnings("unchecked")
     void initializeCueList()
 	{
@@ -847,6 +850,8 @@ public class MainController implements Initializable
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
 		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
 		
+		config.setScreenInfo(screenSelect.getSelectionModel().getSelectedItem());
+		
 		if (nwInterface != null && nwInterface.getValue() != null)
 		{
 			config.setNetworkInterface(nwInterface.getValue().getName());
@@ -878,6 +883,20 @@ public class MainController implements Initializable
 		
 		try
 		{
+		    ObservableList<ScreenInfo> si = screenSelect.getItems();
+		    si.clear();
+		    ObservableList<Screen> screens = Screen.getScreens();
+		    for (Screen s : screens)
+		    {
+		        si.add(new ScreenInfo(s));
+		    }
+		    
+		    if (config.getScreenInfo() == null)
+		        screenSelect.getSelectionModel().selectFirst();
+		    else
+		        screenSelect.getSelectionModel().select(config.getScreenInfo());
+
+		    
 			Interface selected = null;
 			ObservableList<Interface> items = nwInterface.getItems();
 			items.clear();
@@ -968,6 +987,7 @@ public class MainController implements Initializable
 		        .title("Store Cue")
 		        .message("Please Enter Cue Number")
 		        .showNumberInput(cueName);
+		response.hashCode();
 	}
 
     @FXML

@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 @XmlEnum(String.class)
 public enum DMXPersonality
 {
-	@XmlEnumValue("lite") LITE("Lite (24 addresses)"),
-	@XmlEnumValue("regular") REGULAR("Regular"),
+	@XmlEnumValue("lite") LITE("Lite (26 addresses)"),
+	@XmlEnumValue("regular") REGULAR("Regular (70 addresses)"),
 	;
 	
 	private String description;

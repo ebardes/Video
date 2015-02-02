@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +24,7 @@ import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.personality.MasterLitePersonality;
+import org.bardes.mplayer.personality.MasterRegularPersonality;
 import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
 
@@ -206,6 +206,9 @@ public class Main extends Application
 		Personality p;
 		switch (personality)
 		{
+		case REGULAR:
+		    p = new MasterRegularPersonality(new MasterLayer(display), layers);
+		    break;
 		case LITE:
 		default:
 			p = new MasterLitePersonality(new MasterLayer(display), layers); 

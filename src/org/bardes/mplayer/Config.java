@@ -39,6 +39,8 @@ public class Config
 
 	private String networkInterface;
 
+    private ScreenInfo screenInfo;
+
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
 	public Set<GroupSlot> getGroups()
@@ -187,10 +189,33 @@ public class Config
 	{
 		this.networkInterface = networkInterface;
 	}
+
+    public ScreenInfo getScreenInfo()
+    {
+        return screenInfo;
+    }
+
+    public void setScreenInfo(ScreenInfo screenInfo)
+    {
+        this.screenInfo = screenInfo;
+    }
 }
 
 @XmlAccessorType(XmlAccessType.FIELD)
 class HWXY
 {
 	double x, y, width, height;
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+	    HWXY z = (HWXY) obj;
+        return x == z.x && y == z.y && width == z.width && height == z.height;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+        return Double.hashCode(x) ^ Double.hashCode(y) ^ Double.hashCode(width) ^ Double.hashCode(height);
+	}
 }

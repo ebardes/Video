@@ -11,7 +11,7 @@ import org.bardes.mplayer.Layer;
 
 public class LayerLitePersonality implements Personality
 {
-    private Layer layer;
+    protected Layer layer;
     
 	public LayerLitePersonality(Layer layer)
     {
