@@ -1,8 +1,8 @@
 package org.bardes.mplayer.citp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 
 /*
 	CITP_Header
@@ -78,11 +78,12 @@ public class CITPHeader implements Streamable
 		bc.put((byte) 0);
 	}
 
-	public void scan(SocketChannel channel) throws IOException
+	public void scan(InputStream in) throws IOException
 	{
-		ByteBuffer buffer = ByteBuffer.allocate(20);
 		byte[] type = new byte[4];
-		channel.read(buffer);
+		ByteBuffer buffer = ByteBuffer.allocate(20);
+		in.read(buffer.array(), 0, buffer.capacity());
+		buffer.position(0);
 		
 		buffer.getInt(); // CITP header
 		versionMajor = buffer.get();
@@ -96,7 +97,7 @@ public class CITPHeader implements Streamable
 		int packetLength = buffer.getInt(8);
 		
 		byte[] data = new byte[packetLength-20];
+		in.read(data);
 		buffer = ByteBuffer.wrap(data);
-		channel.read(buffer);
 	}
 }

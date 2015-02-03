@@ -1,7 +1,7 @@
 package org.bardes.mplayer.citp;
 
+import java.io.InputStream;
 import java.net.Socket;
-import java.nio.channels.SocketChannel;
 
 public class CITPHandler implements Runnable
 {
@@ -18,13 +18,11 @@ public class CITPHandler implements Runnable
 	{
 		try
 		{
-			SocketChannel channel = sock.getChannel();
-			channel.configureBlocking(true);
-			
 			for (;;)
 			{
 				CITPHeader n = new CITPHeader();
-				n.scan(channel);
+				InputStream is = sock.getInputStream();
+				n.scan(is);
 			}
 		}
 		catch (Exception e)
