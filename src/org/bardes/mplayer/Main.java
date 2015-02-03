@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import org.bardes.mplayer.artnet.ArtNetListener;
+import org.bardes.mplayer.citp.CITPServer;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
@@ -158,6 +159,9 @@ public class Main extends Application
             controller.tabBar.getTabs().remove(cueTab);
             
 			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
+			
+			CITPServer citpServer = new CITPServer(displayPane);
+			citpServer.start();
 		}
 		catch (Exception e)
 		{
