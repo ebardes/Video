@@ -127,6 +127,7 @@ public class CITPServer
 		CITPServer server = new CITPServer(null);
 		server.start();
 		
-		server.wait();
+		for (;;)
+		  Thread.sleep(999999999);
 	}
 }

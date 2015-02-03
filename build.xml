@@ -38,4 +38,8 @@
   	<java classpath="${build}" classname="org.bardes.mplayer.Main" />
   </target>
 
+  <target name="citp" depends="compile,copy">
+  	<java classpath="${build}" classname="org.bardes.mplayer.citp.CITPServer" />
+  </target>
+
 </project>
