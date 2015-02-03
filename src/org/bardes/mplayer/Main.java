@@ -68,6 +68,8 @@ public class Main extends Application
 	public static MainController controller;
 
     static Window displayWindow;
+
+	private CITPServer citpServer;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -160,7 +162,7 @@ public class Main extends Application
             
 			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
 			
-			CITPServer citpServer = new CITPServer(displayPane);
+			citpServer = new CITPServer(displayPane);
 			citpServer.start();
 		}
 		catch (Exception e)
@@ -187,6 +189,7 @@ public class Main extends Application
 		config.setEditorPosition(pos);
 		
 		config.save();
+		citpServer.stop();
 		
 		super.stop();
 	}

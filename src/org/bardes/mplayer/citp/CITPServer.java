@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -17,20 +22,23 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 
-public class CITPServer
+public class CITPServer implements Runnable
 {
-
 	private Node node;
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 	private Lock lock = new ReentrantLock();
 	private Condition ready;
 	private MulticastSocket pinf;
 	private InetSocketAddress mcastaddr;
+	private ServerSocket sock;
+	private ExecutorService threadPool;
+	private boolean running;
 
 	public CITPServer(Node node)
 	{
 		this.node = node;
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+		threadPool = Executors.newCachedThreadPool();
 		ready = lock.newCondition();
 	}
 
@@ -43,12 +51,17 @@ public class CITPServer
 			pinf = new MulticastSocket();
 			pinf.setBroadcast(true);
 			pinf.joinGroup(mcastaddr, null);
+
+			sock = new ServerSocket(0);
+			
+			scheduledThreadPoolExecutor.scheduleAtFixedRate(new Runnable() { public void run() { tick(); } }, 0, 5, TimeUnit.SECONDS);
+			
+			threadPool.submit(this);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		scheduledThreadPoolExecutor.scheduleAtFixedRate(new Runnable() { public void run() { tick(); } }, 0, 5, TimeUnit.SECONDS);
 	}	
 
 	public void tick()
@@ -88,7 +101,11 @@ public class CITPServer
 
 	private void sendPINF()
 	{
-		CITPHeader header = new CITPPINFPLoc();
+		int localPort = 0;
+		if (sock != null && sock.isBound() && !sock.isClosed())
+			sock.getLocalPort();
+		
+		CITPHeader header = new CITPPINFPLoc(localPort);
 		sendMulti(header);
 	}
 
@@ -129,5 +146,43 @@ public class CITPServer
 		
 		for (;;)
 		  Thread.sleep(999999999);
+	}
+
+
+	@Override
+	public void run()
+	{
+		running = true;
+		while (running)
+		{
+			try
+			{
+				Socket accept = sock.accept();
+				CITPHandler h = new CITPHandler(accept);
+				threadPool.submit(h);
+			}
+			catch (SocketException ignore)
+			{
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public void stop()
+	{
+		running = false;
+		scheduledThreadPoolExecutor.shutdown();
+		threadPool.shutdown();
+		try
+		{
+			sock.close();
+		}
+		catch (IOException e)
+		{
+		}
 	}
 }
