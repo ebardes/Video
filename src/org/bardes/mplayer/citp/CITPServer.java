@@ -52,7 +52,7 @@ public class CITPServer implements Runnable
 			pinf.setBroadcast(true);
 			pinf.joinGroup(mcastaddr, null);
 
-			sock = new ServerSocket(0);
+			sock = new ServerSocket(4847);
 			
 			scheduledThreadPoolExecutor.scheduleAtFixedRate(new Runnable() { public void run() { tick(); } }, 0, 5, TimeUnit.SECONDS);
 			
@@ -103,7 +103,7 @@ public class CITPServer implements Runnable
 	{
 		int localPort = 0;
 		if (sock != null && sock.isBound() && !sock.isClosed())
-			sock.getLocalPort();
+			localPort = sock.getLocalPort();
 		
 		CITPHeader header = new CITPPINFPLoc(localPort);
 		sendMulti(header);
