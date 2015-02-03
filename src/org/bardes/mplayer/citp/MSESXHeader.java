@@ -9,6 +9,7 @@ public abstract class MSESXHeader extends CITPHeader
 	public MSESXHeader(String type)
 	{
 		this.type = type;
+		setContentType("MSEX");
 	}
 	
 	@Override
