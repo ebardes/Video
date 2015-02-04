@@ -1,5 +1,6 @@
 package org.bardes.mplayer.citp;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,20 +32,35 @@ public class CITPHandler implements Runnable
 	{
 		try
 		{
-			CITPHeader x = new CITPPINFPNam();
-			send(x);
-			
-			x = new MSEXCinf();
-			send(x);
+			send(new CITPPINFPNam());
+			send(new MSEXSinf());
 			for (;;)
 			{
-				CITPHeader n = new CITPHeader();
-				n.scan(is);
+			    if (sock.isClosed() || sock.isInputShutdown())
+			        break;
+			    
+				CITPHeader n = CITPHeader.scan(is);
+				if (n != null)
+				    send(n);
 			}
 		}
+        catch (EOFException ignore)
+        {
+        }
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+		finally
+		{
+		    System.out.println("Closed");
+		    try
+            {
+                close();
+            }
+            catch (IOException ignore)
+            {
+            }
 		}
 	}
 
