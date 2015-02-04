@@ -9,37 +9,27 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.WritableImage;
+import javax.imageio.ImageIO;
 
 public class CITPServer implements Runnable
 {
-	private Node node;
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
-	private Lock lock = new ReentrantLock();
-	private Condition ready;
 	private MulticastSocket pinf;
 	private InetSocketAddress mcastaddr;
 	private ServerSocket sock;
 	private ExecutorService threadPool;
 	private boolean running;
 
-	public CITPServer(Node node)
+	public CITPServer()
 	{
-		this.node = node;
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
 		threadPool = Executors.newCachedThreadPool();
-		ready = lock.newCondition();
 	}
 
 	
@@ -67,35 +57,6 @@ public class CITPServer implements Runnable
 	public void tick()
 	{
 		sendPINF();
-		
-		if (node == null)
-			return;
-		
-		final WritableImage image = new WritableImage(640, 480);
-		lock.lock();
-		try
-		{
-			Platform.runLater(new Runnable() { public void run() {
-				lock.lock();
-				try
-				{
-					SnapshotParameters params = new SnapshotParameters();
-					node.snapshot(params, image);
-					ready.signal();
-				}
-				finally
-				{
-					lock.unlock();
-				}
-			}});
-			
-			ready.awaitUninterruptibly();
-			
-		}
-		finally
-		{
-			lock.unlock();
-		}
 	}
 
 
@@ -141,11 +102,13 @@ public class CITPServer implements Runnable
 	 */
 	public static void main(String[] args) throws InterruptedException
 	{
-		CITPServer server = new CITPServer(null);
+	    System.out.println(Arrays.toString(ImageIO.getWriterFormatNames()));
+		CITPServer server = new CITPServer();
 		server.start();
 		
 		for (;;)
 		  Thread.sleep(999999999);
+		
 	}
 
 
@@ -158,6 +121,7 @@ public class CITPServer implements Runnable
 			try
 			{
 				Socket accept = sock.accept();
+				System.out.println("Accepted connection from: "+sock.getInetAddress());
 				CITPHandler h = new CITPHandler(accept);
 				threadPool.submit(h);
 			}
@@ -179,7 +143,8 @@ public class CITPServer implements Runnable
 		threadPool.shutdown();
 		try
 		{
-			sock.close();
+		    if (sock != null)
+		        sock.close();
 		}
 		catch (IOException e)
 		{

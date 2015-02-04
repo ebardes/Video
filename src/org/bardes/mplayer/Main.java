@@ -162,7 +162,7 @@ public class Main extends Application
             
 			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
 			
-			citpServer = new CITPServer(displayPane);
+			citpServer = new CITPServer();
 			citpServer.start();
 		}
 		catch (Exception e)
