@@ -41,6 +41,7 @@ public class CITPServer implements Runnable
 			pinf = new MulticastSocket();
 			pinf.setBroadcast(true);
 			pinf.joinGroup(mcastaddr, null);
+			pinf.setLoopbackMode(true);
 
 			sock = new ServerSocket(4847);
 			
