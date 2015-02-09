@@ -27,14 +27,12 @@ public class CITPServer implements Runnable
 	private ServerSocket sock;
 	static ExecutorService threadPool;
 	private boolean running;
-	private static Lock lock = new ReentrantLock();
 
 	public CITPServer()
 	{
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
 		threadPool = Executors.newCachedThreadPool();
 	}
-
 	
 	public void start()
 	{
@@ -60,27 +58,19 @@ public class CITPServer implements Runnable
 
 	public void tick()
 	{
-		sendPINF();
-	}
-
-
-	private void sendPINF()
-	{
 		int localPort = 0;
-		if (sock != null && sock.isBound() && !sock.isClosed())
-			localPort = sock.getLocalPort();
-		
-		CITPHeader header = new CITPPINFPLoc(localPort);
-		sendMulti(header);
+        if (sock != null && sock.isBound() && !sock.isClosed())
+        	localPort = sock.getLocalPort();
+        
+        CITPHeader header = new CITPPINFPLoc(localPort);
+        sendMulti(header);
 	}
-
 
 	/**
 	 * @param message
 	 */
 	static void sendMulti(CITPHeader message)
 	{
-//	    lock.lock();
 		try
 		{
 		    ByteBuffer buffer = ByteBuffer.allocate(0x8000);
@@ -102,7 +92,6 @@ public class CITPServer implements Runnable
 		}
 		finally
 		{
-//		    lock.unlock();
 		}
 	}
 	

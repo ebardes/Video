@@ -2,6 +2,8 @@ package org.bardes.mplayer.citp;
 
 import java.nio.ByteBuffer;
 
+import org.bardes.mplayer.Main;
+
 public abstract class MSEXHeader extends CITPHeader
 {
 	private String type;
@@ -26,14 +28,17 @@ public abstract class MSEXHeader extends CITPHeader
     {
         byte[] data = buffer.array();
         String msexType = new String(data, 2, 4);
-        System.out.println("MSEXSubtype: " + msexType);
         buffer.position(6);
+        
+        if (Main.getConfig().isDebugEnabled())
+            System.out.println("MSEXSubtype: " + msexType);
         
         CITPHeader ret = null;
         if (msexType.equalsIgnoreCase("RqSt"))
         {
-            ret = MSEXVStream.scan(buffer);
+            return MSEXVStream.scan(buffer);
         }
+
         if (msexType.equalsIgnoreCase("GVSr"))
         {
             ret = MSEXVServer.scan(buffer);
