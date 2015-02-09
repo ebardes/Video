@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,6 +23,8 @@ import org.bardes.mplayer.personality.DMXPersonality;
 public class Config
 {
 	static File location;
+
+    private boolean debugEnabled;
 	
 	private int universe = 1;
 	
@@ -211,6 +214,17 @@ public class Config
 	{
 		this.workDirectory = workDirectory;
 	}
+
+	@XmlAttribute(name="debug")
+    public boolean isDebugEnabled()
+    {
+        return debugEnabled;
+    }
+
+    public void setDebugEnabled(boolean debugEnabled)
+    {
+        this.debugEnabled = debugEnabled;
+    }
 }
 
 @XmlAccessorType(XmlAccessType.FIELD)
