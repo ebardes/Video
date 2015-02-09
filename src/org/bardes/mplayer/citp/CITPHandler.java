@@ -66,13 +66,21 @@ public class CITPHandler implements Runnable
 
 	private void send(CITPHeader x) throws IOException
 	{
-		byte[] buffer = new byte[8192];
-		ByteBuffer bb = ByteBuffer.wrap(buffer);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		x.stream(bb);
-		x.fixup(bb);
 		
-		os.write(buffer, 0, bb.position());
+		if (x instanceof MSEXVStream)
+		{
+		    CITPServer.sendMulti(x);
+		}
+		else
+		{
+		    byte[] buffer = new byte[32768];
+		    ByteBuffer bb = ByteBuffer.wrap(buffer);
+		    bb.order(ByteOrder.LITTLE_ENDIAN);
+		    x.stream(bb);
+		    x.fixup(bb);
+		    
+		    os.write(buffer, 0, bb.position());
+		}
 	}
 
 }

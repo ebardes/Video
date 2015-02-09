@@ -39,15 +39,17 @@ public class MSEXVServer extends MSEXHeader
     {
         super.stream(bc);
         
-        bc.putShort((short) 1); // One Source
+        bc.putShort((short) (1)); // CITP/MSEX Layers
         
-        string2(bc, "Live");
+        bc.putShort((short) 0); // layerid
+        string2(bc, "Live Output");
         
         bc.put((byte) -1); // physical output
-        bc.put((byte) -1); // layer number
+        bc.put((byte) 0); // layer number
         
         bc.putShort((short) 1); // flags
-        bc.putShort((short) 128); // width
-        bc.putShort((short) 128); // height
+        bc.putShort((short) MSEXVStream.WIDTH); // width
+        bc.putShort((short) MSEXVStream.HEIGHT); // height
+ 
     }
 }
