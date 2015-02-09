@@ -14,17 +14,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 
 public class CITPServer implements Runnable
 {
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
-	private MulticastSocket pinf;
-	private InetSocketAddress mcastaddr;
+	private static MulticastSocket pinf;
+	private static InetSocketAddress mcastaddr;
 	private ServerSocket sock;
-	private ExecutorService threadPool;
+	static ExecutorService threadPool;
 	private boolean running;
+	private static Lock lock = new ReentrantLock();
 
 	public CITPServer()
 	{
@@ -75,24 +78,31 @@ public class CITPServer implements Runnable
 	/**
 	 * @param message
 	 */
-	private void sendMulti(CITPHeader message)
+	static void sendMulti(CITPHeader message)
 	{
-		ByteBuffer buffer = ByteBuffer.allocate(1024);
-		buffer.order(ByteOrder.LITTLE_ENDIAN);
-		message.stream(buffer);
-		
-		message.fixup(buffer);
-
-		byte[] array = buffer.array();
-		DatagramPacket packet = new DatagramPacket(array, buffer.position());
-		packet.setSocketAddress(mcastaddr);
+//	    lock.lock();
 		try
 		{
+		    ByteBuffer buffer = ByteBuffer.allocate(0x8000);
+		    buffer.order(ByteOrder.LITTLE_ENDIAN);
+		    message.stream(buffer);
+		    message.fixup(buffer);
+		    int len = buffer.position();
+		    buffer.position(0);
+		    
+		    byte[] array = buffer.array();
+		    DatagramPacket packet = new DatagramPacket(array, len);
+		    packet.setSocketAddress(mcastaddr);
+		    
 			pinf.send(packet);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+		finally
+		{
+//		    lock.unlock();
 		}
 	}
 	
@@ -122,7 +132,6 @@ public class CITPServer implements Runnable
 			try
 			{
 				Socket accept = sock.accept();
-				System.out.println("Accepted connection from: "+sock.getInetAddress());
 				CITPHandler h = new CITPHandler(accept);
 				threadPool.submit(h);
 			}
