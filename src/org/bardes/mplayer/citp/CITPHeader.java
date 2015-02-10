@@ -93,7 +93,15 @@ public class CITPHeader implements Streamable
 	{
 		byte[] type = new byte[4];
 		ByteBuffer buffer = ByteBuffer.allocate(20);
-		int r = in.read(buffer.array(), 0, buffer.capacity());
+		int r;
+        try
+        {
+            r = in.read(buffer.array(), 0, buffer.capacity());
+        }
+        catch (Exception e)
+        {
+            r = 0;
+        }
 		if (r <= 0)
 		    throw new EOFException();
 		
