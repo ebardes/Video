@@ -6,3 +6,4 @@
 .classpath
 *.xml
 *.mp4
+/target
