@@ -33,4 +33,12 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
   </properties>
+  <scm>
+  	<url>https://eric@eric.bardes.org/git/Video.git</url>
+  	<connection>scm:git:https://eric@eric.bardes.org/git/Video.git</connection>
+  </scm>
+  <organization>
+  	<name>Eric E Bardes</name>
+  	<url>https://eric.bardes.org/</url>
+  </organization>
 </project>
