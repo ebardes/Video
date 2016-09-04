@@ -41,4 +41,11 @@
   	<name>Eric E Bardes</name>
   	<url>https://eric.bardes.org/</url>
   </organization>
+  <repositories>
+  	<repository>
+  	  <id>eric</id>
+  	  <name>Eric's Repository</name>
+  	  <url>https://eric.bardes.org/repo</url>
+  	</repository>
+  </repositories>
 </project>
