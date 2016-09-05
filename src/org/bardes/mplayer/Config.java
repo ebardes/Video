@@ -1,9 +1,12 @@
 package org.bardes.mplayer;
 
 import java.io.File;
-import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -112,8 +115,9 @@ public class Config
 	 * @param location
 	 * @return
 	 * @throws URISyntaxException
+	 * @throws IOException 
 	 */
-    public static Config reset(URL location) throws URISyntaxException
+    public static Config reset() throws URISyntaxException, IOException
     {
         Config config = new Config();
         GroupSlot system = new GroupSlot(0, "System");
@@ -121,18 +125,43 @@ public class Config
         for (int i = 1; i <= 16; i++)
             config.addGroup(new GroupSlot(i, "User"));
         
+        File home = new File(System.getProperty("user.home"));
+        home = new File(home, "media");
+        config.workDirectory = home.getCanonicalPath();
+        if (!home.exists())
+        {
+            home.mkdirs();
+        }
         
-        File f = new File(location.toURI());
-        f = f.getParentFile();
-        f = new File(f, "images/system");
-        File[] pngFiles = f.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname)
+        String systemfiles[] = {
+                "Color Bars 1920x1080.png",
+                "Grid Test 1920x1080.png",
+                "Black.png",
+                "White.png"
+        };
+        
+        File sys = new File(home, "system");
+        sys.mkdirs();
+        
+        ArrayList<File> pngFiles = new ArrayList<>();
+        for (String f : systemfiles)
+        {
+            InputStream is = config.getClass().getClassLoader().getResourceAsStream("images/system/"+f);
+            if (is != null)
             {
-                return pathname.isFile() && pathname.toString().toLowerCase().endsWith(".png");
+                byte[] data = new byte[8192];
+                File file = new File(sys, f);
+                pngFiles.add(file);
+                FileOutputStream os = new FileOutputStream(file);
+                int n = 0;
+                while ((n = is.read(data)) > 0)
+                {
+                    os.write(data, 0, n);
+                }
+                is.close();
+                os.close();
             }
-        });
-        
+        }
         int id = 1;
         for (File p : pngFiles)
         {

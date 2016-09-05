@@ -56,7 +56,7 @@ public class Main extends Application
 	
 	private static Config config;
 	
-	private static File configLocation = new File("config.xml");
+	private static File configLocation;
 	
 	public static CueStack stack = new CueStack();
 
@@ -79,6 +79,8 @@ public class Main extends Application
 			ClassLoader cl = getClass().getClassLoader();
 			URL url = cl.getResource("main.fxml");
 			
+			configLocation = new File(System.getProperty("user.home"));
+			configLocation = new File(configLocation, "astmedia.xml");
 			if (configLocation.exists())
 			{
 				config = Config.load(configLocation);
@@ -86,7 +88,7 @@ public class Main extends Application
 			else
 			{
 			    Config.location = configLocation;
-				config = Config.reset(url);
+				config = Config.reset();
 			}
 			
 			stack = CueStack.load();
