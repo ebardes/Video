@@ -21,6 +21,7 @@ public class BasicLayer implements Layer
     private MediaPlayer mp;
     private Stage stage;
     private boolean debugging;
+	private int playMode;
 
 	public BasicLayer(int layerId, Stage stage, BorderPane pane)
 	{
@@ -109,6 +110,7 @@ public class BasicLayer implements Layer
 		MediaView mv = (MediaView) node;
 		MediaPlayer mp = mv.getMediaPlayer();
         this.mp = mp;
+        setPlayMode(this.playMode);
         this.mp.play();
 		running = true;
 	}
@@ -156,6 +158,7 @@ public class BasicLayer implements Layer
         if (mp == null)
             return;
         
+        this.playMode = playMode;
         switch (playMode)
         {
         case 1:
