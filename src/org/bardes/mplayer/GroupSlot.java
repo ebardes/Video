@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+@SuppressWarnings("restriction")
 public class GroupSlot extends Slot
 {
 	@XmlElementWrapper(name="items")

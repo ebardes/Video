@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import org.bardes.mplayer.MainController;
 
+@SuppressWarnings("restriction")
 public class Dialog
 {
 //	private Stage owner;

@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+@SuppressWarnings("restriction")
 @XmlType(name="image")
 public class ImageSlot extends Slot
 {

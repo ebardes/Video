@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+@SuppressWarnings("restriction")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 @XmlSeeAlso({ ImageSlot.class, WebSlot.class, VideoSlot.class })
 @XmlRootElement(name="slot")

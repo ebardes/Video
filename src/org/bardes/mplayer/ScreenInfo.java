@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+@SuppressWarnings("restriction")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ScreenInfo
 {

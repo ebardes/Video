@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlType;
 
+@SuppressWarnings("restriction")
 @XmlType(name="web")
 public class WebSlot extends Slot
 {

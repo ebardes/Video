@@ -11,11 +11,17 @@ import javafx.application.Platform;
 import org.bardes.mplayer.Layer;
 import org.bardes.mplayer.MasterLayer;
 
+@SuppressWarnings("restriction")
 public class MasterLitePersonality implements Personality
 {
     private List<Personality> layers = new ArrayList<Personality>();
     int footprint = 10;
     private MasterLayer master;
+	private int xShift;
+	private int yShift;
+	private int xScale;
+	private int yScale;
+	private int rotate;
     
     public MasterLitePersonality(MasterLayer master, List<Layer> layers)
     {
@@ -40,31 +46,36 @@ public class MasterLitePersonality implements Personality
     }
 
     @Override
-    public void process(ByteBuffer dmxStream)
+    public void decode(ByteBuffer dmxStream)
     {
-        final int xShift = us(dmxStream.getShort());
-        final int yShift = us(dmxStream.getShort());
-        final int xScale = us(dmxStream.getShort());
-        final int yScale = us(dmxStream.getShort());
-        final int rotate = us(dmxStream.getShort());
-        
-        extra(dmxStream);
+        xShift = us(dmxStream.getShort());
+        yShift = us(dmxStream.getShort());
+        xScale = us(dmxStream.getShort());
+        yScale = us(dmxStream.getShort());
+        rotate = us(dmxStream.getShort());
         
         for (Personality p : layers)
         {
-            p.process(dmxStream);
+            p.decode(dmxStream);
         }
         
         Platform.runLater(new Runnable() {
             @Override
             public void run()
             {
-                master.shift(xShift, yShift, xScale, yScale, rotate);
+            	activate();
             }
         });
     }
 
     protected void extra(ByteBuffer dmxStream)
     {
+    	// Nothing
+    }
+    
+    @Override
+    public void activate()
+    {
+    	master.shift(xShift, yShift, xScale, yScale, rotate);
     }
 }

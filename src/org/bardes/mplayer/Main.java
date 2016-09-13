@@ -38,6 +38,7 @@ import org.bardes.mplayer.sacn.E131Listener;
  *
  * @author dean
  */
+@SuppressWarnings("restriction")
 public class Main extends Application
 {
 
