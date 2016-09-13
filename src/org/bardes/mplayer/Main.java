@@ -28,6 +28,7 @@ import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.InternalListener;
+import org.bardes.mplayer.personality.MasterLargePersonality;
 import org.bardes.mplayer.personality.MasterLitePersonality;
 import org.bardes.mplayer.personality.MasterRegularPersonality;
 import org.bardes.mplayer.personality.Personality;
@@ -222,6 +223,9 @@ public class Main extends Application
 		Personality p;
 		switch (personality)
 		{
+		case LARGE:
+			p = new MasterLargePersonality(new MasterLayer(display), layers);
+			break;
 		case REGULAR:
 		    p = new MasterRegularPersonality(new MasterLayer(display), layers);
 		    break;
