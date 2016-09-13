@@ -127,7 +127,7 @@ public class ArtNetListener implements Runnable, NetworkListener
                     if (changed)
                     {
                         d.reset();
-                        personality.process(d);
+                        personality.decode(d);
                     }
                 }
 

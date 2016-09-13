@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import javax.xml.bind.annotation.XmlType;
 
+@SuppressWarnings("restriction")
 @XmlType(name="video")
 public class VideoSlot extends Slot
 {

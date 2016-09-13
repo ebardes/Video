@@ -1,14 +1,14 @@
 package org.bardes.mplayer;
 
+import org.bardes.mplayer.Slot.Type;
+
 import javafx.scene.Node;
-import javafx.scene.effect.Effect;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
-import org.bardes.mplayer.Slot.Type;
-
+@SuppressWarnings("restriction")
 public class BasicLayer implements Layer
 {
 	private BorderPane pane;
@@ -167,12 +167,6 @@ public class BasicLayer implements Layer
         root.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
     
-    public void effect()
-    {
-        BorderPane root = pane;
-        Node node = root;
-    }
-
     @Override
     public void setPlayMode(int playMode)
     {

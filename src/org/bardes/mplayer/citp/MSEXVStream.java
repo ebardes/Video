@@ -31,6 +31,7 @@ uint8 FPS // Preferred minimum frames per second.
 uint8 Timeout // Timeout in seconds (for instance 5 seconds, 0 to ask for only one frame).
 }
  */
+@SuppressWarnings("restriction")
 public class MSEXVStream extends MSEXHeader implements Runnable
 {
     public static int HEIGHT = 240;

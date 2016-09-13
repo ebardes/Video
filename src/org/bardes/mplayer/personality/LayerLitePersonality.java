@@ -4,14 +4,16 @@ import static org.bardes.mplayer.sacn.N.u;
 
 import java.nio.ByteBuffer;
 
-import javafx.application.Platform;
-
 import org.bardes.mplayer.Layer;
 
 
 public class LayerLitePersonality implements Personality
 {
     protected Layer layer;
+	private int dimmer;
+	private int groupId;
+	private int slotId;
+	private int volume;
     
 	public LayerLitePersonality(Layer layer)
     {
@@ -25,22 +27,19 @@ public class LayerLitePersonality implements Personality
 	}
 
 	@Override
-	public void process(ByteBuffer d)
+	public void decode(ByteBuffer d)
 	{
-		final int dimmer = u(d.get());
-		final int groupId = u(d.get());
-		final int slotId = u(d.get());
-		final int volume = u(d.get());
-		
-		Platform.runLater(new Runnable(){
-
-            @Override
-            public void run()
-            {
-                layer.setItem(groupId, slotId);
-                layer.setDimmer(dimmer);
-                layer.setVolume(volume);
-            }
-        });
+		dimmer = u(d.get());
+		groupId = u(d.get());
+		slotId = u(d.get());
+		volume = u(d.get());
+	}
+	
+	@Override
+	public void activate()
+	{
+		layer.setItem(groupId, slotId);
+		layer.setDimmer(dimmer);
+		layer.setVolume(volume);
 	}
 }

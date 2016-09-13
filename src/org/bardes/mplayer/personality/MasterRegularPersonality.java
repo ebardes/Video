@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import org.bardes.mplayer.Layer;
 import org.bardes.mplayer.MasterLayer;
 
+@SuppressWarnings("restriction")
 public class MasterRegularPersonality extends MasterLitePersonality
 {
     int r,g,b;

@@ -72,6 +72,7 @@ import org.bardes.mplayer.net.Interface;
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.ui.Dialog;
 
+@SuppressWarnings("restriction")
 public class MainController implements Initializable
 {
 	@FXML
