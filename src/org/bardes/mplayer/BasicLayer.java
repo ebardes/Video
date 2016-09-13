@@ -1,6 +1,7 @@
 package org.bardes.mplayer;
 
 import javafx.scene.Node;
+import javafx.scene.effect.Effect;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -22,6 +23,7 @@ public class BasicLayer implements Layer
     private Stage stage;
     private boolean debugging;
 	private int playMode;
+	private int volume;
 
 	public BasicLayer(int layerId, Stage stage, BorderPane pane)
 	{
@@ -110,8 +112,20 @@ public class BasicLayer implements Layer
 		MediaView mv = (MediaView) node;
 		MediaPlayer mp = mv.getMediaPlayer();
         this.mp = mp;
-        setPlayMode(this.playMode);
-        this.mp.play();
+        switch (playMode)
+        {
+        case 1:
+            mp.setCycleCount(1);
+            break;
+            
+        case 2:
+            mp.setCycleCount(Integer.MAX_VALUE);
+            break;
+            
+        default:
+        }
+		mp.setVolume(d(volume));
+        mp.play();
 		running = true;
 	}
 
@@ -133,6 +147,7 @@ public class BasicLayer implements Layer
 	@Override
 	public void setVolume(int volume)
 	{
+		this.volume = volume;
 		if (mp != null)
 		{
 			mp.setVolume(d(volume));
@@ -151,25 +166,22 @@ public class BasicLayer implements Layer
         
         root.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
+    
+    public void effect()
+    {
+        BorderPane root = pane;
+        Node node = root;
+    }
 
     @Override
     public void setPlayMode(int playMode)
     {
-        if (mp == null)
-            return;
-        
         this.playMode = playMode;
-        switch (playMode)
-        {
-        case 1:
-            mp.setCycleCount(1);
-            break;
-            
-        case 2:
-            mp.setCycleCount(Integer.MAX_VALUE);
-            break;
-            
-        default:
-        }
+    }
+    
+    @Override
+    public void shapper(int a1, int a2, int b1, int b2, int c1, int c2, int d1, int d2)
+    {
+    	
     }
 }

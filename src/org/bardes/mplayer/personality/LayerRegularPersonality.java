@@ -28,12 +28,12 @@ public class LayerRegularPersonality extends LayerLitePersonality
         final int rotate = us(dmxStream.getShort());
         final int playMode = u(dmxStream.get());
         
+        layer.setPlayMode(playMode);
         Platform.runLater(new Runnable(){
             @Override
             public void run()
             {
                 layer.shift(xShift, yShift, xScale, yScale, rotate);
-                layer.setPlayMode(playMode);
             }
         });
 

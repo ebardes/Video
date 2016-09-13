@@ -8,6 +8,7 @@ public enum DMXPersonality
 {
 	@XmlEnumValue("lite") LITE("Lite (26 addresses)"),
 	@XmlEnumValue("regular") REGULAR("Regular (70 addresses)"),
+	@XmlEnumValue("large") LARGE("Large (106 addresses)"),
 	;
 	
 	private String description;
