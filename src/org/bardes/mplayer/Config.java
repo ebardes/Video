@@ -47,6 +47,8 @@ public class Config
     private ScreenInfo screenInfo;
     
     private String workDirectory;
+    
+    private boolean replicating;
 
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
@@ -253,6 +255,16 @@ public class Config
     {
         this.debugEnabled = debugEnabled;
     }
+
+	public boolean isReplicating()
+	{
+		return replicating;
+	}
+
+	public void setReplicating(boolean replicating)
+	{
+		this.replicating = replicating;
+	}
 }
 
 @XmlAccessorType(XmlAccessType.FIELD)

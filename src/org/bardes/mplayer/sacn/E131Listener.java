@@ -26,7 +26,7 @@ public class E131Listener implements Runnable, NetworkListener
     private byte[] lastFrame;
 	private String nwInterface;
 	
-	private static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
+	public static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
 	
 	public E131Listener()
 	{
@@ -66,18 +66,11 @@ public class E131Listener implements Runnable, NetworkListener
 			InetAddress laddr = InetAddress.getByAddress(addr);
 			InetSocketAddress socketAddress = new InetSocketAddress(laddr, E131_PORT);
 
-			if (networkInterface == null || true)
-			{
-				sock = new MulticastSocket(E131_PORT);
-				sock.joinGroup(laddr);
-				networkInterface = sock.getNetworkInterface();
-				config.setNetworkInterface(networkInterface.getName());
-			}
-			else
-			{
-				sock = new MulticastSocket();
-				sock.joinGroup(socketAddress, networkInterface);
-			}
+			sock = new MulticastSocket(E131_PORT);
+			networkInterface = sock.getNetworkInterface();
+			sock.joinGroup(socketAddress, networkInterface);
+			config.setNetworkInterface(networkInterface.getName());
+			
 			while (running)
 			{
 			    DatagramPacket dp = new DatagramPacket(buffer, buffer.length);

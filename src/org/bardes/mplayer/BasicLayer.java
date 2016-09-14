@@ -2,7 +2,9 @@ package org.bardes.mplayer;
 
 import org.bardes.mplayer.Slot.Type;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -24,12 +26,14 @@ public class BasicLayer implements Layer
     private boolean debugging;
 	private int playMode;
 	private int volume;
+	private PerspectiveTransform shapper = new PerspectiveTransform();
 
 	public BasicLayer(int layerId, Stage stage, BorderPane pane)
 	{
 		this.layerId = layerId;
         this.stage = stage;
         this.pane = pane;
+        this.pane.setEffect(shapper);
 	}
 	
 	private static double d(int n)
@@ -173,9 +177,26 @@ public class BasicLayer implements Layer
         this.playMode = playMode;
     }
     
+    /**
+     * Nomenclature is borrowed from the GrandMA2 Blade Shapper Dialog
+     * see https://help.malighting.com/view/reference/Ref_Window_PopUp_SpecializedDialog_Shaper_BladeMode.html
+     * 
+     * @param a1 UpperLeftX
+     * @param a2 LowerLeftX
+     * @param b1 UpperLeftY
+     * @param b2 UpperRightY
+     * @param c1 UpperRightX
+     * @param c2 LowerRightX
+     * @param d1 LowerRightY
+     * @param d2 LowerLeftY
+     */
     @Override
     public void shapper(int a1, int a2, int b1, int b2, int c1, int c2, int d1, int d2)
     {
-    	
+    	Bounds bounds = pane.getBoundsInParent();
+    	double minX = bounds.getMinX();
+    	double minY = bounds.getMinY();
+    	double maxX = bounds.getMaxX();
+    	double maxY = bounds.getMaxY();
     }
 }
