@@ -26,6 +26,7 @@ import org.bardes.mplayer.citp.CITPServer;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
+import org.bardes.mplayer.net.Replication;
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.personality.MasterLargePersonality;
@@ -176,6 +177,9 @@ public class Main extends Application
 			
 			citpServer = new CITPServer();
 			citpServer.start();
+			
+			Replication replication = new Replication();
+			replication.start();
 		}
 		catch (Exception e)
 		{

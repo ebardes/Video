@@ -37,6 +37,11 @@ public abstract class Slot implements Comparable<Slot>
 	
 	protected boolean perserveAspectRatio = true;
 	
+	/**
+	 * When content was uploaded. Used for synchronization.
+	 */
+	private long timestamp;
+	
 	public Slot()
 	{
 	}
@@ -114,5 +119,15 @@ public abstract class Slot implements Comparable<Slot>
 	public void setPerserveAspectRatio(boolean perserveAspectRatio)
 	{
 		this.perserveAspectRatio = perserveAspectRatio;
+	}
+
+	public long getTimestamp()
+	{
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp)
+	{
+		this.timestamp = timestamp;
 	}
 }
