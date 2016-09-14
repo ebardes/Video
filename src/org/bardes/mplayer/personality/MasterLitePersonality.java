@@ -54,6 +54,7 @@ public class MasterLitePersonality implements Personality
         yScale = us(dmxStream.getShort());
         rotate = us(dmxStream.getShort());
         
+        extra(dmxStream);
         for (Personality p : layers)
         {
             p.decode(dmxStream);
@@ -77,5 +78,9 @@ public class MasterLitePersonality implements Personality
     public void activate()
     {
     	master.shift(xShift, yShift, xScale, yScale, rotate);
+    	for (Personality p : layers)
+    	{
+    	    p.activate();
+    	}
     }
 }
