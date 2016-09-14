@@ -107,6 +107,10 @@ public class Main extends Application
 			HWXY pos = config.getDisplayPosition();
 			if (pos != null)
 			{
+				if (pos.x < -8000)
+					pos.x = 0;
+				if (pos.y < -8000)
+					pos.y = 0;
     			display.setHeight(pos.height);
     			display.setWidth(pos.width);
     			display.setX(pos.x);
@@ -138,6 +142,10 @@ public class Main extends Application
 			pos = config.getEditorPosition();
 			if (pos != null)
 			{
+				if (pos.x < -8000)
+					pos.x = 0;
+				if (pos.y < -8000)
+					pos.y = 0;
     			primaryStage.setX(pos.x);
     			primaryStage.setY(pos.y);
     			primaryStage.setWidth(pos.width);
