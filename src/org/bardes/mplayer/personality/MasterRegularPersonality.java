@@ -5,17 +5,17 @@ import static org.bardes.mplayer.sacn.N.u;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import javafx.application.Platform;
-
 import org.bardes.mplayer.Layer;
 import org.bardes.mplayer.MasterLayer;
 
-@SuppressWarnings("restriction")
 public class MasterRegularPersonality extends MasterLitePersonality
 {
     int r,g,b;
     int m;
     private MasterLayer master;
+    private int red;
+    private int green;
+    private int blue;
 
     public MasterRegularPersonality(MasterLayer master, List<Layer> layers)
     {
@@ -28,28 +28,28 @@ public class MasterRegularPersonality extends MasterLitePersonality
     public void extra(ByteBuffer dmxStream)
     {
         final int mode = u(dmxStream.get());
-        final int red = u(dmxStream.get());
-        final int green = u(dmxStream.get());
-        final int blue = u(dmxStream.get());
+        red = u(dmxStream.get());
+        green = u(dmxStream.get());
+        blue = u(dmxStream.get());
         
-        if (r != red || g != green || b != blue)
-        {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run()
-                {
-                    master.color(red, green, blue);
-                }
-            });
-            r = red;
-            g = green;
-            b = blue;
-        }
         
         if (m != mode)
         {
             m = mode;
         }
+    }
+    
+    @Override
+    public void activate()
+    {
+        if (r != red || g != green || b != blue)
+        {
+            r = red;
+            g = green;
+            b = blue;
+            master.color(r, g, b);
+        }
+        super.activate();
     }
     
     @Override
