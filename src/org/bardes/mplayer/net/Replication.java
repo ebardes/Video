@@ -6,10 +6,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -18,12 +23,18 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.bardes.mplayer.Config;
 import org.bardes.mplayer.GroupSlot;
@@ -99,8 +110,75 @@ public class Replication
 					Socket accept = transfersocket.accept();
 					try
 					{
+						JAXBContext jaxbContext = JAXBContext.newInstance(Slot.class, IWantPacket.class, HereIsPacket.class);
+						int n;
+						byte[] data = new byte[8000];
+
+						/*
+						 * This is ridiculous amount of work to prevent JAXB classes from closing the input stream and by extension the socket itself 
+						 */
+						ByteArrayOutputStream xml = new ByteArrayOutputStream();
 						InputStream inputStream = accept.getInputStream();
-						IWantPacket wantPacket = JAXB.unmarshal(inputStream, IWantPacket.class);
+						while ((n = inputStream.read(data)) > 0)
+						{
+							xml.write(data, 0, n);
+						}
+						
+						Unmarshaller u = jaxbContext.createUnmarshaller();
+						IWantPacket wantPacket = (IWantPacket) u.unmarshal(new ByteArrayInputStream(xml.toByteArray()));
+						
+						GroupSlot group = Main.getConfig().getGroup(wantPacket.getGroup());
+						if (group == null)
+							return;
+						
+						Slot slot = group.get(wantPacket.getSlot());
+						if (slot == null)
+							return;
+						
+						slot.setGroup(group.getSlot());
+						
+						File file = new File(URI.create(slot.getReference()));
+						FileInputStream fis = null;
+						if (file.exists())
+							fis = new FileInputStream(file);
+						try
+						{
+							DataOutputStream out = new DataOutputStream(accept.getOutputStream());
+							try
+							{
+								HereIsPacket packet = new HereIsPacket();
+								packet.success = fis != null;
+								if (fis != null)
+									packet.slot = slot;
+								
+								StringWriter sw = new StringWriter();
+								Marshaller m = jaxbContext.createMarshaller();
+								m.marshal(packet, sw);
+								
+								out.writeUTF(sw.toString());
+								
+								if (fis != null)
+								{
+									while ((n = fis.read(data)) > 0)
+									{
+										out.write(data, 0, n);
+									}
+								}
+							}
+							finally
+							{
+								out.close();
+							}
+						}
+						finally
+						{
+							if (fis != null)
+								fis.close();
+						}
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
 					}
 					finally
 					{
@@ -183,17 +261,38 @@ public class Replication
 				InputStream inputStream = sock.getInputStream();
 				
 				JAXB.marshal(wantPacket, outputStream);
-				outputStream.close();
-				DataInputStream data = new DataInputStream(inputStream);
-
-				String xmlBlob = data.readUTF();
-				Slot slot = JAXB.unmarshal(new StringReader(xmlBlob), Slot.class);
+				outputStream.flush();
+				sock.shutdownOutput();
 				
-				byte buffer[] = new byte[8000];
-				int n;
-				while ((n = data.read(buffer)) > 0)
+				DataInputStream data = new DataInputStream(inputStream);
+				try
 				{
+					String xmlBlob = data.readUTF();
+					HereIsPacket packet = JAXB.unmarshal(new StringReader(xmlBlob), HereIsPacket.class);
 					
+					if (! packet.isSuccess())
+						return;
+					
+					Slot slot = packet.slot;
+					File file = slot.getStorage();
+					FileOutputStream fos = new FileOutputStream(file);
+					try
+					{
+						byte buffer[] = new byte[8000];
+						int n;
+						while ((n = data.read(buffer)) > 0)
+						{
+							fos.write(buffer, 0, n);
+						}
+					}
+					finally
+					{
+						fos.close();
+					}
+				}
+				finally
+				{
+					data.close();
 				}
 			}
 			finally
@@ -203,6 +302,7 @@ public class Replication
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 		}
 	}
 
@@ -249,5 +349,22 @@ public class Replication
 		thread.setDaemon(true);
 		thread.start();
 		
+	}
+
+	public static void main(String[] args) throws UnknownHostException
+	{
+		File configLocation = new File(System.getProperty("user.home"));
+		configLocation = new File(configLocation, "astmedia.xml");
+		if (configLocation.exists())
+		{
+			Config.load(configLocation);
+		}
+		
+		Replication r = new Replication();
+		
+		IWantPacket packet = new IWantPacket();
+		packet.setGroup(1);
+		packet.setSlot(1);
+		r.download(InetAddress.getLocalHost(), packet);
 	}
 }
