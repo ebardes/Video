@@ -87,7 +87,7 @@
                                                 <Button fx:id="videoChooseButton" layoutX="571.0" layoutY="22.0" mnemonicParsing="false" onAction="#chooseVideo" text="Choose" />
                                                 <TextField fx:id="videoDescriptionField" layoutX="209.0" layoutY="57.0" prefHeight="26.0" prefWidth="319.0" />
                                                 <Label layoutX="126.0" layoutY="62.0" prefHeight="16.0" prefWidth="83.0" text="Description" />
-                                                <Button layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#videoSave" text="Update" />
+                                                <Button fx:id="videoUpdate" layoutX="572.0" layoutY="57.0" mnemonicParsing="false" onAction="#videoSave" text="Update" />
                                                 <Label fx:id="videoDetails" alignment="TOP_LEFT" layoutX="65.0" layoutY="635.0" prefHeight="189.0" prefWidth="687.0" />
                                                 <Pane fx:id="videoContainer" layoutX="4.0" layoutY="128.0" maxHeight="600.0" maxWidth="800.0" minHeight="600" minWidth="800" styleClass="preview" stylesheets="@style.css" />
                                                 <Button layoutX="277.0" layoutY="88.0" mnemonicParsing="false" onAction="#videoPlay" text="Play" />

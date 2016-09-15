@@ -4,11 +4,14 @@ import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 
 @SuppressWarnings("restriction")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
@@ -41,6 +44,8 @@ public abstract class Slot implements Comparable<Slot>
 	 * When content was uploaded. Used for synchronization.
 	 */
 	private long timestamp;
+
+	private long length;
 	
 	public Slot()
 	{
@@ -110,6 +115,16 @@ public abstract class Slot implements Comparable<Slot>
 	public abstract Node getNode(Stage parent);
 	public abstract Node getPreview(Node pane);
 	public abstract Node getThumbNail();
+	
+	@XmlTransient
+	public File getStorage()
+	{
+		String directory = Main.getConfig().getWorkDirectory();
+		File file = new File(directory);
+		file = new File(file, "group_" + group);
+		file.mkdirs();
+		return file;
+	}
 
 	public boolean isPerserveAspectRatio()
 	{
@@ -129,5 +144,15 @@ public abstract class Slot implements Comparable<Slot>
 	public void setTimestamp(long timestamp)
 	{
 		this.timestamp = timestamp;
+	}
+
+	public long getLength()
+	{
+		return length;
+	}
+
+	public void setLength(long length)
+	{
+		this.length = length;
 	}
 }
