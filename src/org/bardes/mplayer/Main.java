@@ -253,11 +253,19 @@ public class Main extends Application
 		listener.start();
 	}
 
-	public static String normalize(File selectedFile)
+	public static String normalize(File selectedFile, Slot slot)
 	{
+		String name = selectedFile.getName();
+		String ext = "";
+		int n = name.lastIndexOf('.');
+		if (n > 0)
+			ext = name.substring(n);
+		
 		String workDirectory = config.getWorkDirectory();
 		File target = new File(workDirectory);
-		target = new File(target, selectedFile.getName());
+		target = new File(target, String.format("group_%03d", slot.group));
+		target.mkdirs();
+		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
 		
 		try
 		{

@@ -4,6 +4,7 @@ import static org.bardes.mplayer.sacn.E131Listener.x;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,6 +167,11 @@ public class Replication
 		}
 	}
 
+	/**
+	 * Connect to the remote system and retrieve the content.
+	 * @param remote
+	 * @param wantPacket
+	 */
 	protected void download(InetAddress remote, IWantPacket wantPacket)
 	{
 		try
@@ -177,11 +183,18 @@ public class Replication
 				InputStream inputStream = sock.getInputStream();
 				
 				JAXB.marshal(wantPacket, outputStream);
-				outputStream.flush();
+				outputStream.close();
+				DataInputStream data = new DataInputStream(inputStream);
+
+				String xmlBlob = data.readUTF();
+				Slot slot = JAXB.unmarshal(new StringReader(xmlBlob), Slot.class);
 				
-				DataInputStream dis = new DataInputStream(inputStream);
-				String xmlBlob = dis.readUTF();
-				JAXB.unmarshal(new StringReader(xmlBlob), Slot.class);
+				byte buffer[] = new byte[8000];
+				int n;
+				while ((n = data.read(buffer)) > 0)
+				{
+					
+				}
 			}
 			finally
 			{

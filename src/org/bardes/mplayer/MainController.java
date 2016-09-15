@@ -149,6 +149,9 @@ public class MainController implements Initializable
 
 	@FXML
 	Pane videoContainer;
+	
+	@FXML
+	Button videoUpdate;
 
 	@FXML
 	TabPane tabBar;
@@ -679,24 +682,39 @@ public class MainController implements Initializable
 	void chooseFile()
 	{
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Resource File");
+		fileChooser.setTitle("Open Image File");
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
 		File selectedFile = fileChooser.showOpenDialog(Main.window);
 		if (selectedFile != null)
 		{
-			String path = Main.normalize(selectedFile);
+			MultipleSelectionModel<TreeItem<Slot>> selectionModel = treeView.getSelectionModel();
+			TreeItem<Slot> selectedItem = selectionModel.getSelectedItem();
+			Slot slot = selectedItem.getValue();
+			
+			String path = Main.normalize(selectedFile, slot);
 			fileNameField.setText(path);
+			fileNameField.setEditable(false);
+			fileDescriptionField.setText(selectedFile.getName());
 			Image image = new Image(path);
 			imageView.setImage(image);
 			imageView.setPreserveRatio(true);
+			fileSave();
+			fileUpdateButton.requestFocus();
 		}
 	}
 
 	@FXML
 	void addItem()
 	{
+		int n = 1;
+		if (selected != null && selected.getType() == Type.GROUP) {
+			GroupSlot gs = ((GroupSlot) selected);
+			while (gs.slots.containsKey(n)) {
+				n++;
+			}
+		}
 		select(Type.NEW);
-		newSlotId.clear();
+		newSlotId.setText(Integer.toString(n));
 		newSlotId.requestFocus();
 	}
 
@@ -787,7 +805,11 @@ public class MainController implements Initializable
 		File selectedFile = fileChooser.showOpenDialog(Main.window);
 		if (selectedFile != null)
 		{
-			String path = Main.normalize(selectedFile);
+			MultipleSelectionModel<TreeItem<Slot>> selectionModel = treeView.getSelectionModel();
+			TreeItem<Slot> selectedItem = selectionModel.getSelectedItem();
+			Slot slot = selectedItem.getValue();
+			
+			String path = Main.normalize(selectedFile, slot);
 			try
 			{
     			Media media = new Media(path);
@@ -799,6 +821,9 @@ public class MainController implements Initializable
     			children.clear();
     			children.add(img);
     			videoDetails.setText("");
+    			videoDescriptionField.setText(selectedFile.getName());
+    			videoUpdate.requestFocus();
+    			videoSave();
 			}
 			catch (Exception e)
 			{
