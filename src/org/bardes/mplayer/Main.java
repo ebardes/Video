@@ -8,19 +8,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Tab;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-
 import org.bardes.mplayer.artnet.ArtNetListener;
 import org.bardes.mplayer.citp.CITPServer;
 import org.bardes.mplayer.cue.CueStack;
@@ -34,6 +21,20 @@ import org.bardes.mplayer.personality.MasterLitePersonality;
 import org.bardes.mplayer.personality.MasterRegularPersonality;
 import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  *
@@ -116,6 +117,7 @@ public class Main extends Application
     			display.setWidth(pos.width);
     			display.setX(pos.x);
     			display.setY(pos.y);
+    			displayScene.setCursor(Cursor.NONE);
 			}
 			else
 			{
