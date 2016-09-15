@@ -119,10 +119,17 @@ public abstract class Slot implements Comparable<Slot>
 	@XmlTransient
 	public File getStorage()
 	{
-		String directory = Main.getConfig().getWorkDirectory();
+		String ext = "";
+		int n = reference.lastIndexOf('.');
+		if (n > 0)
+			ext = reference.substring(n);
+		
+		String directory = "/tmp"; // Main.getConfig().getWorkDirectory();
 		File file = new File(directory);
-		file = new File(file, "group_" + group);
-		file.mkdirs();
+		file = new File(file, String.format("group_%03d", group));
+		if (!file.exists())
+			file.mkdirs();
+		file = new File(file, String.format("slot_%03d%s", id, ext));
 		return file;
 	}
 
@@ -154,5 +161,15 @@ public abstract class Slot implements Comparable<Slot>
 	public void setLength(long length)
 	{
 		this.length = length;
+	}
+
+	public int getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(int group)
+	{
+		this.group = group;
 	}
 }
