@@ -2,7 +2,6 @@ package org.bardes.mplayer;
 
 import org.bardes.mplayer.Slot.Type;
 
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
@@ -26,14 +25,13 @@ public class BasicLayer implements Layer
     private boolean debugging;
 	private int playMode;
 	private int volume;
-	private PerspectiveTransform shapper = new PerspectiveTransform();
+	private PerspectiveTransform shapper = null;
 
 	public BasicLayer(int layerId, Stage stage, BorderPane pane)
 	{
 		this.layerId = layerId;
         this.stage = stage;
         this.pane = pane;
-        this.pane.setEffect(shapper);
 	}
 	
 	private static double d(int n)
@@ -96,6 +94,8 @@ public class BasicLayer implements Layer
 				{
 				    node = x;
 				    pane.setCenter(x);
+//				    if (shapper != null)
+//				        pane.setEffect(shapper);
     				
     				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
     				{
@@ -123,7 +123,13 @@ public class BasicLayer implements Layer
             break;
             
         case 2:
-            mp.setCycleCount(Integer.MAX_VALUE);
+            mp.setCycleCount(MediaPlayer.INDEFINITE);
+            mp.setOnEndOfMedia(new Runnable() {
+                public void run()
+                {
+                    mp.play();
+                }
+            });
             break;
             
         default:
@@ -191,12 +197,43 @@ public class BasicLayer implements Layer
      * @param d2 LowerLeftY
      */
     @Override
-    public void shapper(int a1, int a2, int b1, int b2, int c1, int c2, int d1, int d2)
+    public void shapper(int blade_1a, int blade_1b, int blade_2a, int blade_2b, int blade_3a, int blade_3b, int blade_4a, int blade_4b)
     {
-    	Bounds bounds = pane.getBoundsInParent();
-    	double minX = bounds.getMinX();
-    	double minY = bounds.getMinY();
-    	double maxX = bounds.getMaxX();
-    	double maxY = bounds.getMaxY();
+        if (shapper == null)
+        {
+            shapper = new PerspectiveTransform();
+        }
+        
+    	double minX = 0;
+    	double minY = 0;
+    	double maxX = pane.getWidth();
+    	double maxY = pane.getHeight();
+    	
+    	double halfX = (maxX - minX) / 2.0; // Half width
+    	double halfY = (maxY - minY) / 2.0; // Half height
+    	
+//    	shapper.setUlx(minX + 10);
+//    	shapper.setLlx(minX + 10);
+//    	shapper.setUly(minY + 10);
+//    	shapper.setUry(minY + 10);
+//    	shapper.setUrx(maxX - 10);
+//    	shapper.setLrx(maxX - 10);
+//    	shapper.setLry(maxY - 10);
+//    	shapper.setLly(maxY - 10);
+    	shapper.setUlx(minX + (halfX * d(blade_4b)));
+    	shapper.setLlx(minX + (halfX * d(blade_4a)));
+    	shapper.setUly(minY + (halfY * d(blade_1a)));
+    	shapper.setUry(minY + (halfY * d(blade_1b)));
+    	shapper.setUrx(maxX - (halfX * d(blade_2a)));
+    	shapper.setLrx(maxX - (halfX * d(blade_2b)));
+    	shapper.setLry(maxY - (halfY * d(blade_3a)));
+    	shapper.setLly(maxY - (halfY * d(blade_3b)));
+    	
+//    	if (this.layerId == 0) 
+//    	{
+//        	System.out.printf("UL(%f,%f)  UR(%f,%f)\n", shapper.getUlx(), shapper.getUly(), shapper.getUrx(), shapper.getUry());
+//        	System.out.printf("LL(%f,%f)  LR(%f,%f)\n", shapper.getLlx(), shapper.getLly(), shapper.getLrx(), shapper.getLry());
+//        	System.out.println();
+//    	}
     }
 }
