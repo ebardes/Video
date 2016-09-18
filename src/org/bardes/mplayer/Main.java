@@ -15,6 +15,7 @@ import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.net.Replication;
 import org.bardes.mplayer.personality.DMXPersonality;
+import org.bardes.mplayer.personality.GreenHippoV3_0_x;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.personality.MasterLargePersonality;
 import org.bardes.mplayer.personality.MasterLitePersonality;
@@ -238,6 +239,9 @@ public class Main extends Application
 		Personality p;
 		switch (personality)
 		{
+		case HIPPO:
+		    p = new GreenHippoV3_0_x(display, layers);
+		    break;
 		case LARGE:
 			p = new MasterLargePersonality(new MasterLayer(display), layers);
 			break;

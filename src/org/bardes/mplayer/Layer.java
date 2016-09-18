@@ -23,8 +23,9 @@ public interface Layer
 	 * Sets the volume of the content.
 	 *
 	 * @param volume (0-255)
+	 * @param pan 
 	 */
-	void setVolume(int volume);
+	void setVolume(int volume, int pan);
 	
 	/**
 	 * Transform the content.
