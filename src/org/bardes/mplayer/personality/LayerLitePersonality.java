@@ -40,6 +40,6 @@ public class LayerLitePersonality implements Personality
 	{
 		layer.setItem(groupId, slotId);
 		layer.setDimmer(dimmer);
-		layer.setVolume(volume);
+		layer.setVolume(volume, 128);
 	}
 }

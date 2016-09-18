@@ -155,12 +155,13 @@ public class BasicLayer implements Layer
 	}
 
 	@Override
-	public void setVolume(int volume)
+	public void setVolume(int volume, int pan)
 	{
 		this.volume = volume;
 		if (mp != null)
 		{
 			mp.setVolume(d(volume));
+			mp.setBalance((pan - 128) / 128.0);
 		}
 	}
 
