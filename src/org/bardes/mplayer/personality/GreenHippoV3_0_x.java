@@ -13,9 +13,6 @@ import javafx.stage.Stage;
 @SuppressWarnings("restriction")
 public class GreenHippoV3_0_x implements Personality
 {
-    private final Layer layer;
-    private Stage stage;
-    
     private int dimmer;
     private int mixermode;
     private int xShift;
@@ -33,12 +30,6 @@ public class GreenHippoV3_0_x implements Personality
     private int slot;
     private int volume;
     private int pan;
-
-    public GreenHippoV3_0_x(Stage stage, List<Layer> layers)
-    {
-        this.layer = layers.get(0);
-        this.stage = stage;
-    }
 
     @Override
     public int getFootprint()
@@ -76,18 +67,10 @@ public class GreenHippoV3_0_x implements Personality
         
         xScale = zoom;
         yScale = zoom;
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run()
-            {
-                activate();
-            }
-        });
     }
 
     @Override
-    public void activate()
+    public void activate(Layer layer)
     {
         layer.setItem(bank, slot);
         layer.setVolume(volume, pan);

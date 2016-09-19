@@ -16,14 +16,12 @@ import org.bardes.mplayer.personality.Personality;
 public class E131Listener implements Runnable, NetworkListener
 {
 	private static final int E131_PORT = 5568;
-	private int offset;
 	private int universe;
 	private MulticastSocket sock;
 	private long lastPacket;
 	private boolean running;
 	private Thread thread;
 	private Personality personality;
-    private byte[] lastFrame;
 	private String nwInterface;
 	
 	public static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
@@ -38,7 +36,6 @@ public class E131Listener implements Runnable, NetworkListener
 		running = true;
 		
 		Config config = Main.getConfig();
-		offset = config.getOffset();
 		universe = config.getUniverse();
 		nwInterface = config.getNetworkInterface();
 		
@@ -77,33 +74,15 @@ public class E131Listener implements Runnable, NetworkListener
 				sock.receive(dp);
 				
 				lastPacket = System.currentTimeMillis();
-//				ByteBuffer bb = ByteBuffer.wrap(buffer, dp.getOffset(), dp.getLength());
+				ByteBuffer bb = ByteBuffer.wrap(buffer, dp.getOffset(), dp.getLength());
 				
 				int start = RootLayer.bytes + FramingLayer.bytes;
-				int z = start + DMPLayer.DMX_START_CODE.getOffset() + offset;
+				int z = start + DMPLayer.DMX_START_CODE.getOffset();
 				
 				if (personality != null)
 				{
-				    int footprint = personality.getFootprint();
-                    ByteBuffer d = ByteBuffer.wrap(buffer, z, footprint);
-                    boolean changed = false;
-
-					d.mark();
-
-                    for (int i = 0; i < footprint; i++)
-                    {
-                        byte b = d.get();
-                        if (b != lastFrame[i])
-                        {
-                            lastFrame[i] = b;
-                            changed = true;
-                        }
-                    }
-                    if (changed)
-                    {
-                        d.reset();
-                        personality.decode(d);
-                    }
+					bb.position(z);
+					personality.decode(bb);
 				}
 			}
 		}
@@ -157,8 +136,6 @@ public class E131Listener implements Runnable, NetworkListener
 	public void setPersonality(Personality personality)
 	{
 		this.personality = personality;
-		lastFrame = new byte[personality.getFootprint()];
-		
 	}
 
 	@Override

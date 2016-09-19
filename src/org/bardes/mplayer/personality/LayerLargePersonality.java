@@ -17,11 +17,6 @@ public class LayerLargePersonality extends LayerRegularPersonality
     private int blade_4a;
     private int blade_4b;
 
-    public LayerLargePersonality(Layer layer)
-    {
-        super(layer);
-    }
-
     @Override
     public int getFootprint()
     {
@@ -44,9 +39,9 @@ public class LayerLargePersonality extends LayerRegularPersonality
     }
 
     @Override
-    public void activate()
+    public void activate(Layer layer)
     {
         layer.shapper(blade_1a, blade_1b, blade_2a, blade_2b, blade_3a, blade_3b, blade_4a, blade_4b);
-        super.activate();
+        super.activate(layer);
     }
 }

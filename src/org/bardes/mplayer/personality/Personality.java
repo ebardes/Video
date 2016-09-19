@@ -2,6 +2,8 @@ package org.bardes.mplayer.personality;
 
 import java.nio.ByteBuffer;
 
+import org.bardes.mplayer.Layer;
+
 public interface Personality
 {
 	int getFootprint();
@@ -15,5 +17,5 @@ public interface Personality
 	/**
 	 * Make changes in the presentation layer. Runs in the appropriate thread for JavaFX actions.
 	 */
-	void activate();
+	void activate(Layer layer);
 }

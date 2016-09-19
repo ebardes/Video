@@ -15,11 +15,6 @@ public class LayerRegularPersonality extends LayerLitePersonality
 	private int yScale;
 	private int rotate;
 	private int playMode;
-
-	public LayerRegularPersonality(Layer layer)
-    {
-        super(layer);
-    }
     
     @Override
     public void decode(ByteBuffer dmxStream)
@@ -34,11 +29,11 @@ public class LayerRegularPersonality extends LayerLitePersonality
     }
     
     @Override
-    public void activate()
+    public void activate(Layer layer)
     {
     	layer.shift(xShift, yShift, xScale, yScale, rotate);
     	layer.setPlayMode(playMode);
-    	super.activate();
+    	super.activate(layer);
     }
 
     @Override

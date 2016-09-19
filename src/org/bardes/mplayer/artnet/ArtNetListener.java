@@ -17,14 +17,12 @@ public class ArtNetListener implements Runnable, NetworkListener
 {
     private static final int ARTNET_PROTOCOL_VERSION = 14;
     private static final int ARTNET_PORT = 6454;
-    private int offset;
     private int universe;
 
     private Personality personality;
     private boolean running;
     private Thread thread;
     private DatagramSocket sock;
-    private byte[] lastFrame;
 
     @Override
     public void start()
@@ -61,7 +59,6 @@ public class ArtNetListener implements Runnable, NetworkListener
     public void setPersonality(Personality personality)
     {
         this.personality = personality;
-        lastFrame = new byte[personality.getFootprint()];
     }
 
     @Override
@@ -76,7 +73,6 @@ public class ArtNetListener implements Runnable, NetworkListener
         running = true;
         
         Config config = Main.getConfig();
-        offset = config.getOffset();
         universe = config.getUniverse();
         
         byte buffer[] = new byte[1024];
@@ -106,31 +102,11 @@ public class ArtNetListener implements Runnable, NetworkListener
                 
 //                int len = d.getShort(16);
                 
-                int z = 17 + offset;
-                d.position(z);
+//                int z = 17 + offset;
+                d.position(18);
                 if (personality != null)
                 {
-                    int footprint = personality.getFootprint();
-                    boolean changed = false;
-
-                    d.mark();
-
-                    for (int i = 0; i < footprint; i++)
-                    {
-                        byte b = d.get();
-                        if (b != lastFrame[i])
-                        {
-                            lastFrame[i] = b;
-                            changed = true;
-                        }
-                    }
-                    if (changed)
-                    {
-                        d.reset();
-                        personality.decode(d);
-                    }
                 }
-
             }
             
         }
