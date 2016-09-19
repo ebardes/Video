@@ -936,6 +936,8 @@ public class MainController implements Initializable
 		cancelConfig(); // Using the side effect of ensuring the form matches the config.
 		
 		List<LayerConfig> layers = config.getLayers();
+		layers.clear();
+		layers.addAll(fixtureTable.getItems());
 		Main.restartListener(selectedProtocol, layers);
 	}
 
