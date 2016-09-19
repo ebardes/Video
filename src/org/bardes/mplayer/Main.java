@@ -14,13 +14,7 @@ import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.net.Replication;
-import org.bardes.mplayer.personality.DMXPersonality;
-import org.bardes.mplayer.personality.GreenHippoV3_0_x;
 import org.bardes.mplayer.personality.InternalListener;
-import org.bardes.mplayer.personality.MasterLargePersonality;
-import org.bardes.mplayer.personality.MasterLitePersonality;
-import org.bardes.mplayer.personality.MasterRegularPersonality;
-import org.bardes.mplayer.personality.Personality;
 import org.bardes.mplayer.sacn.E131Listener;
 
 import javafx.application.Application;
@@ -176,7 +170,7 @@ public class Main extends Application
             Tab cueTab = controller.cueTab;
             controller.tabBar.getTabs().remove(cueTab);
             
-			restartListener(config.getDmxProtocol(), config.getDmxPersonality());
+			restartListener(config.getDmxProtocol(), config.getLayers());
 			
 			citpServer = new CITPServer();
 			citpServer.start();
@@ -217,7 +211,7 @@ public class Main extends Application
 	 * @param selectedItem 
 	 * 
 	 */
-	public static void restartListener(DMXProtocol protocol, DMXPersonality personality)
+	public static void restartListener(DMXProtocol protocol, List<LayerConfig> layers)
 	{
 		if (listener != null)
 			listener.stop();
@@ -235,25 +229,9 @@ public class Main extends Application
 			listener = new E131Listener();
 			break;
 		}
-		
-		Personality p;
-		switch (personality)
-		{
-		case HIPPO:
-		    p = new GreenHippoV3_0_x(display, layers);
-		    break;
-		case LARGE:
-			p = new MasterLargePersonality(new MasterLayer(display), layers);
-			break;
-		case REGULAR:
-		    p = new MasterRegularPersonality(new MasterLayer(display), layers);
-		    break;
-		case LITE:
-		default:
-			p = new MasterLitePersonality(new MasterLayer(display), layers); 
-			break;
-		}
-		listener.setPersonality(p);
+
+		LayerManager manager = new LayerManager(); 
+		listener.setPersonality(manager);
 		listener.start();
 	}
 

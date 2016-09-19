@@ -25,7 +25,7 @@ public class MasterRegularPersonality extends MasterLitePersonality
     }
 
     @Override
-    public void extra(ByteBuffer dmxStream)
+    public void decode(ByteBuffer dmxStream)
     {
         final int mode = u(dmxStream.get());
         red = u(dmxStream.get());
@@ -40,7 +40,7 @@ public class MasterRegularPersonality extends MasterLitePersonality
     }
     
     @Override
-    public void activate()
+    public void activate(Layer layer)
     {
         if (r != red || g != green || b != blue)
         {
@@ -49,12 +49,6 @@ public class MasterRegularPersonality extends MasterLitePersonality
             b = blue;
             master.color(r, g, b);
         }
-        super.activate();
-    }
-    
-    @Override
-    public LayerLitePersonality getLayerPersonality(Layer layer)
-    {
-        return new LayerRegularPersonality(layer);
+        super.activate(layer);
     }
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,7 +19,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bardes.mplayer.net.DMXProtocol;
-import org.bardes.mplayer.personality.DMXPersonality;
 
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 @XmlRootElement
@@ -30,23 +30,19 @@ public class Config
 	
 	private int universe = 1;
 	
-	private int offset = 1;
-	
 	private Set<GroupSlot> groups = new TreeSet<>();
 
 	private HWXY displayPosition;
 	
 	private HWXY editorPosition;
 	
-	private DMXPersonality dmxPersonality = DMXPersonality.LITE;
-	
 	private DMXProtocol dmxProtocol = DMXProtocol.SACN;
 
 	private String networkInterface;
 
-    private ScreenInfo screenInfo;
-    
     private String workDirectory;
+    
+    private List<LayerConfig> layers = new ArrayList<>();
     
     private boolean replicating;
 
@@ -86,17 +82,6 @@ public class Config
 				return g;
 		}
 		return null;
-	}
-
-	@XmlElement(name="personality")
-	public DMXPersonality getDmxPersonality()
-	{
-		return dmxPersonality;
-	}
-
-	public void setDmxPersonality(DMXPersonality personality)
-	{
-		this.dmxPersonality = personality;
 	}
 
 	@XmlElement(name="protocol")
@@ -185,16 +170,6 @@ public class Config
 		this.universe = universe;
 	}
 
-	public int getOffset()
-	{
-		return offset;
-	}
-
-	public void setOffset(int offset)
-	{
-		this.offset = offset;
-	}
-
 	public HWXY getDisplayPosition()
 	{
 		return displayPosition;
@@ -225,16 +200,6 @@ public class Config
 		this.networkInterface = networkInterface;
 	}
 
-    public ScreenInfo getScreenInfo()
-    {
-        return screenInfo;
-    }
-
-    public void setScreenInfo(ScreenInfo screenInfo)
-    {
-        this.screenInfo = screenInfo;
-    }
-
 	public String getWorkDirectory()
 	{
 		return workDirectory;
@@ -264,6 +229,18 @@ public class Config
 	public void setReplicating(boolean replicating)
 	{
 		this.replicating = replicating;
+	}
+
+	@XmlElementWrapper(name="layers")
+	@XmlElement(name="layer")
+	public List<LayerConfig> getLayers()
+	{
+		return layers;
+	}
+
+	public void setLayers(List<LayerConfig> layers)
+	{
+		this.layers = layers;
 	}
 }
 

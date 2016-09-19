@@ -14,7 +14,6 @@ import org.bardes.mplayer.MasterLayer;
 @SuppressWarnings("restriction")
 public class MasterLitePersonality implements Personality
 {
-    private List<Personality> layers = new ArrayList<Personality>();
     int footprint = 10;
     private MasterLayer master;
 	private int xShift;
@@ -26,17 +25,6 @@ public class MasterLitePersonality implements Personality
     public MasterLitePersonality(MasterLayer master, List<Layer> layers)
     {
         this.master = master;
-        for (Layer layer : layers)
-        {
-            Personality p = getLayerPersonality(layer);
-            this.layers.add(p);
-            footprint += p.getFootprint();
-        }
-    }
-
-    public LayerLitePersonality getLayerPersonality(Layer layer)
-    {
-        return new LayerLitePersonality(layer);
     }
 
     @Override
@@ -53,34 +41,11 @@ public class MasterLitePersonality implements Personality
         xScale = us(dmxStream.getShort());
         yScale = us(dmxStream.getShort());
         rotate = us(dmxStream.getShort());
-        
-        extra(dmxStream);
-        for (Personality p : layers)
-        {
-            p.decode(dmxStream);
-        }
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run()
-            {
-            	activate();
-            }
-        });
     }
 
-    protected void extra(ByteBuffer dmxStream)
-    {
-    	// Nothing
-    }
-    
     @Override
-    public void activate()
+    public void activate(Layer layer)
     {
     	master.shift(xShift, yShift, xScale, yScale, rotate);
-    	for (Personality p : layers)
-    	{
-    	    p.activate();
-    	}
     }
 }

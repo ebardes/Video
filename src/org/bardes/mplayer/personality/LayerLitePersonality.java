@@ -15,11 +15,6 @@ public class LayerLitePersonality implements Personality
 	private int slotId;
 	private int volume;
     
-	public LayerLitePersonality(Layer layer)
-    {
-        this.layer = layer;
-    }
-
     @Override
 	public int getFootprint()
 	{
@@ -36,7 +31,7 @@ public class LayerLitePersonality implements Personality
 	}
 	
 	@Override
-	public void activate()
+	public void activate(Layer layer)
 	{
 		layer.setItem(groupId, slotId);
 		layer.setDimmer(dimmer);

@@ -10,9 +10,19 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import org.bardes.mplayer.Slot.Type;
+import org.bardes.mplayer.cue.Cue;
+import org.bardes.mplayer.cue.CueLayerInfo;
+import org.bardes.mplayer.cue.CueStack;
+import org.bardes.mplayer.net.DMXProtocol;
+import org.bardes.mplayer.net.Interface;
+import org.bardes.mplayer.personality.DMXPersonality;
+import org.bardes.mplayer.ui.Dialog;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -33,6 +43,10 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -62,15 +76,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import org.bardes.mplayer.Slot.Type;
-import org.bardes.mplayer.cue.Cue;
-import org.bardes.mplayer.cue.CueLayerInfo;
-import org.bardes.mplayer.cue.CueStack;
-import org.bardes.mplayer.net.DMXProtocol;
-import org.bardes.mplayer.net.Interface;
-import org.bardes.mplayer.personality.DMXPersonality;
-import org.bardes.mplayer.ui.Dialog;
+import javafx.util.Callback;
 
 @SuppressWarnings("restriction")
 public class MainController implements Initializable
@@ -116,6 +122,9 @@ public class MainController implements Initializable
 
 	@FXML
 	Button delItem;
+	
+	@FXML
+	Button delLayerButton;
 
 	@FXML
 	ToggleGroup newItemType;
@@ -160,13 +169,19 @@ public class MainController implements Initializable
 	TextField configUniverse;
 
 	@FXML
-	TextField configOffset;
-
+	TableView<LayerConfig> fixtureTable;
+	
+	@FXML
+	TableColumn<LayerConfig, Integer> addressColumn;
+	
+	@FXML
+	TableColumn<LayerConfig, Integer> footprintColumn;
+	
+	@FXML
+	TableColumn<LayerConfig, DMXPersonality> personalityColumn;
+	
 	@FXML
 	TilePane previewPane;
-
-	@FXML
-	ChoiceBox<DMXPersonality> dmxPersonality;
 
 	@FXML
 	CheckBox imgAspectRatio;
@@ -188,9 +203,6 @@ public class MainController implements Initializable
 	
 	@FXML
 	Tab cueTab;
-	
-	@FXML
-	ChoiceBox<ScreenInfo> screenSelect;
 	
 	@FXML
 	TextField workDirectory;
@@ -231,7 +243,6 @@ public class MainController implements Initializable
 					activateView(newValue.getValue());
 			});
 			
-			addNumberCheck(this.configOffset);
 			addNumberCheck(this.configUniverse);
 			addNumberCheck(this.cueTime);
 
@@ -269,19 +280,49 @@ public class MainController implements Initializable
 			}
 			
 			/*
-			 * Populate and select the DMX Personality box
+			 * Populate Personality control
 			 */
-			ObservableList<DMXPersonality> dmxPersonalityItems = dmxPersonality.getItems();
-			for (DMXPersonality p : DMXPersonality.values())
+			if (config.getLayers().size() == 0)
 			{
-				dmxPersonalityItems.add(p);
+				addLayer();
 			}
-			DMXPersonality personality = config.getDmxPersonality();
-			if (personality != null)
+			else
 			{
-				dmxPersonality.getSelectionModel().select(personality);
+				fixtureTable.getItems().addAll(config.getLayers());
 			}
+			fixtureTable.setEditable(true);
 			
+			Callback<TableColumn<LayerConfig, Integer>, TableCell<LayerConfig, Integer>> addressCellFactory = (TableColumn<LayerConfig, Integer> param) -> new AddressEditingCell();
+			addressColumn.setCellFactory(addressCellFactory);
+			addressColumn.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
+			addressColumn.setOnEditCommit(
+	                (TableColumn.CellEditEvent<LayerConfig, Integer> t) -> {
+	                    ((LayerConfig) t.getTableView().getItems()
+	                    .get(t.getTablePosition().getRow()))
+	                    .setAddress(t.getNewValue());
+	                });
+			
+			Callback<TableColumn<LayerConfig, DMXPersonality>, TableCell<LayerConfig, DMXPersonality>> personalityCellFactory = (TableColumn<LayerConfig, DMXPersonality> param) -> new ComboBoxEditingCell();
+			personalityColumn.setCellFactory(personalityCellFactory);
+			personalityColumn.setCellValueFactory(cellData -> cellData.getValue().getPersonalityProperty());
+			personalityColumn.setOnEditCommit(
+					(TableColumn.CellEditEvent<LayerConfig, DMXPersonality> t) -> {
+						int row = t.getTablePosition().getRow();
+						((LayerConfig) t.getTableView().getItems()
+			            .get(row))
+						.setPersonality(t.getNewValue());
+						
+						LayerConfig layerConfig = config.getLayers().get(row);
+						layerConfig.setPersonality(t.getNewValue());
+					});
+			
+			footprintColumn.setCellValueFactory(cellData -> cellData.getValue().getFootprintProperty());
+			
+			fixtureTable.selectionModelProperty().get().select(0);
+			
+			/*
+			 * 
+			 */
 			for (GroupSlot s : config.getGroups())
 			{
 				info("Loading Group " + s.id);
@@ -878,21 +919,12 @@ public class MainController implements Initializable
 	public void saveConfig()
 	{
 		try	{ config.setUniverse(Integer.valueOf(configUniverse.getText())); } catch(Exception ignore) {}
-		try	{ config.setOffset(Integer.valueOf(configOffset.getText()));     } catch(Exception ignore) {}
-		
-		config.setScreenInfo(screenSelect.getSelectionModel().getSelectedItem());
 		
 		if (nwInterface != null && nwInterface.getValue() != null)
 		{
 			config.setNetworkInterface(nwInterface.getValue().getName());
 		}
-		DMXPersonality selectedPersonality = DMXPersonality.LITE;
 		DMXProtocol selectedProtocol = DMXProtocol.SACN;
-		try
-		{
-			selectedPersonality = dmxPersonality.getSelectionModel().getSelectedItem();
-			config.setDmxPersonality(selectedPersonality);
-		} catch (Exception ignore) {}
 		
 		try
 		{
@@ -900,16 +932,17 @@ public class MainController implements Initializable
 			config.setDmxProtocol(selectedProtocol);
 		} catch (Exception ignore) {}
 		
-		Main.restartListener(selectedProtocol, selectedPersonality);
 		config.save();
 		cancelConfig(); // Using the side effect of ensuring the form matches the config.
+		
+		List<LayerConfig> layers = config.getLayers();
+		Main.restartListener(selectedProtocol, layers);
 	}
 
 	@FXML
 	public void cancelConfig()
 	{
 		configUniverse.setText(String.valueOf(config.getUniverse()));
-		configOffset.setText(String.valueOf(config.getOffset()));
 		
 		try
 		{
@@ -918,20 +951,6 @@ public class MainController implements Initializable
 				workDirectory.setText(config.getWorkDirectory());
 			}
 			
-		    ObservableList<ScreenInfo> si = screenSelect.getItems();
-		    si.clear();
-		    ObservableList<Screen> screens = Screen.getScreens();
-		    for (Screen s : screens)
-		    {
-		        si.add(new ScreenInfo(s));
-		    }
-		    
-		    if (config.getScreenInfo() == null)
-		        screenSelect.getSelectionModel().selectFirst();
-		    else
-		        screenSelect.getSelectionModel().select(config.getScreenInfo());
-
-		    
 			Interface selected = null;
 			ObservableList<Interface> items = nwInterface.getItems();
 			items.clear();
@@ -971,9 +990,7 @@ public class MainController implements Initializable
 		boolean disableNetwork = dmxProtocol == DMXProtocol.INTERNAL;
 		
 		nwInterface.setDisable(disableNetwork);
-		configOffset.setDisable(disableNetwork);
 		configUniverse.setDisable(disableNetwork);
-		dmxPersonality.setDisable(disableNetwork);
 	}
 
 	public static void addNumberCheck(final TextField text)
@@ -1023,6 +1040,36 @@ public class MainController implements Initializable
 		        .message("Please Enter Cue Number")
 		        .showNumberInput(cueName);
 		response.hashCode();
+	}
+	
+	@FXML
+	public void addLayer()
+	{
+		LayerConfig e = new LayerConfig();
+		e.setAddress(0);
+		e.setPersonality(DMXPersonality.REGULAR);
+		config.getLayers().add(e);
+		fixtureTable.getItems().add(e);
+		
+		int n = fixtureTable.getItems().size() - 1;
+		fixtureTable.selectionModelProperty().get().select(n);
+	}
+	
+	@FXML
+	public void delLayer()
+	{
+		TableViewSelectionModel<LayerConfig> tableViewSelectionModel = fixtureTable.selectionModelProperty().get();
+		int i = tableViewSelectionModel.getSelectedIndex();
+		
+		config.getLayers().remove(i);
+		fixtureTable.getItems().remove(i);
+		
+		if (i >= fixtureTable.getItems().size())
+			i--;
+		
+		tableViewSelectionModel.select(i);
+		
+		delLayerButton.disableProperty().setValue(fixtureTable.getItems().size() == 0);
 	}
 
     @FXML
