@@ -51,8 +51,8 @@ public class E131Listener implements Runnable, NetworkListener
 			{
 //				if (nwInterface != null)
 				{
-				    byte addr[] = { x(172), 17, 6, 52 };
-				    networkInterface = NetworkInterface.getByInetAddress(Inet4Address.getByAddress(addr));
+//				    byte addr[] = { x(172), 17, 6, 52 };
+//				    networkInterface = NetworkInterface.getByInetAddress(Inet4Address.getByAddress(addr));
 				}
 			}
 			catch (Exception e)

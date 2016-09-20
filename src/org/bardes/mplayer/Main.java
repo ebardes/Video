@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bardes.mplayer.artnet.ArtNetListener;
@@ -25,7 +24,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -49,7 +47,7 @@ public class Main extends Application
 
 	public static Stage display;
 	
-	public static List<Layer> layers = new ArrayList<>();
+//	public static List<Layer> layers = new ArrayList<>();
 	
 	private static NetworkListener listener;
 	
@@ -69,6 +67,8 @@ public class Main extends Application
     static Window displayWindow;
 
 	private CITPServer citpServer;
+
+	public static StackPane displayPane;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -92,7 +92,7 @@ public class Main extends Application
 			
 			stack = CueStack.load();
 
-			StackPane displayPane = new StackPane();
+			displayPane = new StackPane();
 			displayPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 			Scene displayScene = new Scene(displayPane);
 			
@@ -123,14 +123,14 @@ public class Main extends Application
 			}
 			display.show();
 			
-			for (int i = 0; i < 4; i++)
-			{
-				BorderPane e = new BorderPane();
-				displayPane.getChildren().add(0, e);
-				Layer l = new BasicLayer(i,display,e);
-				layers.add(l);
-			}
-			
+//			for (int i = 0; i < 4; i++)
+//			{
+//				BorderPane e = new BorderPane();
+//				displayPane.getChildren().add(0, e);
+//				Layer l = new BasicLayer(i,display,e);
+//				layers.add(l);
+//			}
+//			
 			displayPane.minWidthProperty().bind(display.widthProperty());
 			displayPane.maxWidthProperty().bind(display.widthProperty());
 			displayPane.minHeightProperty().bind(display.heightProperty());
@@ -230,7 +230,7 @@ public class Main extends Application
 			break;
 		}
 
-		LayerManager manager = new LayerManager(display, layers); 
+		LayerManager manager = new LayerManager(displayPane, layers); 
 		listener.setReceiver(manager);
 		listener.start();
 	}

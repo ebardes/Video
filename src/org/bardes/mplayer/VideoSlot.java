@@ -45,8 +45,8 @@ public class VideoSlot extends Slot
     {
         MediaView mediaView = new MediaView(mp);
         mediaView.setPreserveRatio(true);
-        mediaView.fitWidthProperty().bind(stage.widthProperty().divide(4));
-        mediaView.fitHeightProperty().bind(stage.heightProperty().divide(4));
+        mediaView.fitWidthProperty().bind(stage.widthProperty());
+        mediaView.fitHeightProperty().bind(stage.heightProperty());
         return mediaView;
     }
     

@@ -4,6 +4,7 @@ import static org.bardes.mplayer.sacn.N.u;
 import static org.bardes.mplayer.sacn.N.us;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.bardes.mplayer.Layer;
 
@@ -38,6 +39,7 @@ public class GreenHippoV3_0_x implements Personality
     public void decode(ByteBuffer d)
     {
         int offset = d.position();
+        d.order(ByteOrder.BIG_ENDIAN);
         
         dimmer = u(d.get());
         mixermode = u(d.get());
@@ -47,7 +49,11 @@ public class GreenHippoV3_0_x implements Personality
         brightness = u(d.get());
         contrast = u(d.get());
         negative = u(d.get());
+
         rotate = us(d.getShort()) * 2;
+        
+        d.position(offset + 10);
+        
         xShift = us(d.getShort());
         yShift = us(d.getShort());
         int aspect = u(d.get());
@@ -73,5 +79,6 @@ public class GreenHippoV3_0_x implements Personality
         layer.setVolume(volume, pan);
         layer.shift(xShift, yShift, xScale, yScale, rotate);
         layer.setDimmer(dimmer);
+        layer.setPlayMode(2);
     }
 }

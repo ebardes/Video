@@ -3,7 +3,6 @@ package org.bardes.mplayer.personality;
 import java.util.List;
 
 import org.bardes.mplayer.Layer;
-import org.bardes.mplayer.Main;
 import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.NetworkListener;
 
@@ -21,7 +20,6 @@ public class InternalListener implements NetworkListener
 	@Override
 	public void start()
 	{
-		layers = Main.layers;
 	}
 
 	@Override

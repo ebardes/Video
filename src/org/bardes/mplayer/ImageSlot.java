@@ -57,8 +57,8 @@ public class ImageSlot extends Slot
 	{
 	    if (owner != null && node != null)
 	    {
-	        node.fitHeightProperty().bind(owner.heightProperty().divide(4));
-	        node.fitWidthProperty().bind(owner.widthProperty().divide(4));
+	        node.fitHeightProperty().bind(owner.heightProperty());
+	        node.fitWidthProperty().bind(owner.widthProperty());
 	        node.setPreserveRatio(perserveAspectRatio);
 	    }
 		return node;
