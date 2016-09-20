@@ -1,6 +1,7 @@
 package org.bardes.mplayer.sacn;
 
 import java.net.DatagramPacket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
@@ -11,7 +12,7 @@ import java.nio.ByteBuffer;
 import org.bardes.mplayer.Config;
 import org.bardes.mplayer.Main;
 import org.bardes.mplayer.net.NetworkListener;
-import org.bardes.mplayer.personality.Personality;
+import org.bardes.mplayer.personality.DMXReceiver;
 
 public class E131Listener implements Runnable, NetworkListener
 {
@@ -21,8 +22,7 @@ public class E131Listener implements Runnable, NetworkListener
 	private long lastPacket;
 	private boolean running;
 	private Thread thread;
-	private Personality personality;
-	private String nwInterface;
+    private DMXReceiver receiver;
 	
 	public static byte x(int i) { return (byte) ((i > 128) ? (i - 256) : i); }
 	
@@ -37,7 +37,6 @@ public class E131Listener implements Runnable, NetworkListener
 		
 		Config config = Main.getConfig();
 		universe = config.getUniverse();
-		nwInterface = config.getNetworkInterface();
 		
 		RootLayer.init();
 		FramingLayer.init();
@@ -50,8 +49,11 @@ public class E131Listener implements Runnable, NetworkListener
 			NetworkInterface networkInterface = null;
 			try
 			{
-				if (nwInterface != null)
-					networkInterface = NetworkInterface.getByName(nwInterface);
+//				if (nwInterface != null)
+				{
+				    byte addr[] = { x(172), 17, 6, 52 };
+				    networkInterface = NetworkInterface.getByInetAddress(Inet4Address.getByAddress(addr));
+				}
 			}
 			catch (Exception e)
 			{
@@ -64,9 +66,7 @@ public class E131Listener implements Runnable, NetworkListener
 			InetSocketAddress socketAddress = new InetSocketAddress(laddr, E131_PORT);
 
 			sock = new MulticastSocket(E131_PORT);
-			networkInterface = sock.getNetworkInterface();
 			sock.joinGroup(socketAddress, networkInterface);
-			config.setNetworkInterface(networkInterface.getName());
 			
 			while (running)
 			{
@@ -76,13 +76,13 @@ public class E131Listener implements Runnable, NetworkListener
 				lastPacket = System.currentTimeMillis();
 				ByteBuffer bb = ByteBuffer.wrap(buffer, dp.getOffset(), dp.getLength());
 				
-				int start = RootLayer.bytes + FramingLayer.bytes;
-				int z = start + DMPLayer.DMX_START_CODE.getOffset();
-				
-				if (personality != null)
+				if (receiver != null)
 				{
+				    int start = RootLayer.bytes + FramingLayer.bytes;
+				    int z = start + DMPLayer.DMX_START_CODE.getOffset();
+				    
 					bb.position(z);
-					personality.decode(bb);
+					receiver.onFrame(bb.slice());
 				}
 			}
 		}
@@ -132,15 +132,15 @@ public class E131Listener implements Runnable, NetworkListener
 		return (System.currentTimeMillis() - lastPacket) < 10000; // within ten seconds
 	}
 
-	@Override
-	public void setPersonality(Personality personality)
-	{
-		this.personality = personality;
-	}
+    @Override
+    public void setReceiver(DMXReceiver receiver)
+    {
+        this.receiver = receiver;
+    }
 
-	@Override
-	public Personality getPersonality()
-	{
-		return personality;
-	}	
+    @Override
+    public DMXReceiver getReceiver()
+    {
+        return receiver;
+    }
 }

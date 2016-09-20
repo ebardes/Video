@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 @XmlEnum(String.class)
 public enum DMXPersonality
 {
+    @XmlEnumValue("master-lite") MASTER_LITE("Lite Master", MasterLitePersonality.class),
+    @XmlEnumValue("master-regular") MASTER_REGULAR("Regular Master", MasterRegularPersonality.class),
 	@XmlEnumValue("lite") LITE("Lite", LayerLitePersonality.class),
 	@XmlEnumValue("regular") REGULAR("Regular", LayerRegularPersonality.class),
 	@XmlEnumValue("large") LARGE("Large", LayerLargePersonality.class),
@@ -23,19 +25,25 @@ public enum DMXPersonality
 	
 	public int getFootprint()
 	{
-		try
-		{
-			return klass.newInstance().getFootprint();
-		}
-		catch (InstantiationException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e)
-		{
-			e.printStackTrace();
-		}
-		return 0;
+	    Personality personality = getInstance();
+		return personality != null ? personality.getFootprint() : 0;
+	}
+	
+	public Personality getInstance()
+	{
+        try
+        {
+            return klass.newInstance();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
 	}
 	
 	@Override
