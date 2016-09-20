@@ -7,7 +7,6 @@ import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 public class BasicLayer implements Layer
@@ -21,16 +20,14 @@ public class BasicLayer implements Layer
     private int lastGroup = -1;
     private int lastSlot = -1;
     private MediaPlayer mp;
-    private Stage stage;
     private boolean debugging;
 	private int playMode;
 	private int volume;
 	private PerspectiveTransform shapper = null;
 
-	public BasicLayer(int layerId, Stage stage, BorderPane pane)
+	public BasicLayer(int layerId, BorderPane pane)
 	{
 		this.layerId = layerId;
-        this.stage = stage;
         this.pane = pane;
 	}
 	
@@ -47,8 +44,10 @@ public class BasicLayer implements Layer
 	    
 	    if (debugging)
 	        System.out.println("Dimmer="+n+" " + layerId);
+	    
 	    this.dimmer = n;
 		pane.setOpacity(d(n));
+	    
 		if (slot != null)
 		{
 		    if (slot.getType() == Type.VIDEO && node != null)
@@ -71,29 +70,29 @@ public class BasicLayer implements Layer
 	    if (groupId == lastGroup && slotId == lastSlot)
 	        return;
 	    
-	    lastGroup = groupId;
-	    lastSlot = slotId;
-	    
 	    if (debugging)
 	        System.out.format("setItem(%d, %d) %d%n", groupId, slotId, layerId);
 	        
-        if (running && dimmer > 0 && node instanceof MediaView)
+        if (running && dimmer > 0 && (node instanceof MediaView) || (slot != null && slot.getType() == Type.VIDEO))
         {
             stop("B");
         }
         
-		Config config = Main.getConfig();
+        lastGroup = groupId;
+        lastSlot = slotId;
+        
+ 		Config config = Main.getConfig();
 		GroupSlot gs = config.getGroup(groupId);
 		if (gs != null)
 		{
 			slot = gs.get(slotId);
 			if (slot != null)
 			{
-				Node x = slot.getNode(stage);
+				Node x = slot.getNode(Main.display);
 				if (x != null)
 				{
 				    node = x;
-				    pane.setCenter(x);
+					pane.setCenter(x);
 //				    if (shapper != null)
 //				        pane.setEffect(shapper);
     				
@@ -102,6 +101,16 @@ public class BasicLayer implements Layer
 				        start(x, "B");
     				}
 				}
+				else
+				{
+					pane.setCenter(null);
+					node = null;
+				}
+			}
+			else
+			{
+				pane.setCenter(null);
+				node = null;
 			}
 		}
 	}
@@ -168,14 +177,13 @@ public class BasicLayer implements Layer
     @Override
     public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
     {
-        BorderPane root = pane;
-        root.setTranslateX((double)(xShift - 32768) / 64.0);
-        root.setTranslateY((double)(yShift - 32768) / 64.0);
+        pane.setTranslateX((double)(xShift - 32768) / 64.0);
+        pane.setTranslateY((double)(yShift - 32768) / 64.0);
         
-        root.setScaleX(xScale / 32768.0);
-        root.setScaleY(yScale / 32768.0);
+        pane.setScaleX(xScale / 32768.0);
+        pane.setScaleY(yScale / 32768.0);
         
-        root.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
+        pane.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
     
     @Override

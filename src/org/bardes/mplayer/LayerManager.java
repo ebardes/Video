@@ -2,8 +2,8 @@ package org.bardes.mplayer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.DMXReceiver;
@@ -11,58 +11,65 @@ import org.bardes.mplayer.personality.MasterPersonality;
 import org.bardes.mplayer.personality.Personality;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 @SuppressWarnings("restriction")
 public class LayerManager implements DMXReceiver
 {
-    private static class LayerInfo implements Comparable<LayerInfo>
+    private static class LayerInfo
     {
         int start;
         int footprint;
         public DMXPersonality personality;
         public Personality node;
-        public BorderPane pane;
         public Layer layer;
         public byte[] bytes;
-
-        @Override
-        public int compareTo(LayerInfo o)
-        {
-            return start - o.start;
-        }
     }
     
-    TreeSet<LayerInfo> layers = new TreeSet<>();
-    private MasterLayer master;
+    List<LayerInfo> layers = new ArrayList<>();
+    @SuppressWarnings("unused")
+	private MasterLayer master;
     private LayerInfo masterInfo;
     private boolean debugging = Main.getConfig().isDebugEnabled();
     
-    public LayerManager(Stage stage, List<LayerConfig> layerConfig)
+    public LayerManager(StackPane root, List<LayerConfig> layerConfig)
     {
-        int layerId = 0;
-        master = new MasterLayer(stage);
-        master.clear();
+        final ObservableList<Node> children = root.getChildren();
+		children.clear();
+        master = new MasterLayer(root);
         
+        int layerId = 0;
         for (LayerConfig x : layerConfig)
         {
             LayerInfo info = new LayerInfo();
-            info.start = x.getAddress();
             info.personality = x.getPersonality();
+            info.start = x.getAddress();
             info.node = info.personality.getInstance();
             info.footprint = info.node.getFootprint();
-            info.pane = new BorderPane();
             info.bytes = new byte[info.footprint];
+            
+            BorderPane p = new BorderPane();
+            if (debugging)
+            {
+	            Text text = new Text();
+	            text.setText(String.format("Layer %d - %s", layerId+1, info.personality.toString()));
+	            text.setFill(Color.BISQUE);
+	            p.setBottom(text);
+            }
             if (info.node instanceof MasterPersonality)
             {
                 masterInfo = info;
             }
             else
             {
-                info.layer = new BasicLayer(layerId++, stage, info.pane);
-                master.add(info.pane);
+                info.layer = new BasicLayer(layerId++, p);
                 layers.add(info);
+                children.add(0, p);
             }
         }
     }
@@ -88,12 +95,14 @@ public class LayerManager implements DMXReceiver
             }
             if (changed)
             {
-                for (int i = 0; i < x.footprint && debugging; i++)
-                {
-                    System.out.format("%02x ", x.bytes[i] & 0xff);
-                }
-                System.out.println();
-                
+            	if (debugging)
+            	{
+	                for (int i = 0; i < x.footprint; i++)
+	                {
+	                    System.out.format("%02x ", x.bytes[i] & 0xff);
+	                }
+	                System.out.println();
+            	}
                 ByteBuffer bb = ByteBuffer.wrap(x.bytes);
                 bb.order(ByteOrder.LITTLE_ENDIAN);
                 x.node.decode(bb);
@@ -112,9 +121,10 @@ public class LayerManager implements DMXReceiver
                 @Override
                 public void run()
                 {
-                    layers.forEach(x -> {
-                        x.node.activate(x.layer);
-                    });
+                	for (LayerInfo x : layers)
+                	{
+                		x.node.activate(x.layer);
+                	}
                     if (masterInfo != null)
                     {
                         masterInfo.node.activate(null);

@@ -1,31 +1,19 @@
 package org.bardes.mplayer;
 
-import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 public class MasterLayer
 {
     private StackPane root;
 
-    public MasterLayer(Stage stage)
+    public MasterLayer(StackPane root)
     {
-        root = (StackPane) stage.getScene().getRoot();
-    }
-    
-    public void clear()
-    {
-        root.getChildren().clear();
-    }
-
-    public void add(Node node)
-    {
-        root.getChildren().add(node);
+        this.root = root;
     }
     
     public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
