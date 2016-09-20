@@ -7,7 +7,7 @@ import org.bardes.mplayer.personality.DMXPersonality;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
-
+@SuppressWarnings("restriction")
 public class LayerConfig
 {
 	private int address = 0;

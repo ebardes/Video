@@ -3,19 +3,16 @@ package org.bardes.mplayer.personality;
 import static org.bardes.mplayer.sacn.N.us;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
-
-import javafx.application.Platform;
 
 import org.bardes.mplayer.Layer;
 import org.bardes.mplayer.MasterLayer;
 
 @SuppressWarnings("restriction")
-public class MasterLitePersonality implements Personality
+public class MasterLitePersonality implements MasterPersonality
 {
     int footprint = 10;
-    private MasterLayer master;
+    protected MasterLayer master;
 	private int xShift;
 	private int yShift;
 	private int xScale;

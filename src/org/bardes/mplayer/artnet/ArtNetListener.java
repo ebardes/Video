@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 import org.bardes.mplayer.Config;
 import org.bardes.mplayer.Main;
 import org.bardes.mplayer.net.NetworkListener;
-import org.bardes.mplayer.personality.Personality;
+import org.bardes.mplayer.personality.DMXReceiver;
 
 public class ArtNetListener implements Runnable, NetworkListener
 {
@@ -19,10 +19,10 @@ public class ArtNetListener implements Runnable, NetworkListener
     private static final int ARTNET_PORT = 6454;
     private int universe;
 
-    private Personality personality;
     private boolean running;
     private Thread thread;
     private DatagramSocket sock;
+    private DMXReceiver receiver;
 
     @Override
     public void start()
@@ -56,17 +56,17 @@ public class ArtNetListener implements Runnable, NetworkListener
     }
 
     @Override
-    public void setPersonality(Personality personality)
+    public void setReceiver(DMXReceiver receiver)
     {
-        this.personality = personality;
+        this.receiver = receiver;
     }
-
+    
     @Override
-    public Personality getPersonality()
+    public DMXReceiver getReceiver()
     {
-        return personality;
+        return receiver;
     }
-
+    
     @Override
     public void run()
     {
@@ -104,11 +104,11 @@ public class ArtNetListener implements Runnable, NetworkListener
                 
 //                int z = 17 + offset;
                 d.position(18);
-                if (personality != null)
+                if (receiver != null)
                 {
+                    receiver.onFrame(d);
                 }
             }
-            
         }
         catch (SocketException ignore)
         {

@@ -1,6 +1,6 @@
 package org.bardes.mplayer.net;
 
-import org.bardes.mplayer.personality.Personality;
+import org.bardes.mplayer.personality.DMXReceiver;
 
 public interface NetworkListener
 {
@@ -8,6 +8,6 @@ public interface NetworkListener
 	void stop();
 	boolean isReceiving();
 	
-	void setPersonality(Personality personality);
-	Personality getPersonality();
+	void setReceiver(DMXReceiver receiver);
+	DMXReceiver getReceiver();
 }

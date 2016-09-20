@@ -1,14 +1,11 @@
 package org.bardes.mplayer.personality;
 
-import static org.bardes.mplayer.sacn.N.*;
+import static org.bardes.mplayer.sacn.N.u;
+import static org.bardes.mplayer.sacn.N.us;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 
 import org.bardes.mplayer.Layer;
-
-import javafx.application.Platform;
-import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 public class GreenHippoV3_0_x implements Personality

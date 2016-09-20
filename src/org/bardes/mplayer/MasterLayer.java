@@ -1,5 +1,6 @@
 package org.bardes.mplayer;
 
+import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -16,7 +17,17 @@ public class MasterLayer
     {
         root = (StackPane) stage.getScene().getRoot();
     }
+    
+    public void clear()
+    {
+        root.getChildren().clear();
+    }
 
+    public void add(Node node)
+    {
+        root.getChildren().add(node);
+    }
+    
     public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
     {
         root.setTranslateX((double)(xShift - 32768) / 8.0);

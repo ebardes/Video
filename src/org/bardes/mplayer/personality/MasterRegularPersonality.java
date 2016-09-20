@@ -12,7 +12,6 @@ public class MasterRegularPersonality extends MasterLitePersonality
 {
     int r,g,b;
     int m;
-    private MasterLayer master;
     private int red;
     private int green;
     private int blue;
@@ -20,7 +19,6 @@ public class MasterRegularPersonality extends MasterLitePersonality
     public MasterRegularPersonality(MasterLayer master, List<Layer> layers)
     {
         super(master, layers);
-        this.master = master;
         footprint += 4;
     }
 

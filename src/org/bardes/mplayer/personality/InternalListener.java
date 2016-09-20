@@ -9,9 +9,9 @@ import org.bardes.mplayer.net.NetworkListener;
 
 public class InternalListener implements NetworkListener
 {
-	private Personality personality;
 	private CueStack stack;
 	private List<Layer> layers;
+    private DMXReceiver receiver;
 	
 	public InternalListener(CueStack stack)
 	{
@@ -35,16 +35,15 @@ public class InternalListener implements NetworkListener
 		return true;
 	}
 
-	@Override
-	public void setPersonality(Personality personality)
-	{
-		this.personality = personality;
-	}
+    @Override
+    public void setReceiver(DMXReceiver receiver)
+    {
+        this.receiver = receiver;
+    }
 
-	@Override
-	public Personality getPersonality()
-	{
-		return personality;
-	}
-
+    @Override
+    public DMXReceiver getReceiver()
+    {
+        return receiver;
+    }
 }

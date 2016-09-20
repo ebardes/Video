@@ -230,8 +230,8 @@ public class Main extends Application
 			break;
 		}
 
-		LayerManager manager = new LayerManager(); 
-		listener.setPersonality(manager);
+		LayerManager manager = new LayerManager(display, layers); 
+		listener.setReceiver(manager);
 		listener.start();
 	}
 
