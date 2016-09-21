@@ -1,7 +1,6 @@
 package org.bardes.mplayer.sacn;
 
 import java.net.DatagramPacket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
@@ -49,10 +48,10 @@ public class E131Listener implements Runnable, NetworkListener
 			NetworkInterface networkInterface = null;
 			try
 			{
-//				if (nwInterface != null)
+			    String nwInterface = config.getNetworkInterface();
+				if (nwInterface != null)
 				{
-//				    byte addr[] = { x(172), 17, 6, 52 };
-//				    networkInterface = NetworkInterface.getByInetAddress(Inet4Address.getByAddress(addr));
+				    networkInterface = NetworkInterface.getByName(nwInterface);
 				}
 			}
 			catch (Exception e)
