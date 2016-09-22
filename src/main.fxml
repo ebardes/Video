@@ -286,67 +286,23 @@
                               <TableView fx:id="fixtureTable" editable="true" layoutX="185.0" layoutY="259.0" prefHeight="228.0" prefWidth="645.0">
                                 <columns>
                                   <TableColumn fx:id="addressColumn" resizable="false" sortable="false" text="Address" />
-                                  <TableColumn fx:id="personalityColumn" prefWidth="472.0" resizable="false" sortable="false" text="Personality" />
-                                    <TableColumn fx:id="footprintColumn" editable="false" prefWidth="85.0" sortable="false" text="Footprint" />
+                                  <TableColumn fx:id="personalityColumn" prefWidth="561.0" resizable="false" sortable="false" text="Personality" />
                                 </columns>
                               </TableView>
                               <Label layoutX="59.0" layoutY="230.0" prefHeight="16.0" prefWidth="252.0" text="Fixture Configuration" />
                               <Button layoutX="185.0" layoutY="489.0" mnemonicParsing="false" onAction="#addLayer" text="Add" />
                               <Button fx:id="delLayerButton" layoutX="232.0" layoutY="489.0" mnemonicParsing="false" onAction="#delLayer" text="Del" />
+                              <Label layoutX="185.0" layoutY="632.0" prefHeight="17.0" prefWidth="646.0" text="GIT: ${buildNumber}    Built: ${buildtimestamp}">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font></Label>
                            </children>
                         </AnchorPane>
                     </content>
                   </Tab>
                   <Tab id="PREVIEW" text="Preview">
                      <content>
-                        <TilePane fx:id="previewPane" prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
-                                 <TilePane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </TilePane.margin>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                                 <children>
-                                    <BorderPane id="preview1" />
-                                 </children>
-                              </Pane>
-                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
-                                 <TilePane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </TilePane.margin>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                                 <children>
-                                    <BorderPane id="preview2" />
-                                 </children>
-                              </Pane>
-                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
-                                 <TilePane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </TilePane.margin>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                                 <children>
-                                    <BorderPane id="preview3" />
-                                 </children>
-                              </Pane>
-                              <Pane prefHeight="200.0" prefWidth="240.0" styleClass="preview" stylesheets="@style.css">
-                                 <TilePane.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </TilePane.margin>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                                 <children>
-                                    <BorderPane id="preview4" />
-                                 </children>
-                              </Pane>
-                           </children>
-                        </TilePane>
+                        <TilePane fx:id="previewPane" prefHeight="200.0" prefWidth="200.0" />
                      </content>
                   </Tab>
               </tabs>

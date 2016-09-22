@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.bardes.mplayer.LayerManager.LayerInfo;
 import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.cue.Cue;
 import org.bardes.mplayer.cue.CueLayerInfo;
@@ -70,6 +71,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -316,10 +318,8 @@ public class MainController implements Initializable
 						layerConfig.setPersonality(t.getNewValue());
 					});
 			
-			footprintColumn.setCellValueFactory(cellData -> cellData.getValue().getFootprintProperty());
-			
 			fixtureTable.selectionModelProperty().get().select(0);
-			
+
 			/*
 			 * 
 			 */
@@ -351,6 +351,37 @@ public class MainController implements Initializable
 		}
 		
 		info("Ready");
+	}
+
+	private void resetPreviewPane()
+	{
+		ObservableList<Node> children = previewPane.getChildren();
+		previewPane.getStyleClass().add("previewcontainer");
+		previewPane.getStylesheets().add("style.css");
+		
+		children.clear();
+		for (LayerInfo layer : Main.layoutManager.layers)
+		{
+			BorderPane p = new BorderPane();
+			p.setPrefSize(240, 200);
+			p.setMaxSize(240, 200);
+			p.getStyleClass().add("preview");
+			p.getStylesheets().add("style.css");
+			
+			Text label = new Text(
+					String.format("DMX: %03d\n%s", layer.start, layer.personality.toString())
+					);
+			p.setBottom(label);
+			
+			BorderPane bp = new BorderPane();
+	        bp.maxHeightProperty().bind(p.heightProperty());
+	        bp.maxWidthProperty().bind(p.widthProperty());
+			p.getChildren().add(bp);
+			children.add(p);
+			
+			BorderPane.setAlignment(bp, Pos.CENTER);
+			layer.setPreviewPane(bp);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -434,7 +465,7 @@ public class MainController implements Initializable
 			break;
 			
 		case PREVIEW:
-			// do nothing
+			resetPreviewPane();
 			break;
 			
 		case CUE:

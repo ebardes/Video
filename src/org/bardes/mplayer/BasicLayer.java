@@ -3,8 +3,11 @@ package org.bardes.mplayer;
 import org.bardes.mplayer.Slot.Type;
 
 import javafx.scene.Node;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
@@ -14,6 +17,7 @@ public class BasicLayer implements Layer
 	private BorderPane pane;
 	private Slot slot;
 	private Node node;
+	private Node previewNode;
 	private boolean running = false;
     private int layerId;
     private int dimmer = -1;
@@ -24,11 +28,14 @@ public class BasicLayer implements Layer
 	private int playMode;
 	private int volume;
 	private PerspectiveTransform shapper = null;
+	private ColorAdjust colorAdjust;
+	private BorderPane previewPane;
 
 	public BasicLayer(int layerId, BorderPane pane)
 	{
 		this.layerId = layerId;
         this.pane = pane;
+        this.colorAdjust = new ColorAdjust();
 	}
 	
 	private static double d(int n)
@@ -92,7 +99,17 @@ public class BasicLayer implements Layer
 				if (x != null)
 				{
 				    node = x;
+				    x.setEffect(colorAdjust);
 					pane.setCenter(x);
+					if (previewPane != null)
+					{
+						previewNode = slot.getPreview(previewPane);
+						previewPane.setCenter(previewNode);
+//						previewPane.setPrefSize(240, 200);
+//						previewPane.setMaxSize(240, 200);
+						previewPane.layout();
+					}
+					
 //				    if (shapper != null)
 //				        pane.setEffect(shapper);
     				
@@ -174,17 +191,26 @@ public class BasicLayer implements Layer
 		}
 	}
 
-    @Override
-    public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
+    private void shift(Pane node, int xShift, int yShift, int xScale, int yScale, int rotate)
     {
-        pane.setTranslateX((double)(xShift - 32768) / 64.0);
-        pane.setTranslateY((double)(yShift - 32768) / 64.0);
-        
-        pane.setScaleX(xScale / 32768.0);
-        pane.setScaleY(yScale / 32768.0);
-        
-        pane.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
+    	if (node == null)
+    		return;
+    	
+    	node.setTranslateX((double)(xShift - 32768) / 64.0);
+    	node.setTranslateY((double)(yShift - 32768) / 64.0);
+    	
+    	node.setScaleX(xScale / 32768.0);
+    	node.setScaleY(yScale / 32768.0);
+    	
+    	node.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
+
+    @Override
+	public void shift(int xShift, int yShift, int xScale, int yScale, int rotate)
+	{
+    	shift(pane, xShift, yShift, xScale, yScale, rotate);
+    	shift(previewPane, xShift, yShift, xScale, yScale, rotate);
+	}
     
     @Override
     public void setPlayMode(int playMode)
@@ -221,14 +247,6 @@ public class BasicLayer implements Layer
     	double halfX = (maxX - minX) / 2.0; // Half width
     	double halfY = (maxY - minY) / 2.0; // Half height
     	
-//    	shapper.setUlx(minX + 10);
-//    	shapper.setLlx(minX + 10);
-//    	shapper.setUly(minY + 10);
-//    	shapper.setUry(minY + 10);
-//    	shapper.setUrx(maxX - 10);
-//    	shapper.setLrx(maxX - 10);
-//    	shapper.setLry(maxY - 10);
-//    	shapper.setLly(maxY - 10);
     	shapper.setUlx(minX + (halfX * d(blade_4b)));
     	shapper.setLlx(minX + (halfX * d(blade_4a)));
     	shapper.setUly(minY + (halfY * d(blade_1a)));
@@ -238,11 +256,27 @@ public class BasicLayer implements Layer
     	shapper.setLry(maxY - (halfY * d(blade_3a)));
     	shapper.setLly(maxY - (halfY * d(blade_3b)));
     	
-//    	if (this.layerId == 0) 
-//    	{
-//        	System.out.printf("UL(%f,%f)  UR(%f,%f)\n", shapper.getUlx(), shapper.getUly(), shapper.getUrx(), shapper.getUry());
-//        	System.out.printf("LL(%f,%f)  LR(%f,%f)\n", shapper.getLlx(), shapper.getLly(), shapper.getLrx(), shapper.getLry());
-//        	System.out.println();
-//    	}
+    	if (this.layerId == 0 && debugging) 
+    	{
+        	System.out.printf("UL(%f,%f)  UR(%f,%f)\n", shapper.getUlx(), shapper.getUly(), shapper.getUrx(), shapper.getUry());
+        	System.out.printf("LL(%f,%f)  LR(%f,%f)\n", shapper.getLlx(), shapper.getLly(), shapper.getLrx(), shapper.getLry());
+        	System.out.println();
+    	}
+    }
+    
+    @Override
+    public void colorAdjust(int brightness, int contrast, int saturation, int hue)
+    {
+    	this.colorAdjust.setBrightness(d(brightness - 128) * 2.0);
+    	this.colorAdjust.setContrast(d(contrast - 128) * 2.0);
+    	this.colorAdjust.setSaturation(d(saturation - 128) * 2.0);
+    	this.colorAdjust.setHue(d(hue - 128) * 2.0);
+    }
+    
+    @Override
+    public void setPreviewPane(BorderPane previewPane)
+    {
+		this.previewPane = previewPane;
+		previewPane.setCenter(previewNode);
     }
 }
