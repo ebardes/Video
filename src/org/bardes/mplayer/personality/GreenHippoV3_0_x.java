@@ -80,5 +80,6 @@ public class GreenHippoV3_0_x implements Personality
         layer.shift(xShift, yShift, xScale, yScale, rotate);
         layer.setDimmer(dimmer);
         layer.setPlayMode(2);
+        layer.colorAdjust(brightness, contrast, 128, 128);
     }
 }
