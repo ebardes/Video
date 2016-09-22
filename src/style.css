@@ -1,3 +1,7 @@
+.previewcontainer {
+	-fx-vgap: 5;
+	-fx-hgap: 5;
+}
 .preview {
 	-fx-tile-alignment: center;
 	-fx-border-color: black;
@@ -5,6 +9,8 @@
 	-fx-background-radius: 5;
 	-fx-alignment: center;
 	-fx-background-image: url(images/alpha.png);
+	-fx-width: 240;
+	-fx-height: 200;
 }
 
 .modified {

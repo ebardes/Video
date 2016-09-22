@@ -17,6 +17,7 @@ import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.sacn.E131Listener;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -69,6 +70,8 @@ public class Main extends Application
 	private CITPServer citpServer;
 
 	public static StackPane displayPane;
+
+	static LayerManager layoutManager;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -230,8 +233,8 @@ public class Main extends Application
 			break;
 		}
 
-		LayerManager manager = new LayerManager(displayPane, layers); 
-		listener.setReceiver(manager);
+		layoutManager = new LayerManager(displayPane, layers); 
+		listener.setReceiver(layoutManager);
 		listener.start();
 	}
 
@@ -248,6 +251,7 @@ public class Main extends Application
 		target = new File(target, String.format("group_%03d", slot.group));
 		target.mkdirs();
 		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
+		slot.setTimestamp(System.currentTimeMillis());
 		
 		try
 		{

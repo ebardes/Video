@@ -21,7 +21,7 @@ import javafx.scene.text.Text;
 @SuppressWarnings("restriction")
 public class LayerManager implements DMXReceiver
 {
-    private static class LayerInfo
+    static class LayerInfo
     {
         int start;
         int footprint;
@@ -29,6 +29,10 @@ public class LayerManager implements DMXReceiver
         public Personality node;
         public Layer layer;
         public byte[] bytes;
+		public void setPreviewPane(BorderPane borderPane)
+		{
+			layer.setPreviewPane(borderPane);
+		}
     }
     
     List<LayerInfo> layers = new ArrayList<>();

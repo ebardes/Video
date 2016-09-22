@@ -11,7 +11,8 @@ public enum DMXPersonality
 	@XmlEnumValue("lite") LITE("Lite", LayerLitePersonality.class),
 	@XmlEnumValue("regular") REGULAR("Regular", LayerRegularPersonality.class),
 	@XmlEnumValue("large") LARGE("Large", LayerLargePersonality.class),
-	@XmlEnumValue("hippo3_0_x") HIPPO("Loosely Green Hippo 3.0.x mapping", GreenHippoV3_0_x.class)
+	@XmlEnumValue("hippo3_0_x") HIPPO("Loosely Green Hippo 3.0.x mapping", GreenHippoV3_0_x.class),
+	@XmlEnumValue("arkaos") ARKAOS_V11_PRO("Loosely Arkaos Pro Layer V1.1", ArkosV11MediaLayer.class),
 	;
 	
 	private String description;
