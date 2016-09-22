@@ -12,10 +12,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name="image")
 public class ImageSlot extends Slot
 {
-	private ImageView node;
-	private ImageView thumbNail;
-	private ImageView preview;
-
 	public ImageSlot()
 	{
 	}
@@ -30,13 +26,7 @@ public class ImageSlot extends Slot
 	public void setReference(String reference)
 	{
 		super.setReference(reference);
-		node = new ImageView(reference);
-		preview = new ImageView(reference);
 		
-		thumbNail = new ImageView(reference);
-		thumbNail.setFitHeight(128);
-		thumbNail.setFitWidth(128);
-		thumbNail.setSmooth(true);
 	}
 
 	@Override
@@ -55,6 +45,7 @@ public class ImageSlot extends Slot
 	@Override
 	public Node getNode(Stage owner)
 	{
+		ImageView node = new ImageView(reference);
 	    if (owner != null && node != null)
 	    {
 	        node.fitHeightProperty().bind(owner.heightProperty());
@@ -67,6 +58,10 @@ public class ImageSlot extends Slot
 	@Override
 	public Node getThumbNail()
 	{
+		ImageView thumbNail = new ImageView(reference);
+		thumbNail.setFitHeight(128);
+		thumbNail.setFitWidth(128);
+		thumbNail.setSmooth(true);
 		thumbNail.setPreserveRatio(perserveAspectRatio);
 		return thumbNail;
 	}
@@ -74,13 +69,14 @@ public class ImageSlot extends Slot
 	@Override
 	public Node getPreview(Node in)
 	{
+		ImageView preview = new ImageView(reference);
 	    if (in != null && in instanceof Pane && preview != null)
 	    {
 	    	preview.setPreserveRatio(perserveAspectRatio);
 	    	Pane owner = (Pane) in;
-	    	preview.fitHeightProperty().bind(owner.heightProperty());
-	    	preview.fitWidthProperty().bind(owner.widthProperty());
-	    	preview.autosize();
+	    	preview.fitHeightProperty().bind(owner.maxHeightProperty());
+	    	preview.fitWidthProperty().bind(owner.maxWidthProperty());
+//	    	preview.autosize();
 	    }
 		return preview;
 	}

@@ -18,26 +18,15 @@ public class WebSlot extends Slot
 	{
 	}
 	
-	public WebSlot(int i, String description, String reference)
+	public WebSlot(int id, String description, String url)
 	{
-		super(i, description, reference);
+		super(id, description, url);
 	}
 	
 	@Override
-	public void setReference(String reference)
+	public void setReference(String url)
 	{
-		super.setReference(reference);
-		
-		webView = new WebView();
-		webView.getEngine().loadContent(reference);
-		
-		preview = new WebView();
-		
-		webViewThumb = new WebView();
-		webViewThumb.getEngine().loadContent(reference);
-		webViewThumb.setMaxWidth(128);
-		webViewThumb.setMaxHeight(128);
-		webViewThumb.setDisable(true);
+		super.setReference(url);
 	}
 	
 	@Override
