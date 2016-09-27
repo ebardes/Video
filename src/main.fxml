@@ -292,6 +292,10 @@
                               <Label layoutX="59.0" layoutY="230.0" prefHeight="16.0" prefWidth="252.0" text="Fixture Configuration" />
                               <Button layoutX="185.0" layoutY="489.0" mnemonicParsing="false" onAction="#addLayer" text="Add" />
                               <Button fx:id="delLayerButton" layoutX="232.0" layoutY="489.0" mnemonicParsing="false" onAction="#delLayer" text="Del" />
+                              <Label layoutX="185.0" layoutY="632.0" prefHeight="17.0" prefWidth="646.0" text="GIT: ${buildNumber}    Built: ${buildtimestamp}">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font></Label>
                            </children>
                         </AnchorPane>
                     </content>
