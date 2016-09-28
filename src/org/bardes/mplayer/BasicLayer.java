@@ -24,7 +24,7 @@ public class BasicLayer implements Layer
     private int lastGroup = -1;
     private int lastSlot = -1;
     private MediaPlayer mp;
-    private boolean debugging;
+    private boolean debugging = false;
 	private int playMode;
 	private int volume;
 	private PerspectiveTransform shapper = null;
@@ -36,6 +36,7 @@ public class BasicLayer implements Layer
 		this.layerId = layerId;
         this.pane = pane;
         this.colorAdjust = new ColorAdjust();
+        this.shapper = new PerspectiveTransform();
 	}
 	
 	private static double d(int n)
@@ -110,8 +111,7 @@ public class BasicLayer implements Layer
 						previewPane.layout();
 					}
 					
-//				    if (shapper != null)
-//				        pane.setEffect(shapper);
+					colorAdjust.setInput(shapper);
     				
     				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
     				{
@@ -191,7 +191,7 @@ public class BasicLayer implements Layer
 		}
 	}
 
-    private void shift(Pane node, int xShift, int yShift, int xScale, int yScale, int rotate)
+    protected void shift(Pane node, int xShift, int yShift, int xScale, int yScale, int rotate)
     {
     	if (node == null)
     		return;
@@ -234,11 +234,6 @@ public class BasicLayer implements Layer
     @Override
     public void shapper(int blade_1a, int blade_1b, int blade_2a, int blade_2b, int blade_3a, int blade_3b, int blade_4a, int blade_4b)
     {
-        if (shapper == null)
-        {
-            shapper = new PerspectiveTransform();
-        }
-        
     	double minX = 0;
     	double minY = 0;
     	double maxX = pane.getWidth();
@@ -247,13 +242,13 @@ public class BasicLayer implements Layer
     	double halfX = (maxX - minX) / 2.0; // Half width
     	double halfY = (maxY - minY) / 2.0; // Half height
     	
-    	shapper.setUlx(minX + (halfX * d(blade_4b)));
-    	shapper.setLlx(minX + (halfX * d(blade_4a)));
-    	shapper.setUly(minY + (halfY * d(blade_1a)));
-    	shapper.setUry(minY + (halfY * d(blade_1b)));
+    	shapper.setUlx(minX + (halfX * d(blade_1a)));
+    	shapper.setLlx(minX + (halfX * d(blade_3a)));
+    	shapper.setUly(minY + (halfY * d(blade_1b)));
+    	shapper.setUry(minY + (halfY * d(blade_2b)));
     	shapper.setUrx(maxX - (halfX * d(blade_2a)));
-    	shapper.setLrx(maxX - (halfX * d(blade_2b)));
-    	shapper.setLry(maxY - (halfY * d(blade_3a)));
+    	shapper.setLrx(maxX - (halfX * d(blade_4a)));
+    	shapper.setLry(maxY - (halfY * d(blade_4b)));
     	shapper.setLly(maxY - (halfY * d(blade_3b)));
     	
     	if (this.layerId == 0 && debugging) 

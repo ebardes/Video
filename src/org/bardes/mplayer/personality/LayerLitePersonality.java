@@ -3,6 +3,7 @@ package org.bardes.mplayer.personality;
 import static org.bardes.mplayer.sacn.N.u;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.bardes.mplayer.Layer;
 
@@ -24,6 +25,8 @@ public class LayerLitePersonality implements Personality
 	@Override
 	public void decode(ByteBuffer d)
 	{
+	    d.order(ByteOrder.BIG_ENDIAN);
+	    
 		dimmer = u(d.get());
 		groupId = u(d.get());
 		slotId = u(d.get());
