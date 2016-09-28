@@ -15,6 +15,8 @@ public class LayerRegularPersonality extends LayerLitePersonality
 	private int yScale;
 	private int rotate;
 	private int playMode;
+    private int brightness;
+    private int contrast;
     
     @Override
     public void decode(ByteBuffer dmxStream)
@@ -25,6 +27,8 @@ public class LayerRegularPersonality extends LayerLitePersonality
         xScale = us(dmxStream.getShort());
         yScale = us(dmxStream.getShort());
         rotate = us(dmxStream.getShort());
+        brightness = u(dmxStream.get());
+        contrast = u(dmxStream.get());
         playMode = u(dmxStream.get());
     }
     
@@ -33,12 +37,13 @@ public class LayerRegularPersonality extends LayerLitePersonality
     {
     	layer.shift(xShift, yShift, xScale, yScale, rotate);
     	layer.setPlayMode(playMode);
+    	layer.colorAdjust(brightness, contrast, 128, 128);
     	super.activate(layer);
     }
 
     @Override
     public int getFootprint()
     {
-        return 15;
+        return 17;
     }
 }

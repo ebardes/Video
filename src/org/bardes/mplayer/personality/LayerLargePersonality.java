@@ -20,7 +20,7 @@ public class LayerLargePersonality extends LayerRegularPersonality
     @Override
     public int getFootprint()
     {
-        return 23;
+        return 25;
     }
 
     @Override
