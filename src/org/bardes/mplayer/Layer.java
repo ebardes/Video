@@ -2,6 +2,7 @@ package org.bardes.mplayer;
 
 import javafx.scene.layout.BorderPane;
 
+@SuppressWarnings("restriction")
 public interface Layer
 {
 	/**
@@ -70,5 +71,9 @@ public interface Layer
 	 */
 	void colorAdjust(int brightness, int contrast, int saturation, int hue);
 
+	/**
+	 * 
+	 * @param borderPane
+	 */
 	void setPreviewPane(BorderPane borderPane);
 }
