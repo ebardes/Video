@@ -4,7 +4,6 @@ import org.bardes.mplayer.Slot.Type;
 
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Effect;
 import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -36,7 +35,6 @@ public class BasicLayer implements Layer
 		this.layerId = layerId;
         this.pane = pane;
         this.colorAdjust = new ColorAdjust();
-        this.shapper = new PerspectiveTransform();
 	}
 	
 	private static double d(int n)
@@ -111,8 +109,6 @@ public class BasicLayer implements Layer
 						previewPane.layout();
 					}
 					
-					colorAdjust.setInput(shapper);
-    				
     				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
     				{
 				        start(x, "B");
@@ -234,6 +230,24 @@ public class BasicLayer implements Layer
     @Override
     public void shapper(int blade_1a, int blade_1b, int blade_2a, int blade_2b, int blade_3a, int blade_3b, int blade_4a, int blade_4b)
     {
+    	
+    	if (blade_1a == 0 && blade_1b == 0 && blade_2a == 0 && blade_2b == 0 && blade_3a == 0 && blade_3b == 0 && blade_4a == 0 && blade_4b == 0)
+    	{
+    		if (shapper != null)
+    		{
+    			colorAdjust.setInput(null);
+    			shapper = null;
+    		}
+    	}
+    	else
+    	{
+    		if (shapper == null)
+    		{
+    			shapper = new PerspectiveTransform();
+    			colorAdjust.setInput(shapper);
+    		}
+    	}
+
     	double minX = 0;
     	double minY = 0;
     	double maxX = pane.getWidth();
