@@ -15,6 +15,7 @@ import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.net.Replication;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.sacn.E131Listener;
+import org.bardes.mplayer.web.HTTPServer;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -180,6 +181,8 @@ public class Main extends Application
 			
 			Replication replication = new Replication();
 			replication.start();
+			
+			HTTPServer.start();
 		}
 		catch (Exception e)
 		{
