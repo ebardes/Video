@@ -1,0 +1,28 @@
+body {
+	font-family: sans-serif;
+	background: hsl(45, 80%, 95%);
+}
+
+.slot {
+	display: inline-block;
+	border: 1px solid hsl(45, 99%, 45%);
+	background: hsl(45, 75%, 75%);
+	border-radius: 5px;
+	padding: 2px;
+	margin: 2px;
+	height: 280px;
+	width: 200px;
+	max-width: 200px;
+	vertical-align: top;
+}
+
+.slot .title {
+	font-size: small;
+	font-stretch: condensed;
+	padding-bottom: 5px;
+}
+
+.slot img {
+	max-width: 200px;
+	max-height: 200px;
+}
