@@ -16,9 +16,8 @@ public class MasterRegularPersonality extends MasterLitePersonality
     private int green;
     private int blue;
 
-    public MasterRegularPersonality(MasterLayer master, List<Layer> layers)
+    public MasterRegularPersonality()
     {
-        super(master, layers);
         footprint += 4;
     }
 
@@ -38,15 +37,15 @@ public class MasterRegularPersonality extends MasterLitePersonality
     }
     
     @Override
-    public void activate(Layer layer)
+    public void activate(Layer master)
     {
         if (r != red || g != green || b != blue)
         {
             r = red;
             g = green;
             b = blue;
-            master.color(r, g, b);
+//            master.color(r, g, b);
         }
-        super.activate(layer);
+        super.activate(master);
     }
 }

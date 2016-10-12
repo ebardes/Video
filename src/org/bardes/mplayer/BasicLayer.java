@@ -4,7 +4,6 @@ import org.bardes.mplayer.Slot.Type;
 
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Effect;
 import javafx.scene.effect.PerspectiveTransform;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
