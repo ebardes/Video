@@ -3,6 +3,7 @@ package org.bardes.mplayer.personality;
 import static org.bardes.mplayer.sacn.N.us;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.List;
 
 import org.bardes.mplayer.Layer;
@@ -12,16 +13,14 @@ import org.bardes.mplayer.MasterLayer;
 public class MasterLitePersonality implements MasterPersonality
 {
     int footprint = 10;
-    protected MasterLayer master;
 	private int xShift;
 	private int yShift;
 	private int xScale;
 	private int yScale;
 	private int rotate;
     
-    public MasterLitePersonality(MasterLayer master, List<Layer> layers)
+    public MasterLitePersonality()
     {
-        this.master = master;
     }
 
     @Override
@@ -33,6 +32,8 @@ public class MasterLitePersonality implements MasterPersonality
     @Override
     public void decode(ByteBuffer dmxStream)
     {
+        dmxStream.order(ByteOrder.BIG_ENDIAN);
+        
         xShift = us(dmxStream.getShort());
         yShift = us(dmxStream.getShort());
         xScale = us(dmxStream.getShort());
@@ -43,6 +44,6 @@ public class MasterLitePersonality implements MasterPersonality
     @Override
     public void activate(Layer layer)
     {
-    	master.shift(xShift, yShift, xScale, yScale, rotate);
+    	layer.shift(xShift, yShift, xScale, yScale, rotate);
     }
 }
