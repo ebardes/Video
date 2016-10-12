@@ -5,7 +5,8 @@
 	<groupId>org.bardes</groupId>
 	<artifactId>video</artifactId>
 	<version>1-SNAPSHOT</version>
-	<name>Maven Default Project</name>
+	<name>Video Media Server Project</name>
+	<url>https://eric.bardes.org/video</url>
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
@@ -90,4 +91,18 @@
 			<url>https://eric.bardes.org/repo</url>
 		</repository>
 	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.glassfish.grizzly</groupId>
+			<artifactId>grizzly-http-server</artifactId>
+			<version>2.3.28</version>
+		</dependency>
+	</dependencies>
+	<distributionManagement>
+		<site>
+			<id>eric</id>
+			<url>https://eric.bardes.org/video</url>
+		</site>
+		<downloadUrl>https://eric.bardes.org/video</downloadUrl>
+	</distributionManagement>
 </project>
