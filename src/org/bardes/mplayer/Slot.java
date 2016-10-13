@@ -1,10 +1,12 @@
 package org.bardes.mplayer;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,6 +35,8 @@ public abstract class Slot implements Comparable<Slot>
 	private String description;
 
 	protected String reference;
+	
+	protected String previewImage;
 
 	protected int group;
 
@@ -171,5 +175,25 @@ public abstract class Slot implements Comparable<Slot>
 	public void setGroup(int group)
 	{
 		this.group = group;
+	}
+
+	public String getPreviewImage()
+	{
+		return previewImage;
+	}
+
+	public void setPreviewImage(String previewImage)
+	{
+		this.previewImage = previewImage;
+	}
+	
+	@XmlElement
+	public String getDatestring()
+	{
+		return new Date(timestamp).toString();
+	}
+
+	public void makeThumbNail(Parent parent)
+	{
 	}
 }

@@ -1,12 +1,24 @@
 package org.bardes.mplayer;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+
+import javax.imageio.ImageIO;
+import javax.xml.bind.annotation.XmlType;
+
+import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.media.Track;
 import javafx.stage.Stage;
-
-import javax.xml.bind.annotation.XmlType;
 
 @SuppressWarnings("restriction")
 @XmlType(name="video")
@@ -65,6 +77,28 @@ public class VideoSlot extends Slot
         mediaView.setFitHeight(128);
         mediaView.setFitWidth(128);
         return mediaView;
+    }
+    
+    @Override
+    public void makeThumbNail(Parent parent)
+    {
+        if (this.previewImage == null || !new File(this.previewImage).exists())
+        {
+        	try
+			{
+        		String ref = URI.create(reference).getPath();
+        		File out = new File(ref + MainController.MOVIE_THUMB);
+				WritableImage image = parent.snapshot(null, null);
+				ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out);
+				
+				this.previewImage = out.getCanonicalPath();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+        }
+        
     }
 
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -83,6 +84,8 @@ import javafx.util.Callback;
 @SuppressWarnings("restriction")
 public class MainController implements Initializable
 {
+	public static final String MOVIE_THUMB = "-thumbnail.png";
+
 	@FXML
 	Pane root;
 
@@ -699,6 +702,7 @@ public class MainController implements Initializable
 			if (e != null)
 			{
 				p.setCenter(e);
+				s.makeThumbNail(p);
 			}
 			Label label = new Label(String.format("%03d", s.id));
 			label.setAlignment(Pos.TOP_CENTER);
@@ -710,7 +714,6 @@ public class MainController implements Initializable
 			label.setMinWidth(128);
 			label.setMaxWidth(128);
 			p.setBottom(label);
-			p.setUserData(s);
 
 			p.setOnMouseClicked((mouseEvent) -> {
 				if (mouseEvent.getButton().equals(MouseButton.PRIMARY))
@@ -858,6 +861,19 @@ public class MainController implements Initializable
 		delItem.setDisable(true);
 		
 		config.save();
+		
+		URI uri = URI.create(s.getReference());
+		File ref = new File(uri.getPath());
+		if (ref.exists())
+		{
+			ref.delete();
+		}
+		
+		ref = new File(uri.getPath() + MOVIE_THUMB);
+		if (ref.exists())
+		{
+			ref.delete();
+		}
 		
 		treeView.getSelectionModel().select(gs.treeitem);
 	}
