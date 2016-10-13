@@ -1,18 +1,21 @@
 package org.bardes.mplayer.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -21,79 +24,22 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.bardes.mplayer.Config;
 import org.bardes.mplayer.Main;
-import org.glassfish.grizzly.http.server.HttpHandler;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.grizzly.http.server.Response;
-import org.glassfish.grizzly.http.server.ServerConfiguration;
 import org.w3c.dom.Document;
 
-public class HTTPServer
+import fi.iki.elonen.NanoHTTPD;
+
+
+public class HTTPServer extends NanoHTTPD
 {
-	private static HTTPServer server;
+	private static HTTPServer me;
 
-	public HTTPServer()
+	public HTTPServer() throws IOException
 	{
-		HttpServer server;
-		try
-		{
-			String workDirectory = Main.getConfig().getWorkDirectory();
-			server = HttpServer.createSimpleServer(workDirectory);
-			
-			ServerConfiguration config = server.getServerConfiguration();
-			config.setSendFileEnabled(true);
-			config.setMaxFormPostSize(-1);
-
-			config.addHttpHandler(new HttpHandler()
-			{
-				@Override
-				public void service(Request request, Response response) throws Exception
-				{
-					String queryString = request.getRequestURI();
-					queryString = queryString.replaceAll("/dynamic/", "");
-					
-					process(queryString, response);
-				}
-			}, "/dynamic");
-			
-			config.addHttpHandler(new HttpHandler()
-			{
-				
-				@Override
-				public void service(Request request, Response response) throws Exception
-				{
-					String requestURI = request.getRequestURI();
-					requestURI = requestURI.substring(1);
-					InputStream is = getClass().getClassLoader().getResourceAsStream(requestURI);
-					if (is == null)
-					{
-						response.sendError(404);
-						return;
-					}
-					OutputStream os = response.getOutputStream();
-					
-					int n;
-					byte buffer[] = new byte[8192];
-					while ((n = is.read(buffer)) > 0)
-					{
-						os.write(buffer, 0, n);
-					}
-					
-					is.close();
-					os.close();
-				}
-			}, "/static");
-			
-			
-			server.start();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		super(8080);
+		start();
 	}
 	
-	protected void process(String queryString, Response response) throws TransformerException, JAXBException, ParserConfigurationException
+	protected byte[] process(String queryString) throws TransformerException, JAXBException, ParserConfigurationException
 	{
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(queryString + ".xslt");
 		
@@ -108,11 +54,84 @@ public class HTTPServer
 //		dom.createProcessingInstruction(target, data)
 		
 		m.marshal(Main.getConfig(), dom);
-		t.transform(new DOMSource(dom), new StreamResult(response.getOutputStream()));
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		t.transform(new DOMSource(dom), new StreamResult(out));
+		return out.toByteArray();
 	}
 
-	public static void start()
+	@Override
+	public Response serve(IHTTPSession session)
 	{
-		server = new HTTPServer();
+		String uri = session.getUri();
+		if (uri.equals("") || uri.equals("/"))
+		{
+			Response response = newFixedLengthResponse(Response.Status.TEMPORARY_REDIRECT, "", "Redirecting");
+			response.addHeader("Location", "/dynamic/index");
+			return response;
+		}
+		if (uri.startsWith("/dynamic"))
+		{
+			try
+			{
+				byte[] buf;
+				uri = uri.substring(9);
+				buf = process(uri);
+				return newFixedLengthResponse(Response.Status.OK, "text/html", new ByteArrayInputStream(buf), buf.length);
+			}
+			catch (TransformerException | JAXBException | ParserConfigurationException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		String fileName = uri.substring(1);
+		try
+		{
+			fileName = URLDecoder.decode(fileName, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e1)
+		{
+			e1.printStackTrace();
+		}
+		if (uri.startsWith("/static"))
+		{
+			InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+			if (is != null)
+			{
+				try
+				{
+					return newChunkedResponse(Response.Status.PARTIAL_CONTENT, "", is);
+				}
+				finally
+				{
+				}
+			}
+		}
+		File previewFile = new File(Main.getConfig().getWorkDirectory(), fileName);
+		if (previewFile.exists())
+		{
+			FileInputStream is;
+			try
+			{
+				is = new FileInputStream(previewFile);
+				return newChunkedResponse(Response.Status.PARTIAL_CONTENT, "", is);
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return super.serve(session);
+	}
+	
+	public static void startServer()
+	{
+		try
+		{
+			me = new HTTPServer();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
