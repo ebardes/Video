@@ -75,7 +75,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>sampler.Main</mainClass>
+							<mainClass>org.bardes.mplayer.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
