@@ -230,7 +230,6 @@ public class BasicLayer implements Layer
     @Override
     public void shapper(int blade_1a, int blade_1b, int blade_2a, int blade_2b, int blade_3a, int blade_3b, int blade_4a, int blade_4b)
     {
-    	
     	if (blade_1a == 0 && blade_1b == 0 && blade_2a == 0 && blade_2b == 0 && blade_3a == 0 && blade_3b == 0 && blade_4a == 0 && blade_4b == 0)
     	{
     		if (shapper != null)
@@ -238,6 +237,7 @@ public class BasicLayer implements Layer
     			colorAdjust.setInput(null);
     			shapper = null;
     		}
+    		return;
     	}
     	else
     	{

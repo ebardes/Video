@@ -127,11 +127,12 @@ public class LayerManager implements DMXReceiver
                 {
                 	for (LayerInfo x : layers)
                 	{
-                		x.node.activate(x.layer);
+                	    if (x.node != null && x.layer != null)
+                	        x.node.activate(x.layer);
                 	}
                     if (masterInfo != null)
                     {
-                        masterInfo.node.activate(null);
+//                        masterInfo.node.activate(null);
                     }
                 }
             });

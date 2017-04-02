@@ -80,8 +80,12 @@ public class E131Listener implements Runnable, NetworkListener
 				    int start = RootLayer.bytes + FramingLayer.bytes;
 				    int z = start + DMPLayer.DMX_START_CODE.getOffset();
 				    
-					bb.position(z);
-					receiver.onFrame(bb.slice());
+				    int startcode = bb.get(z);
+				    if (startcode == 0)
+				    {				    
+    					bb.position(z);
+    					receiver.onFrame(bb.slice());
+				    }
 				}
 			}
 		}
