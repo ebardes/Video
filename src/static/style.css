@@ -5,24 +5,43 @@ body {
 
 .slot {
 	display: inline-block;
-	border: 1px solid hsl(45, 99%, 45%);
+	border: 1px solid hsl(45, 100%, 35%);
 	background: hsl(45, 75%, 75%);
 	border-radius: 5px;
-	padding: 2px;
+	padding: 0px;
 	margin: 2px;
-	height: 280px;
+	height: 240px;
 	width: 200px;
 	max-width: 200px;
 	vertical-align: top;
+}
+
+.slot.add {
+	background: hsl(45, 75%, 85%);
+	border-style: dashed;
 }
 
 .slot .title {
 	font-size: small;
 	font-stretch: condensed;
 	padding-bottom: 5px;
+	padding: 2px;
+}
+
+.slot .title.head {
+	color: white;
+	text-align: center;
+	background: hsl(45, 100%, 35%);
+	padding: 2px;
 }
 
 .slot img {
 	max-width: 200px;
 	max-height: 200px;
+}
+
+.slot .title.remove {
+	font-size: 8px;
+	text-align: right;
+	cursor: pointer; 
 }
