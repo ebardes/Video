@@ -18,7 +18,6 @@ import org.bardes.mplayer.sacn.E131Listener;
 import org.bardes.mplayer.web.HTTPServer;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -182,7 +181,7 @@ public class Main extends Application
 			Replication replication = new Replication();
 			replication.start();
 			
-			HTTPServer.start();
+			HTTPServer.startServer();
 		}
 		catch (Exception e)
 		{
@@ -254,13 +253,14 @@ public class Main extends Application
 		target = new File(target, String.format("group_%03d", slot.group));
 		target.mkdirs();
 		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
-		slot.setTimestamp(System.currentTimeMillis());
+		slot.setTimestamp(selectedFile.lastModified());
 		
 		try
 		{
 			FileChannel from = FileChannel.open(selectedFile.toPath(), StandardOpenOption.READ);
 			FileChannel to = FileChannel.open(target.toPath(), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
 			
+			slot.setLength(from.size());
 			to.transferFrom(from, 0, from.size());
 			
 			from.close();
