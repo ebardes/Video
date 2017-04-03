@@ -95,6 +95,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter
 		mimeTypesMap = new MimetypesFileTypeMap();
 		mimeTypesMap.addMimeTypes("image/png png");
 		mimeTypesMap.addMimeTypes("text/css css");
+		mimeTypesMap.addMimeTypes("text/xsl xslt");
 	}
 	
 	@Override
