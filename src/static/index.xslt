@@ -18,7 +18,7 @@
 				<h3>System Info</h3>
 				<div class="protocol">Protocol: <xsl:value-of select="/config/protocol" /> - Universe: <xsl:value-of select="/config/universe"/></div>
 				<xsl:for-each select="/config/layers/layer">
-				<div class="layer">Layer <b><xsl:value-of select="personality"/></b> at <b><xsl:value-of select="address + 1"/></b></div>
+					<div class="layer"><b><xsl:value-of select="personality"/></b> layer at <b><xsl:value-of select="/config/universe"/>/<xsl:value-of select="address"/></b></div>
 				</xsl:for-each>
 				
 				<h1>Media Assets</h1>
@@ -40,13 +40,27 @@
 					<xsl:value-of select="id" />
 				</div>
 				<div class="title">
-					<xsl:value-of select="description" />
+					<b><xsl:value-of select="description" /></b>
 				</div>
 				<xsl:if test="../../../id &gt; 0">
 					<div class="title">
-						<xsl:text>Length: </xsl:text>	
-						<xsl:value-of select="format-number((length div 1024), '#,##0')" />
-						<xsl:text>&#160;KB</xsl:text>	
+						<xsl:text>Length: </xsl:text>
+						<b>
+						<xsl:choose>
+							<xsl:when test="length &gt; (960 * 1024 * 1024)">
+								<xsl:value-of select="format-number((length div (1024 * 1024 * 1024)), '#,##0.0')" />
+								<xsl:text>&#160;GB</xsl:text>
+							</xsl:when>
+							<xsl:when test="length &gt; (960 * 1024)">
+								<xsl:value-of select="format-number((length div (1024 * 1024)), '#,##0.0')" />
+								<xsl:text>&#160;MB</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="format-number((length div 1024), '#,##0')" />
+								<xsl:text>&#160;KB</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+						</b>
 					</div>
 					<div class="title">
 						<xsl:value-of select="datestring" />

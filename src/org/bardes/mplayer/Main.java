@@ -13,6 +13,7 @@ import org.bardes.mplayer.cue.CueStack;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.net.Replication;
+import org.bardes.mplayer.netty.NETTYSystem;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.sacn.E131Listener;
 import org.bardes.mplayer.web.HTTPServer;
@@ -69,9 +70,13 @@ public class Main extends Application
 
 	private CITPServer citpServer;
 
+	private NETTYSystem nettySystem;
+
 	public static StackPane displayPane;
 
 	static LayerManager layoutManager;
+
+	private HTTPServer httpServer;
 	
 	@Override
 	public void start(Stage primaryStage)
@@ -181,7 +186,10 @@ public class Main extends Application
 			Replication replication = new Replication();
 			replication.start();
 			
-			HTTPServer.startServer();
+			httpServer = HTTPServer.startServer();
+			
+			nettySystem = new NETTYSystem();
+			nettySystem.start();
 		}
 		catch (Exception e)
 		{
@@ -208,6 +216,9 @@ public class Main extends Application
 		
 		config.save();
 		citpServer.stop();
+		
+		nettySystem.stop();
+		httpServer.stopServer();
 		
 		super.stop();
 	}
