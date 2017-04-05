@@ -345,7 +345,7 @@ public class MainController implements Initializable
 	/**
 	 * 
 	 */
-	public void resetTreeView()
+	public synchronized void resetTreeView()
 	{
 		if (treeView == null)
 			return;
@@ -366,10 +366,16 @@ public class MainController implements Initializable
 			while (it.hasNext())
 			{
 				Slot i = it.next();
+				if (i.getReference() == null)
+				{
+					it.remove();
+					continue;
+				}
 				URI uri = URI.create(i.getReference());
 				if (!new File(uri.getPath()).exists())
 				{
 					it.remove();
+					continue;
 				}
 				i.group = s.id;
 				TreeItem<Slot> subItem = new TreeItem<Slot>(i, new ImageView(imageMap.get(i.getType())));
