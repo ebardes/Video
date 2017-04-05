@@ -197,20 +197,19 @@ public class HTTPServer implements NetServer, Runnable
 					
 					if (type.startsWith("image/"))
 					{
-						s = new ImageSlot(slot, name, name);
+						s = new ImageSlot();
 					}
 					else if (type.startsWith("video/"))
 					{
 						s = new VideoSlot();
-						s.setSlot(slot);
-						s.setGroup(group);
-						s.setDescription(name);
 					}
 					else
 					{
 						halt(500, "Unknown file type");
 					}
+					s.setSlot(slot);
 					s.setGroup(group);
+					s.setDescription(name);
 					g.addItem(s);
 				}
 				finally
@@ -244,8 +243,16 @@ public class HTTPServer implements NetServer, Runnable
 					@Override
 					public void run()
 					{
-						Main.controller.resetTreeView();
-						Main.getConfig().save();
+						lock.lock();
+						try
+						{
+							Main.controller.resetTreeView();
+							Main.getConfig().save();
+						}
+						finally
+						{
+							lock.unlock();
+						}
 					}
 				});
 			}
