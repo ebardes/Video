@@ -2,6 +2,7 @@ package org.bardes.mplayer;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
@@ -10,13 +11,12 @@ import java.util.List;
 import org.bardes.mplayer.artnet.ArtNetListener;
 import org.bardes.mplayer.citp.CITPServer;
 import org.bardes.mplayer.cue.CueStack;
+import org.bardes.mplayer.httpd.HTTPServer;
 import org.bardes.mplayer.net.DMXProtocol;
 import org.bardes.mplayer.net.NetworkListener;
 import org.bardes.mplayer.net.Replication;
-import org.bardes.mplayer.netty.NETTYSystem;
 import org.bardes.mplayer.personality.InternalListener;
 import org.bardes.mplayer.sacn.E131Listener;
-import org.bardes.mplayer.web.HTTPServer;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -70,33 +70,21 @@ public class Main extends Application
 
 	private CITPServer citpServer;
 
-	private NETTYSystem nettySystem;
-
 	public static StackPane displayPane;
 
 	static LayerManager layoutManager;
 
-	private HTTPServer httpServer;
+	private NetServer httpServer;
 	
 	@Override
 	public void start(Stage primaryStage)
 	{
 		try
 		{
+			initConfig();
+			
 			ClassLoader cl = getClass().getClassLoader();
 			URL url = cl.getResource("main.fxml");
-			
-			configLocation = new File(System.getProperty("user.home"));
-			configLocation = new File(configLocation, "astmedia.xml");
-			if (configLocation.exists())
-			{
-				config = Config.load(configLocation);
-			}
-			else
-			{
-			    Config.location = configLocation;
-				config = Config.reset();
-			}
 			
 			stack = CueStack.load();
 
@@ -186,14 +174,27 @@ public class Main extends Application
 			Replication replication = new Replication();
 			replication.start();
 			
-			httpServer = HTTPServer.startServer();
-			
-			nettySystem = new NETTYSystem();
-			nettySystem.start();
+			httpServer = new HTTPServer();
+			httpServer.startServer();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public void initConfig() throws URISyntaxException, IOException
+	{
+		configLocation = new File(System.getProperty("user.home"));
+		configLocation = new File(configLocation, "astmedia.xml");
+		if (configLocation.exists())
+		{
+			config = Config.load(configLocation);
+		}
+		else
+		{
+		    Config.location = configLocation;
+			config = Config.reset();
 		}
 	}
 
@@ -217,7 +218,6 @@ public class Main extends Application
 		config.save();
 		citpServer.stop();
 		
-		nettySystem.stop();
 		httpServer.stopServer();
 		
 		super.stop();
@@ -254,16 +254,7 @@ public class Main extends Application
 	public static String normalize(File selectedFile, Slot slot)
 	{
 		String name = selectedFile.getName();
-		String ext = "";
-		int n = name.lastIndexOf('.');
-		if (n > 0)
-			ext = name.substring(n);
-		
-		String workDirectory = config.getWorkDirectory();
-		File target = new File(workDirectory);
-		target = new File(target, String.format("group_%03d", slot.group));
-		target.mkdirs();
-		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
+		File target = normalizeName(slot, name);
 		slot.setTimestamp(selectedFile.lastModified());
 		
 		try
@@ -283,5 +274,20 @@ public class Main extends Application
 		}
 		
 		return target.toURI().toString();
+	}
+
+	public static File normalizeName(Slot slot, String name)
+	{
+		String ext = "";
+		int n = name.lastIndexOf('.');
+		if (n > 0)
+			ext = name.substring(n);
+		
+		String workDirectory = config.getWorkDirectory();
+		File target = new File(workDirectory);
+		target = new File(target, String.format("group_%03d", slot.group));
+		target.mkdirs();
+		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
+		return target;
 	}
 }

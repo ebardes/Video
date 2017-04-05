@@ -27,12 +27,8 @@
 		</html>
 	</xsl:template>
 
-	<xsl:template match="group">
-		<h4>
-			<xsl:text>Group </xsl:text>
-			<xsl:value-of select="id" /> :
-			<xsl:value-of select="description" />
-		</h4>
+	<xsl:template match="group[id = 0]">
+		<h4>Built In Content: Group 0</h4>
 		<xsl:for-each select="items/entry/value">
 			<div class="slot">
 				<div class="title head">
@@ -42,30 +38,55 @@
 				<div class="title">
 					<b><xsl:value-of select="description" /></b>
 				</div>
-				<xsl:if test="../../../id &gt; 0">
-					<div class="title">
-						<xsl:text>Length: </xsl:text>
-						<b>
-						<xsl:choose>
-							<xsl:when test="length &gt; (960 * 1024 * 1024)">
-								<xsl:value-of select="format-number((length div (1024 * 1024 * 1024)), '#,##0.0')" />
-								<xsl:text>&#160;GB</xsl:text>
-							</xsl:when>
-							<xsl:when test="length &gt; (960 * 1024)">
-								<xsl:value-of select="format-number((length div (1024 * 1024)), '#,##0.0')" />
-								<xsl:text>&#160;MB</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="format-number((length div 1024), '#,##0')" />
-								<xsl:text>&#160;KB</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-						</b>
-					</div>
-					<div class="title">
-						<xsl:value-of select="datestring" />
-					</div>
-				</xsl:if>
+				<div class="preview">
+					<xsl:if test="@xsi:type = 'image'">
+					<img src="{substring(reference, string-length(/config/workDirectory)+6)}" />
+					</xsl:if>
+					<xsl:if test="@xsi:type = 'video'">
+					<img src="{substring(reference, string-length(/config/workDirectory)+6)}-thumbnail.png" />
+					</xsl:if>
+				</div>
+			</div>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="group[id &gt; 0]">
+		<h4>
+			<xsl:text>Group </xsl:text>
+			<xsl:value-of select="id" /> :
+			<xsl:value-of select="description" />
+		</h4>
+		<xsl:for-each select="items/entry/value">
+			<div class="slot drop" id="replace/{../../../id}/{id}">
+				<div class="title head">
+					<xsl:text>Slot </xsl:text>
+					<xsl:value-of select="id" />
+				</div>
+				<div class="title">
+					<b><xsl:value-of select="description" /></b>
+				</div>
+				<div class="title">
+					<xsl:text>Length: </xsl:text>
+					<b>
+					<xsl:choose>
+						<xsl:when test="length &gt; (960 * 1024 * 1024)">
+							<xsl:value-of select="format-number((length div (1024 * 1024 * 1024)), '#,##0.0')" />
+							<xsl:text>&#160;GB</xsl:text>
+						</xsl:when>
+						<xsl:when test="length &gt; (960 * 1024)">
+							<xsl:value-of select="format-number((length div (1024 * 1024)), '#,##0.0')" />
+							<xsl:text>&#160;MB</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="format-number((length div 1024), '#,##0')" />
+							<xsl:text>&#160;KB</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+					</b>
+				</div>
+				<div class="title">
+					<xsl:value-of select="datestring" />
+				</div>
 				<div class="preview">
 					<xsl:if test="@xsi:type = 'image'">
 					<img src="{substring(reference, string-length(/config/workDirectory)+6)}" />
@@ -79,10 +100,9 @@
 				</xsl:if>				
 			</div>
 		</xsl:for-each>
-		<xsl:if test="id &gt; 0">
-		<div class="slot add">
+		<div id="add/{id}/0" class="slot drop add">
 			<div class="title head">New</div>
+			<div class="progress"></div>
 		</div>
-		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>
