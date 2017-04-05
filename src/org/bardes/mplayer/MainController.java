@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -326,22 +327,7 @@ public class MainController implements Initializable
 			/*
 			 * 
 			 */
-			for (GroupSlot s : config.getGroups())
-			{
-				info("Loading Group " + s.id);
-				
-				TreeItem<Slot> item = new TreeItem<Slot>(s, new ImageView(imageMap.get(Slot.Type.GROUP)));
-				s.treeitem = item;
-				children.add(item);
-
-				for (Slot i : s.slots.values())
-				{
-					i.group = s.id;
-					TreeItem<Slot> subItem = new TreeItem<Slot>(i, new ImageView(imageMap.get(i.getType())));
-					i.treeitem = subItem;
-					item.getChildren().add(subItem);
-				}
-			}
+			resetTreeView();
 			
 			GroupSlot system = config.getGroup(0);
 			MultipleSelectionModel<TreeItem<Slot>> selectionModel = treeView.getSelectionModel();
@@ -354,6 +340,43 @@ public class MainController implements Initializable
 		}
 		
 		info("Ready");
+	}
+	
+	/**
+	 * 
+	 */
+	public void resetTreeView()
+	{
+		if (treeView == null)
+			return;
+			
+		TreeItem<Slot> root = treeView.getRoot();
+		ObservableList<TreeItem<Slot>> children = root.getChildren();
+		children.clear();
+		
+		for (GroupSlot s : config.getGroups())
+		{
+			info("Loading Group " + s.id);
+			
+			TreeItem<Slot> item = new TreeItem<Slot>(s, new ImageView(imageMap.get(Slot.Type.GROUP)));
+			s.treeitem = item;
+			children.add(item);
+
+			Iterator<Slot> it = s.slots.values().iterator();
+			while (it.hasNext())
+			{
+				Slot i = it.next();
+				URI uri = URI.create(i.getReference());
+				if (!new File(uri.getPath()).exists())
+				{
+					it.remove();
+				}
+				i.group = s.id;
+				TreeItem<Slot> subItem = new TreeItem<Slot>(i, new ImageView(imageMap.get(i.getType())));
+				i.treeitem = subItem;
+				item.getChildren().add(subItem);
+			}
+		}
 	}
 
 	private void resetPreviewPane()
