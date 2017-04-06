@@ -192,11 +192,11 @@ public class BasicLayer implements Layer
     	if (node == null)
     		return;
     	
-    	node.setTranslateX((double)(xShift - 32768) / 64.0);
-    	node.setTranslateY((double)(yShift - 32768) / 64.0);
+    	node.setTranslateX((double)(xShift - 32768) / 16.0);
+    	node.setTranslateY((double)(yShift - 32768) / 16.0);
     	
-    	node.setScaleX(xScale / 32768.0);
-    	node.setScaleY(yScale / 32768.0);
+    	node.setScaleX(xScale / 16384.0);
+    	node.setScaleY(yScale / 16384.0);
     	
     	node.setRotate((double)(rotate - 32768) / 182.04); // 182.04 = 32768 / 180
     }
