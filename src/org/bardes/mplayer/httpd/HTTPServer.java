@@ -222,7 +222,6 @@ public class HTTPServer implements NetServer, Runnable
 					try (ServletInputStream is = req.raw().getInputStream())
 					{
 						File saveTo = Main.normalizeName(s, name);
-						s.setReference(saveTo.toURI().toString());
 						try (FileOutputStream out = new FileOutputStream(saveTo)) 
 						{
 							byte[] buffer = new byte[8192];
@@ -234,6 +233,7 @@ public class HTTPServer implements NetServer, Runnable
 							}
 						}
 						
+						s.setReference(saveTo.toURI().toString());
 						s.setTimestamp(lastModified);
 						s.setLength(saveTo.length());
 					}
