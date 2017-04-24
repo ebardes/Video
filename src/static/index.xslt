@@ -56,6 +56,7 @@
 			<xsl:value-of select="id" /> :
 			<xsl:value-of select="description" />
 		</h4>
+		<div>
 		<xsl:for-each select="items/entry/value">
 			<div class="slot drop" id="replace/{../../../id}/{id}">
 				<div class="title head">
@@ -103,6 +104,7 @@
 		<div id="add/{id}/0" class="slot drop add">
 			<div class="title head">New</div>
 			<div class="progress"></div>
+		</div>
 		</div>
 	</xsl:template>
 </xsl:stylesheet>

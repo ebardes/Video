@@ -1,3 +1,5 @@
+var uploadCount = 0;
+
 $(document).ready(
 		function() {
 			var add = $('.drop')
@@ -15,6 +17,7 @@ $(document).ready(
 			}
 			).on('drop', function(e) {
 				droppedFiles = e.originalEvent.dataTransfer.files;
+				uploadCount += droppedFiles.length;
 				for (var i=0, l=droppedFiles.length; i<l; i++) {
 					uploadFile(droppedFiles[i], $(e.target))
 				}
@@ -40,8 +43,14 @@ function remove(target) {
 function uploadFile(file, target) {
 	var xhr = new XMLHttpRequest()
 	
-	/*
-	var progressBar = target.child(".progress")
+	var id = target.attr('id')
+	var slot = $(target)
+	slot = slot.parent()
+	var x =	$("<div class='slot'><div class='title head'>Upload</div><div class='progress'></div></div>")
+	x.attr('id', file.name)
+	slot.append(x)
+
+	var progressBar = x.children(".progress")
 	
 	xhr.upload.addEventListener("progress", function (evt) {
 		if (evt.lengthComputable) {
@@ -49,8 +58,13 @@ function uploadFile(file, target) {
 //			progressBar.style.width = (evt.loaded / evt.total) * 100 + "%";
 		}
 	})
-	*/
-	var id = target.attr('id')
+	
+	xhr.upload.addEventListener("load", function(evt) {
+		uploadCount--;
+		if (uploadCount == 0) {
+			location.reload();
+		}
+	})
 	
 	xhr.open("post", "/upload/"+id, true)
 	xhr.setRequestHeader("X-File-Name", file.name)
