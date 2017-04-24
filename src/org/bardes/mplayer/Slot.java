@@ -51,6 +51,8 @@ public abstract class Slot implements Comparable<Slot>
 
 	private long length;
 	
+	private String contentType;
+	
 	public Slot()
 	{
 	}
@@ -195,5 +197,15 @@ public abstract class Slot implements Comparable<Slot>
 
 	public void makeThumbNail(Parent parent)
 	{
+	}
+
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
 	}
 }

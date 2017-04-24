@@ -79,7 +79,7 @@ public class HTTPServer implements NetServer, Runnable
 			URL resource = getClass().getClassLoader().getResource(name);
 			if (resource == null)
 			{
-				resp.status(401);
+				resp.status(404);
 				return "";
 			}
 			
@@ -210,6 +210,7 @@ public class HTTPServer implements NetServer, Runnable
 					if (s != null)
 					{
 						s.setSlot(slot);
+						s.setContentType(type);
 						s.setGroup(group);
 						s.setDescription(name);
 						
