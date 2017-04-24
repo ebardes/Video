@@ -207,38 +207,39 @@ public class HTTPServer implements NetServer, Runnable
 					{
 						halt(500, "Unknown file type");
 					}
-					s.setSlot(slot);
-					s.setGroup(group);
-					s.setDescription(name);
-					g.addItem(s);
+					if (s != null)
+					{
+						s.setSlot(slot);
+						s.setGroup(group);
+						s.setDescription(name);
+						
+						try (ServletInputStream is = req.raw().getInputStream())
+						{
+							File saveTo = Main.normalizeName(s, name);
+							try (FileOutputStream out = new FileOutputStream(saveTo)) 
+							{
+								byte[] buffer = new byte[8192];
+								int n;
+								
+								while ((n = is.read(buffer)) > 0)
+								{
+									out.write(buffer, 0, n);
+								}
+							}
+							
+							g.addItem(s);
+							
+							s.setReference(saveTo.toURI().toString());
+							s.setTimestamp(lastModified);
+							s.setLength(saveTo.length());
+						}
+					}
 				}
 				finally
 				{
 					lock.unlock();
 				}
 				
-				if (s != null)
-				{
-					try (ServletInputStream is = req.raw().getInputStream())
-					{
-						File saveTo = Main.normalizeName(s, name);
-						try (FileOutputStream out = new FileOutputStream(saveTo)) 
-						{
-							byte[] buffer = new byte[8192];
-							int n;
-							
-							while ((n = is.read(buffer)) > 0)
-							{
-								out.write(buffer, 0, n);
-							}
-						}
-						
-						s.setReference(saveTo.toURI().toString());
-						s.setTimestamp(lastModified);
-						s.setLength(saveTo.length());
-					}
-				}
-
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run()
