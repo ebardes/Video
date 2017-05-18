@@ -2,6 +2,7 @@ package org.bardes.mplayer;
 
 import org.bardes.mplayer.Slot.Type;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.PerspectiveTransform;
@@ -99,22 +100,26 @@ public class BasicLayer implements Layer
         				Node x = slot.getNode(Main.display);
         				if (x != null)
         				{
-        				    node = x;
-        				    x.setEffect(colorAdjust);
-        					pane.setCenter(x);
-        					if (previewPane != null)
-        					{
-        						previewNode = slot.getPreview(previewPane);
-        						previewPane.setCenter(previewNode);
-        //						previewPane.setPrefSize(240, 200);
-        //						previewPane.setMaxSize(240, 200);
-        						previewPane.layout();
-        					}
-        					
-            				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
-            				{
-        				        start(x, "B");
-            				}
+        				    Platform.runLater(new Runnable() {
+        				        public void run() {
+                				    node = x;
+                				    x.setEffect(colorAdjust);
+                					pane.setCenter(x);
+                					if (previewPane != null)
+                					{
+                						previewNode = slot.getPreview(previewPane);
+                						previewPane.setCenter(previewNode);
+//                						previewPane.setPrefSize(240, 200);
+//                						previewPane.setMaxSize(240, 200);
+                						previewPane.layout();
+                					}
+                					
+                    				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
+                    				{
+                				        start(x, "B");
+                    				}
+        				        }
+        				    });
         				}
         				else
         				{
