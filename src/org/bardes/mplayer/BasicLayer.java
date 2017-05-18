@@ -94,31 +94,36 @@ public class BasicLayer implements Layer
 			slot = gs.get(slotId);
 			if (slot != null)
 			{
-				Node x = slot.getNode(Main.display);
-				if (x != null)
-				{
-				    node = x;
-				    x.setEffect(colorAdjust);
-					pane.setCenter(x);
-					if (previewPane != null)
-					{
-						previewNode = slot.getPreview(previewPane);
-						previewPane.setCenter(previewNode);
-//						previewPane.setPrefSize(240, 200);
-//						previewPane.setMaxSize(240, 200);
-						previewPane.layout();
-					}
-					
-    				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
-    				{
-				        start(x, "B");
-    				}
-				}
-				else
-				{
-					pane.setCenter(null);
-					node = null;
-				}
+			    Runnable task = new Runnable() { 
+			        public void run() {
+        				Node x = slot.getNode(Main.display);
+        				if (x != null)
+        				{
+        				    node = x;
+        				    x.setEffect(colorAdjust);
+        					pane.setCenter(x);
+        					if (previewPane != null)
+        					{
+        						previewNode = slot.getPreview(previewPane);
+        						previewPane.setCenter(previewNode);
+        //						previewPane.setPrefSize(240, 200);
+        //						previewPane.setMaxSize(240, 200);
+        						previewPane.layout();
+        					}
+        					
+            				if (slot.getType() == Type.VIDEO && dimmer > 0 && !running)
+            				{
+        				        start(x, "B");
+            				}
+        				}
+        				else
+        				{
+        					pane.setCenter(null);
+        					node = null;
+        				}
+    			    }
+			    };
+			    Main.loader.submit(task);
 			}
 			else
 			{

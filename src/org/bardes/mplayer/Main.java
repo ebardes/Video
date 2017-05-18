@@ -7,6 +7,9 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.bardes.mplayer.artnet.ArtNetListener;
 import org.bardes.mplayer.citp.CITPServer;
@@ -75,6 +78,8 @@ public class Main extends Application
 	static LayerManager layoutManager;
 
 	private NetServer httpServer;
+	
+	public static ExecutorService loader = Executors.newCachedThreadPool();
 	
 	@Override
 	public void start(Stage primaryStage)
