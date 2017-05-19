@@ -4,13 +4,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.bardes.mplayer.personality.DMXPersonality;
 import org.bardes.mplayer.personality.DMXReceiver;
 import org.bardes.mplayer.personality.MasterPersonality;
 import org.bardes.mplayer.personality.Personality;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
@@ -18,7 +19,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-@SuppressWarnings("restriction")
+/**
+ * @author eric
+ *
+ */
 public class LayerManager implements DMXReceiver
 {
     static class LayerInfo
@@ -29,6 +33,8 @@ public class LayerManager implements DMXReceiver
         public Personality node;
         public Layer layer;
         public byte[] bytes;
+        public ExecutorService threadPool = Executors.newCachedThreadPool();
+        
 		public void setPreviewPane(BorderPane borderPane)
 		{
 			layer.setPreviewPane(borderPane);
@@ -41,6 +47,10 @@ public class LayerManager implements DMXReceiver
     private LayerInfo masterInfo;
     private boolean debugging = Main.getConfig().isDebugEnabled();
     
+    /**
+     * @param root
+     * @param layerConfig
+     */
     public LayerManager(StackPane root, List<LayerConfig> layerConfig)
     {
         final ObservableList<Node> children = root.getChildren();
@@ -81,9 +91,7 @@ public class LayerManager implements DMXReceiver
     @Override
     public void onFrame(ByteBuffer frame)
     {
-        boolean anyChange = false;
         int start = frame.position();
-        
         for (LayerInfo x : layers)
         {
             frame.position(start + x.start);
@@ -95,6 +103,7 @@ public class LayerManager implements DMXReceiver
                 {
                     x.bytes[i] = b;
                     changed = true;
+                    break;
                 }
             }
             if (changed)
@@ -110,32 +119,13 @@ public class LayerManager implements DMXReceiver
                 ByteBuffer bb = ByteBuffer.wrap(x.bytes);
                 bb.order(ByteOrder.LITTLE_ENDIAN);
                 x.node.decode(bb);
-                anyChange = true;
+                x.threadPool.submit(() -> { x.node.activate(x.layer); });
             }
         }
         if (masterInfo != null)
         {
             frame.position(start + masterInfo.start);
             masterInfo.node.decode(frame);
-        }
-        
-        if (anyChange)
-        {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run()
-                {
-                	for (LayerInfo x : layers)
-                	{
-                	    if (x.node != null && x.layer != null)
-                	        x.node.activate(x.layer);
-                	}
-                    if (masterInfo != null)
-                    {
-//                        masterInfo.node.activate(null);
-                    }
-                }
-            });
         }
     }
 }

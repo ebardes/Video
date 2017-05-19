@@ -15,21 +15,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
-@SuppressWarnings("restriction")
+/**
+ * @author eric
+ * The Generic Slot. Specific types of media will extend this class.
+ */
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 @XmlSeeAlso({ ImageSlot.class, WebSlot.class, VideoSlot.class })
 @XmlRootElement(name="slot")
 public abstract class Slot implements Comparable<Slot>
 {
-	public enum Type
-	{
-		NEW,
-		GROUP,
-		IMAGE,
-		VIDEO,
-		WEB,
-	}
-	
 	protected int id;
 	
 	private String description;
@@ -53,38 +47,57 @@ public abstract class Slot implements Comparable<Slot>
 	
 	private String contentType;
 	
+	/**
+	 * No Arg Construction. Only used for JAXB.
+	 */
 	public Slot()
 	{
 	}
 	
-	public Slot(int id, String string)
+	protected Slot(int id, String string)
 	{
 		this.id = id;
 		this.description = string;
 	}
 
-	public Slot(int id, String string, String reference)
+	protected Slot(int id, String string, String reference)
 	{
 		this(id, string);
 		this.setReference(reference);
 	}
 
+	/**
+	 * Getter for the Slot ID.
+	 * @return The Slot ID
+	 */
 	@XmlElement(name="id", required=true)
 	public int getSlot()
 	{
 		return id;
 	}
 
+	/**
+	 * Setter for the Slot ID.
+	 * @param slot The Slot ID. In the case of GroupSlot, it's the group id.
+	 */
 	public void setSlot(int slot)
 	{
 		this.id = slot;
 	}
 
+	/**
+	 * Getter for the human friendly description.
+	 * @return A human friendly description.
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Setter for the human friendly description.
+	 * @param description A human friendly description.
+	 */
 	public void setDescription(String description)
 	{
 		this.description = description;
@@ -106,22 +119,38 @@ public abstract class Slot implements Comparable<Slot>
 		return false;
 	}
 
+	/**
+	 * @return The type of the Slot.
+	 */
 	public abstract Type getType();
 
+	/**
+	 * @return Local storage of the slot data.
+	 */
 	public String getReference()
 	{
 		return reference;
 	}
 
+	/**
+	 * @param reference Local storage of the slot data
+	 */
 	public void setReference(String reference)
 	{
 		this.reference = reference;
 	}
 
+	/**
+	 * @param parent
+	 * @return A JavaFX Node 
+	 */
 	public abstract Node getNode(Stage parent);
 	public abstract Node getPreview(Node pane);
 	public abstract Node getThumbNail();
 	
+	/**
+	 * @return
+	 */
 	@XmlTransient
 	public File getStorage()
 	{
@@ -139,41 +168,66 @@ public abstract class Slot implements Comparable<Slot>
 		return file;
 	}
 
+	/**
+	 * Not used.
+	 * @return Whether to preserve the aspect ratio of the content.
+	 */
 	public boolean isPerserveAspectRatio()
 	{
 		return perserveAspectRatio;
 	}
 
+	/**
+	 * @param perserveAspectRatio Whether to preserve the aspect ratio of the content.
+	 */
 	public void setPerserveAspectRatio(boolean perserveAspectRatio)
 	{
 		this.perserveAspectRatio = perserveAspectRatio;
 	}
 
+	/**
+	 * @return The Asset Timestamp
+	 */
 	public long getTimestamp()
 	{
 		return timestamp;
 	}
 
+	/**
+	 * @param timestamp The Asset Timestamp
+	 */
 	public void setTimestamp(long timestamp)
 	{
 		this.timestamp = timestamp;
 	}
 
+	/**
+	 * @return The content size in bytes
+	 */
 	public long getLength()
 	{
 		return length;
 	}
 
+	/**
+	 * @param length The content size in bytes
+	 */
 	public void setLength(long length)
 	{
 		this.length = length;
 	}
 
+	/**
+	 * @return The Group Number. Not applicable for GroupSlot types
+	 */
 	public int getGroup()
 	{
 		return group;
 	}
 
+	/**
+	 * @param group The Group Number. Not applicable for GroupSlot types
+	 */
 	public void setGroup(int group)
 	{
 		this.group = group;
@@ -199,11 +253,17 @@ public abstract class Slot implements Comparable<Slot>
 	{
 	}
 
+	/**
+	 * @return The RFC 2046 MIME Content Type
+	 */
 	public String getContentType()
 	{
 		return contentType;
 	}
 
+	/**
+	 * @param contentType The RFC 2046 MIME Content Type
+	 */
 	public void setContentType(String contentType)
 	{
 		this.contentType = contentType;

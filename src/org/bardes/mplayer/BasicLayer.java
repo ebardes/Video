@@ -1,7 +1,6 @@
 package org.bardes.mplayer;
 
-import org.bardes.mplayer.Slot.Type;
-
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.PerspectiveTransform;
@@ -10,7 +9,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-@SuppressWarnings("restriction")
+/**
+ * @author eric
+ *
+ */
 public class BasicLayer implements Layer
 {
 	private BorderPane pane;
@@ -30,11 +32,24 @@ public class BasicLayer implements Layer
 	private ColorAdjust colorAdjust;
 	private BorderPane previewPane;
 
+	/**
+	 * @param layerId
+	 * @param pane
+	 */
 	public BasicLayer(int layerId, BorderPane pane)
 	{
 		this.layerId = layerId;
         this.pane = pane;
         this.colorAdjust = new ColorAdjust();
+	}
+	
+	/**
+	 * Run this task in the application context
+	 * @param task
+	 */
+	private void t(Runnable task)
+	{
+		Platform.runLater(task);
 	}
 	
 	private static double d(int n)
@@ -99,13 +114,13 @@ public class BasicLayer implements Layer
 				{
 				    node = x;
 				    x.setEffect(colorAdjust);
-					pane.setCenter(x);
+					t(() -> { pane.setCenter(x); });
 					if (previewPane != null)
 					{
 						previewNode = slot.getPreview(previewPane);
 						previewPane.setCenter(previewNode);
-//						previewPane.setPrefSize(240, 200);
-//						previewPane.setMaxSize(240, 200);
+						previewPane.setPrefSize(240, 200);
+						previewPane.setMaxSize(240, 200);
 						previewPane.layout();
 					}
 					
@@ -146,12 +161,7 @@ public class BasicLayer implements Layer
             
         case 2:
             mp.setCycleCount(MediaPlayer.INDEFINITE);
-            mp.setOnEndOfMedia(new Runnable() {
-                public void run()
-                {
-                    mp.play();
-                }
-            });
+            mp.setOnEndOfMedia(() -> { mp.play(); });
             break;
             
         default:

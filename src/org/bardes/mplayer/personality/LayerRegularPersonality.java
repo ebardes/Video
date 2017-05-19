@@ -7,6 +7,10 @@ import java.nio.ByteBuffer;
 
 import org.bardes.mplayer.Layer;
 
+/**
+ * @author eric
+ * Adds to the light personality by adding resizing, rotation and simple color.
+ */
 public class LayerRegularPersonality extends LayerLitePersonality
 {
     private int xShift;
@@ -35,15 +39,15 @@ public class LayerRegularPersonality extends LayerLitePersonality
     @Override
     public void activate(Layer layer)
     {
+    	super.activate(layer);
     	layer.shift(xShift, yShift, xScale, yScale, rotate);
     	layer.setPlayMode(playMode);
     	layer.colorAdjust(brightness, contrast, 128, 128);
-    	super.activate(layer);
     }
 
     @Override
     public int getFootprint()
     {
-        return 17;
+        return super.getFootprint() + 13;
     }
 }

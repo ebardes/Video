@@ -8,6 +8,10 @@ import java.nio.ByteOrder;
 import org.bardes.mplayer.Layer;
 
 
+/**
+ * @author eric
+ * The most simple mode.
+ */
 public class LayerLitePersonality implements Personality
 {
     protected Layer layer;

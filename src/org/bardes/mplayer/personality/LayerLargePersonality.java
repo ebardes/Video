@@ -6,6 +6,10 @@ import java.nio.ByteBuffer;
 
 import org.bardes.mplayer.Layer;
 
+/**
+ * @author eric
+ * The large layer adds framing to the personality
+ */
 public class LayerLargePersonality extends LayerRegularPersonality
 {
     private int blade_1a;
@@ -20,7 +24,7 @@ public class LayerLargePersonality extends LayerRegularPersonality
     @Override
     public int getFootprint()
     {
-        return 25;
+        return super.getFootprint() + 8;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class LayerLargePersonality extends LayerRegularPersonality
     @Override
     public void activate(Layer layer)
     {
+    	super.activate(layer);
         layer.shapper(blade_1a, blade_1b, blade_2a, blade_2b, blade_3a, blade_3b, blade_4a, blade_4b);
-        super.activate(layer);
     }
 }

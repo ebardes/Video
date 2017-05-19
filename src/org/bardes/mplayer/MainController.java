@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.bardes.mplayer.LayerManager.LayerInfo;
-import org.bardes.mplayer.Slot.Type;
 import org.bardes.mplayer.cue.Cue;
 import org.bardes.mplayer.cue.CueLayerInfo;
 import org.bardes.mplayer.cue.CueStack;
@@ -217,7 +216,7 @@ public class MainController implements Initializable
 
 	private BorderPane lastItem;
 	
-	Map<Slot.Type, Image> imageMap = new HashMap<Slot.Type, Image>();
+	Map<Type, Image> imageMap = new HashMap<Type, Image>();
 
 	private Slot selected;
 
@@ -239,9 +238,9 @@ public class MainController implements Initializable
 			info("Initializing ...");
 			URL x = new URL(location, "images");
 
-			imageMap.put(Slot.Type.GROUP, new Image(x + "/ic_folder_black_18dp.png"));
-			imageMap.put(Slot.Type.IMAGE, new Image(x + "/ic_image_black_18dp.png"));
-			imageMap.put(Slot.Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
+			imageMap.put(Type.GROUP, new Image(x + "/ic_folder_black_18dp.png"));
+			imageMap.put(Type.IMAGE, new Image(x + "/ic_image_black_18dp.png"));
+			imageMap.put(Type.VIDEO, new Image(x + "/ic_play_circle_fill_black_18dp.png"));
 //			imageMap.put(Slot.Type.WEB, new Image(x + "/ic_public_black_18dp.png"));
 			
 			treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -358,7 +357,7 @@ public class MainController implements Initializable
 		{
 			info("Loading Group " + s.id);
 			
-			TreeItem<Slot> item = new TreeItem<Slot>(s, new ImageView(imageMap.get(Slot.Type.GROUP)));
+			TreeItem<Slot> item = new TreeItem<Slot>(s, new ImageView(imageMap.get(Type.GROUP)));
 			s.treeitem = item;
 			children.add(item);
 
