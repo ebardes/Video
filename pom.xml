@@ -6,7 +6,22 @@
 	<artifactId>video</artifactId>
 	<version>1-SNAPSHOT</version>
 	<name>Video Media Server Project</name>
-	<url>https://eric.bardes.org/video</url>
+	<organization>
+		<url>https://digi-dmx.com/EasyJNDI</url>
+		<name>Digi DMX</name>
+	</organization>
+	<distributionManagement>
+		<repository>
+			<id>digi-dmx</id>
+			<url>https://digi-dmx.com/repo</url>
+		</repository>
+	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>digi-dmx</id>
+			<url>https://digi-dmx.com/repo</url>
+		</repository>
+	</repositories>
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
@@ -103,24 +118,6 @@
 		<url>https://eric@eric.bardes.org/git/Video.git</url>
 		<connection>scm:git:https://eric@eric.bardes.org/git/Video.git</connection>
 	</scm>
-	<organization>
-		<name>Eric E Bardes</name>
-		<url>https://eric.bardes.org/</url>
-	</organization>
-	<repositories>
-		<repository>
-			<id>eric</id>
-			<name>Eric's Repository</name>
-			<url>https://eric.bardes.org/repo</url>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<site>
-			<id>eric</id>
-			<url>https://eric.bardes.org/video</url>
-		</site>
-		<downloadUrl>https://eric.bardes.org/video</downloadUrl>
-	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.sparkjava</groupId>
