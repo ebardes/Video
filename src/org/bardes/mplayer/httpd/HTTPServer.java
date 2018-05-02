@@ -1,6 +1,12 @@
 package org.bardes.mplayer.httpd;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.redirect;
+import static spark.Spark.staticFiles;
+import static spark.Spark.stop;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +17,6 @@ import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.xml.bind.JAXBContext;
@@ -33,20 +38,7 @@ import javafx.application.Platform;
  */
 public class HTTPServer implements NetServer, Runnable
 {
-	private MimetypesFileTypeMap typeMap;
-	
 	private static Lock lock = new ReentrantLock();
-
-	/**
-	 * 
-	 */
-	public HTTPServer()
-	{
-		typeMap = new MimetypesFileTypeMap();
-		typeMap.addMimeTypes("text/javascript js");
-		typeMap.addMimeTypes("text/css css");
-		typeMap.addMimeTypes("text/xsl xslt");
-	}
 	
 	@Override
 	public void stopServer()
@@ -83,9 +75,13 @@ public class HTTPServer implements NetServer, Runnable
 				return "";
 			}
 			
-			String type = typeMap.getContentType(file);
-			resp.type(type);
-			
+			if (file.endsWith(".js"))
+				resp.type("text/javascript");
+			else if (file.endsWith(".css"))
+				resp.type("text/css"); 
+			else if (file.endsWith(".xslt"))
+				resp.type("text/xsl");
+
 			try (InputStream is = resource.openStream())
 			{
 				try (ServletOutputStream os = resp.raw().getOutputStream())
