@@ -43,15 +43,6 @@ public class BasicLayer implements Layer
         this.colorAdjust = new ColorAdjust();
 	}
 	
-	/**
-	 * Run this task in the application context
-	 * @param task
-	 */
-	private void t(Runnable task)
-	{
-		Platform.runLater(task);
-	}
-	
 	private static double d(int n)
 	{
 		return (double)n / 255.0;
@@ -114,13 +105,13 @@ public class BasicLayer implements Layer
 				{
 				    node = x;
 				    x.setEffect(colorAdjust);
-					t(() -> { pane.setCenter(x); });
+					pane.setCenter(x);
 					if (previewPane != null)
 					{
 						previewNode = slot.getPreview(previewPane);
 						previewPane.setCenter(previewNode);
-						previewPane.setPrefSize(240, 200);
-						previewPane.setMaxSize(240, 200);
+//						previewPane.setPrefSize(240, 200);
+//						previewPane.setMaxSize(240, 200);
 						previewPane.layout();
 					}
 					
