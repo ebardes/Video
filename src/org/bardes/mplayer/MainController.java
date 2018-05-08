@@ -1185,4 +1185,9 @@ public class MainController implements Initializable
 			config.setWorkDirectory(absolutePath);
 		}
 	}
+	
+	public void Shutdown()
+	{
+		Platform.exit();
+	}
 }

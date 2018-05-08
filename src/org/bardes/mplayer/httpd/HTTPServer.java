@@ -107,6 +107,11 @@ public class HTTPServer implements NetServer, Runnable
 
 			return null;
 		});
+		
+		get("/suicide", (req, resp) -> {
+			Main.Shutdown();
+			return null;
+		});
 
 		/*
 		 * Get Config Info

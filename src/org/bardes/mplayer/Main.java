@@ -76,11 +76,15 @@ public class Main extends Application
 
 	private NetServer httpServer;
 	
+	private static Main main;
+	
 	@Override
 	public void start(Stage primaryStage)
 	{
 		try
 		{
+			main = this;
+			
 			initConfig();
 			
 			ClassLoader cl = getClass().getClassLoader();
@@ -284,5 +288,18 @@ public class Main extends Application
 		target.mkdirs();
 		target = new File(target, String.format("slot_%03d%s", slot.id, ext));
 		return target;
+	}
+
+	public static void Shutdown()
+	{
+		try
+		{
+			System.out.println("Attempt to stop");
+			controller.Shutdown();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
