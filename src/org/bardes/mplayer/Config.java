@@ -45,6 +45,8 @@ public class Config
     private List<LayerConfig> layers = new ArrayList<>();
     
     private boolean replicating;
+    
+    private boolean fullscreen;
 
 	@XmlElementWrapper(name="groups")
 	@XmlElement(name="group")
@@ -241,6 +243,16 @@ public class Config
 	public void setLayers(List<LayerConfig> layers)
 	{
 		this.layers = layers;
+	}
+
+	public boolean isFullscreen()
+	{
+		return fullscreen;
+	}
+
+	public void setFullscreen(boolean fullscreen)
+	{
+		this.fullscreen = fullscreen;
 	}
 }
 

@@ -119,14 +119,6 @@ public class Main extends Application
 			}
 			display.show();
 			
-//			for (int i = 0; i < 4; i++)
-//			{
-//				BorderPane e = new BorderPane();
-//				displayPane.getChildren().add(0, e);
-//				Layer l = new BasicLayer(i,display,e);
-//				layers.add(l);
-//			}
-//			
 			displayPane.minWidthProperty().bind(display.widthProperty());
 			displayPane.maxWidthProperty().bind(display.widthProperty());
 			displayPane.minHeightProperty().bind(display.heightProperty());
@@ -147,8 +139,8 @@ public class Main extends Application
 			}
 			else
 			{
-			    primaryStage.setWidth(1024);
-			    primaryStage.setHeight(768);
+			    primaryStage.setWidth(1280);
+			    primaryStage.setHeight(720);
 			}
 			
 			FXMLLoader loader = new FXMLLoader();
@@ -176,6 +168,9 @@ public class Main extends Application
 			
 			httpServer = new HTTPServer();
 			httpServer.startServer();
+			
+			if (config.isFullscreen())
+				controller.showmode();
 		}
 		catch (Exception e)
 		{

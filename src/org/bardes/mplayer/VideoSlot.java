@@ -7,17 +7,13 @@ import java.net.URI;
 import javax.imageio.ImageIO;
 import javax.xml.bind.annotation.XmlType;
 
-import javafx.collections.ListChangeListener;
-import javafx.collections.MapChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.media.Track;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
