@@ -7,19 +7,19 @@
 	<version>1-SNAPSHOT</version>
 	<name>Video Media Server Project</name>
 	<organization>
-		<url>https://digi-dmx.com/EasyJNDI</url>
+		<url>https://www.digi-dmx.com/EasyJNDI</url>
 		<name>Digi DMX</name>
 	</organization>
 	<distributionManagement>
 		<repository>
 			<id>digi-dmx</id>
-			<url>https://digi-dmx.com/repo</url>
+			<url>https://www.digi-dmx.com/repo</url>
 		</repository>
 	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>digi-dmx</id>
-			<url>https://digi-dmx.com/repo</url>
+			<url>https://www.digi-dmx.com/repo</url>
 		</repository>
 	</repositories>
 	<build>
