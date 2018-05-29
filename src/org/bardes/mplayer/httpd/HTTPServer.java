@@ -1,6 +1,12 @@
 package org.bardes.mplayer.httpd;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.redirect;
+import static spark.Spark.staticFiles;
+import static spark.Spark.stop;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +40,7 @@ import javafx.application.Platform;
 public class HTTPServer implements NetServer, Runnable
 {
 	private MimetypesFileTypeMap typeMap;
-	
+
 	private static Lock lock = new ReentrantLock();
 
 	/**
@@ -47,7 +53,7 @@ public class HTTPServer implements NetServer, Runnable
 		typeMap.addMimeTypes("text/css css");
 		typeMap.addMimeTypes("text/xsl xslt");
 	}
-	
+
 	@Override
 	public void stopServer()
 	{
@@ -68,24 +74,24 @@ public class HTTPServer implements NetServer, Runnable
 	{
 		port(5678);
 		staticFiles.externalLocation(Main.getConfig().getWorkDirectory());
-		staticFiles.expireTime(600); 
-		
+		staticFiles.expireTime(600);
+
 		redirect.get("/", "/dynamic/index");
-		get("/static/:file", (req,resp) -> {
+		get("/static/:file", (req, resp) -> {
 
 			String file = req.params("file");
 			String name = "static/" + file;
-			
+
 			URL resource = getClass().getClassLoader().getResource(name);
 			if (resource == null)
 			{
 				resp.status(404);
 				return "";
 			}
-			
+
 			String type = typeMap.getContentType(file);
 			resp.type(type);
-			
+
 			try (InputStream is = resource.openStream())
 			{
 				try (ServletOutputStream os = resp.raw().getOutputStream())
@@ -98,31 +104,57 @@ public class HTTPServer implements NetServer, Runnable
 					}
 				}
 			}
-			
+
 			return null;
 		});
 		
+		get("/suicide", (req, resp) -> {
+			Main.Shutdown();
+			return null;
+		});
+
 		/*
 		 * Get Config Info
 		 */
 		get("/dynamic/:style", (req, resp) -> {
+			try {
 			resp.type("text/xml");
-			
+
 			StringWriter sb = new StringWriter();
 			sb.append("<?xml version=\"1.0\" ?>\n");
 			String style = req.params("style");
 			if (style != null && style.length() > 0 && !style.equals("none"))
 			{
-				sb.append("<?xml-stylesheet type='text/xsl' href='/static/"+style+".xslt'  ?>\n");
+				sb.append("<?xml-stylesheet type='text/xsl' href='/static/" + style + ".xslt'  ?>\n");
 			}
-			
+
+			Config config = Main.getConfig();
+			URI work = URI.create(config.getWorkDirectory());
+			work = work.normalize();
+			for (GroupSlot g : config.getGroups())
+			{
+				for (Slot s : g.slots.values())
+				{
+					String r = s.getReference();
+					URI u = URI.create(r);
+
+					String x = work.relativize(u).getPath();
+					
+					s.setPage(x);
+				}
+			}
+
 			JAXBContext c = JAXBContext.newInstance(Config.class);
 			Marshaller m = c.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-			m.marshal(Main.getConfig(), sb);
+			m.marshal(config, sb);
 			return sb.toString();
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+			}
+			return req;
 		});
-		
+
 		post("/remove/:action/:group/:slot", (req, resp) -> {
 			int group = Integer.parseInt(req.params("group"));
 			int slot = Integer.parseInt(req.params("slot"));
@@ -130,13 +162,13 @@ public class HTTPServer implements NetServer, Runnable
 			GroupSlot g = Main.getConfig().getGroup(group);
 			if (g == null)
 				halt(401, "Group not found");
-			
+
 			Slot s = g.get(slot);
 			if (s == null)
 				halt(401, "Slot not found");
-			
+
 			g.slots.remove(slot);
-			
+
 			try
 			{
 				URI url = new URI(s.getReference());
@@ -146,8 +178,9 @@ public class HTTPServer implements NetServer, Runnable
 			catch (Exception ignore)
 			{
 			}
-			
-			Platform.runLater(new Runnable() {
+
+			Platform.runLater(new Runnable()
+			{
 				@Override
 				public void run()
 				{
@@ -157,11 +190,11 @@ public class HTTPServer implements NetServer, Runnable
 			});
 			return "";
 		});
-		
+
 		/*
 		 * 
 		 */
-		post("/upload/:action/:group/:slot", (req,resp) -> {
+		post("/upload/:action/:group/:slot", (req, resp) -> {
 			try
 			{
 				String action = req.params("action");
@@ -170,11 +203,11 @@ public class HTTPServer implements NetServer, Runnable
 				String type = req.headers("X-File-Type");
 				String name = req.headers("X-File-Name");
 				long lastModified = Long.parseLong(req.headers("X-File-Timestamp"));
-				
+
 				GroupSlot g = Main.getConfig().getGroup(group);
 				if (g == null)
 					halt(401, "Group not found");
-				
+
 				Slot s = null;
 				if (slot > 0)
 				{
@@ -182,7 +215,7 @@ public class HTTPServer implements NetServer, Runnable
 					if (action.equals("replace") && s == null)
 						halt(401, "Slot not found");
 				}
-				
+
 				lock.lock();
 				try
 				{
@@ -194,7 +227,7 @@ public class HTTPServer implements NetServer, Runnable
 							break;
 						}
 					}
-					
+
 					if (type.startsWith("image/"))
 					{
 						s = new ImageSlot();
@@ -213,23 +246,23 @@ public class HTTPServer implements NetServer, Runnable
 						s.setContentType(type);
 						s.setGroup(group);
 						s.setDescription(name);
-						
+
 						try (ServletInputStream is = req.raw().getInputStream())
 						{
 							File saveTo = Main.normalizeName(s, name);
-							try (FileOutputStream out = new FileOutputStream(saveTo)) 
+							try (FileOutputStream out = new FileOutputStream(saveTo))
 							{
 								byte[] buffer = new byte[8192];
 								int n;
-								
+
 								while ((n = is.read(buffer)) > 0)
 								{
 									out.write(buffer, 0, n);
 								}
 							}
-							
+
 							g.addItem(s);
-							
+
 							s.setReference(saveTo.toURI().toString());
 							s.setTimestamp(lastModified);
 							s.setLength(saveTo.length());
@@ -240,8 +273,9 @@ public class HTTPServer implements NetServer, Runnable
 				{
 					lock.unlock();
 				}
-				
-				Platform.runLater(new Runnable() {
+
+				Platform.runLater(new Runnable()
+				{
 					@Override
 					public void run()
 					{
@@ -262,7 +296,7 @@ public class HTTPServer implements NetServer, Runnable
 			{
 				e.printStackTrace();
 			}
-		    return "";
+			return "";
 		});
 	}
 }

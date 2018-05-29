@@ -30,6 +30,8 @@ public abstract class Slot implements Comparable<Slot>
 
 	protected String reference;
 	
+	private String page;
+	
 	protected String previewImage;
 
 	protected int group;
@@ -267,5 +269,15 @@ public abstract class Slot implements Comparable<Slot>
 	public void setContentType(String contentType)
 	{
 		this.contentType = contentType;
+	}
+
+	public String getPage()
+	{
+		return page;
+	}
+
+	public void setPage(String page)
+	{
+		this.page = page;
 	}
 }

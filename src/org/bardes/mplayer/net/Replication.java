@@ -4,7 +4,6 @@ import static org.bardes.mplayer.sacn.E131Listener.x;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -24,7 +23,6 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;

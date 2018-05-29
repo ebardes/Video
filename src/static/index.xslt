@@ -40,10 +40,10 @@
 				</div>
 				<div class="preview">
 					<xsl:if test="@xsi:type = 'image'">
-					<img src="{substring(reference, string-length(/config/workDirectory)+7)}" />
+					<img src="{substring(page, string-length(/config/workDirectory)+7)}" />
 					</xsl:if>
 					<xsl:if test="@xsi:type = 'video'">
-					<img src="{substring(reference, string-length(/config/workDirectory)+7)}-thumbnail.png" />
+					<img src="{substring(page, string-length(/config/workDirectory)+7)}-thumbnail.png" />
 					</xsl:if>
 				</div>
 			</div>
@@ -90,10 +90,10 @@
 				</div>
 				<div class="preview">
 					<xsl:if test="@xsi:type = 'image'">
-					<img src="{substring(reference, string-length(/config/workDirectory)+7)}" />
+					<img src="{substring(page, string-length(/config/workDirectory)+1)}" />
 					</xsl:if>
 					<xsl:if test="@xsi:type = 'video'">
-					<img src="{substring(reference, string-length(/config/workDirectory)+7)}-thumbnail.png" />
+					<img src="{substring(page, string-length(/config/workDirectory)+1)}-thumbnail.png" />
 					</xsl:if>
 				</div>
 				<xsl:if test="../../../id &gt; 0">
